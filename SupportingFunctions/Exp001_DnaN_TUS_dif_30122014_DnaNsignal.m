@@ -25,7 +25,7 @@ initval.BFfiletemplate='BF.tif';
 initval.FLfiletemplate='YFP_RICorrected.tif';
 initval.maxfile=202;
 
-%used for kymograph processing---------------------------
+%used for kymograph processing-------------------------
 initval.channeldistance=32.0; %in pixels
 initval.channelno=1; %in pixels
 initval.perpadjust=0; %degrees
