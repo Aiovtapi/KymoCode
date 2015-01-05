@@ -5,7 +5,7 @@
 close all;
 %expno='TEST';
 %expno='A_CM_DnaXDnaN_DualColour_Col002_DnaNSignal';
-expno='002_DnaN_TUS_dif_21112014_DnaNsignal';
+expno='001_DnaN_TUS_dif_30122014_DnaNsignal';
 
 initval=A001_Images_Set_Experiment(expno); %define your paths and files
 

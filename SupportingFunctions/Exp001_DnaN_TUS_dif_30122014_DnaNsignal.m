@@ -18,17 +18,17 @@ switch user
         initval.basepath='/Users/rleeuw/Data/20141230_dnaN_dif_tus/dnaN_dif_tus_40msExpTime_5minAcqTimeYFP_30msExpCFP_002_C1/';
         initval.BFdatapath='Brightfield/';
         initval.FiguresFolder='Figures/';
-        initval.FLdatapath='Fluorescence/YFP/';
+        initval.FLdatapath='Fluorescence/RFP/';
 end
 
 initval.BFfiletemplate='BF.tif';
-initval.FLfiletemplate='YFP_RICorrected.tif';
-initval.maxfile=202;
+initval.FLfiletemplate='RFP_R_I_Corrected.tif';
+initval.maxfile=421;
 
 %used for kymograph processing-------------------------
 initval.channeldistance=32.0; %in pixels
 initval.channelno=1; %in pixels
-initval.perpadjust=0; %degrees
+initval.perpadjust=30; %degrees
 initval.kymoangle=0;  %CCW
 initval.kymolength=145;  %in pixels
 initval.kymohwidth=10;  %in pixels

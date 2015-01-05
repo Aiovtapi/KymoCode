@@ -18,8 +18,8 @@ Beamframe = double((imread('BeamShape_515nm.tiff')));
 % fNameToWriteIllumCorrected = 'D:\jkerssemakers\My Documents\BN_ND_Data_Recent Master\BactRepl_Charl\20140127_DnaX_YPet_AND_mCherry_DnaN\Fluorescence\mCherry_Fluorescence_RLBalled_IllumCorrected\mCherry_Fluorescence_RLBalled_IllumCorrected.tif';
 % fNameRBolled = 'D:\jkerssemakers\My Documents\BN_ND_Data_Recent Master\BactRepl_Charl\20140127_DnaX_YPet_AND_mCherry_DnaN\Fluorescence\mCherry_DnaN_Rballed.tif';
 
-fNameToWriteIllumCorrected = '/Users/rleeuw/Data/20141121/dnaN_dif_Tus_halfmW_5min_80msExp_002/Fluorescence/YFP/YFP_RICorrected.tif';
-fNameRBolled = '/Users/rleeuw/Data/20141121/dnaN_dif_Tus_halfmW_5min_80msExp_002/Fluorescence/YFP/YFP.tif';
+fNameToWriteIllumCorrected = '/Users/rleeuw/Data/20141230_dnaN_dif_tus/dnaN_dif_tus_40msExpTime_5minAcqTimeYFP_30msExpCFP_002_C1/Fluorescence/RFP/RFP_R_I_Corrected.tif';
+fNameRBolled = '/Users/rleeuw/Data/20141230_dnaN_dif_tus/dnaN_dif_tus_40msExpTime_5minAcqTimeYFP_30msExpCFP_002_C1/Fluorescence/RFP/RFP_Balled.tif';
 
 % FolderExistence = exist(strcat(initval.BasePath,initval.FL_Path_IllumCorrected));
 % if FolderExistence == 0
