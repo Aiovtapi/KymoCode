@@ -1,0 +1,85 @@
+function dum=Processing_Map_FluorescenceAutoDiv(ThisBac,ThisRep,stripmov_FL,kymo_FL,initval);
+%Function makes a map of fluorescence and division props
+figure;
+%frames and positions------------------------------------------------------
+frs=ThisBac.edges.frs;      
+lft=ThisBac.edges.rightfit; 
+rht=ThisBac.edges.leftfit;
+repfrs=ThisBac.edges.repfrs;
+
+%some more props
+middiv=(rht+lft)/2;  %midline bactrium
+
+%select a time slot encompassing replication and division cycle
+%--------------------------------------------------------------------------
+xt=initval.extension;  %extension before and after replication and division times
+hifr=repfrs(end)+xt;
+lofr=repfrs(1)-xt;
+frs_ext=[lofr:hifr];
+
+%fits to midline, second order---------------------------------------------
+ppM=polyfit(frs,middiv,2);
+fit_mid=ppM(1)*(frs_ext).^2+ppM(2)*frs_ext+ppM(3); 
+
+%fits RELATIVE to MIDLINE-----------------------
+ppL=polyfit(frs,lft-middiv,1);
+%         fit_lft=ppL(1)*(frs_ext).^2+ppL(2)*frs_ext+ppL(3);    
+fit_lft=round(ppL(1)*(frs_ext)+ppL(2));  
+
+ppR=polyfit(frs,rht-middiv,1);
+%fit_rht=ppR(1)*(frs_ext).^2+ppR(2)*frs_ext+ppR(3);       
+fit_rht=round(ppR(1)*(frs_ext)+ppR(2)); 
+
+%using fit results, we now fetch a fluorescence profile from the kymograph:
+%----------------------------------------------
+hor=max(fit_rht-fit_lft)+4;
+ver=hifr-lofr+1;
+pic=zeros(ver,hor);
+
+[kr,kc]=size(kymo_FL);
+for t=1:ver
+fri=max(frs_ext(t),1); fri=min(fri,kr);  %inbound frame number
+loix=max(fit_lft(t)+fit_mid(t), 1);  %inbound low pos index
+hiix=min(fit_rht(t)+fit_mid(t), kc); %inbound hi pos index
+idx=round([loix:hiix]);% indices for kymograph line
+
+%fetch the data!
+FL=squeeze(stripmov_FL(:,kc-idx+1,fri));
+
+fluo=Processing_Fluorescence_PatternAnalysis(FL); 
+prof=fluo.curve_medianofmax;
+medi=fluo.level_medianofmax;
+
+
+lixx=length(idx); shft=(hor-lixx)/2;
+idx2=round([1:lixx]+shft); %centered indices;
+pic(t,idx2)=prof; 
+
+%----------------------------------------------------------
+end
+
+%plot menu;  ---------------------------
+close(gcf);
+scrsz = get(0,'ScreenSize');
+figure('Position',[300 20 scrsz(3)/4 scrsz(4)/0.8])
+subplot(2,1,1);
+pcolor(pic'); colormap hot; shading flat;  hold on
+plot(frs-frs_ext(1)+1,rht-middiv+hor/2+1.5,'-o','LineWidth',4,'MarkerSize',6); 
+plot(frs-frs_ext(1)+1,lft-middiv+hor/2+1.5,'-o','LineWidth',4,'MarkerSize',6);
+title(strcat('Bacterium'));
+xlabel('Time (frames)','fontsize', 14, 'fontweight', 'bold');
+ylabel ('Position (px)','fontsize', 14, 'fontweight', 'bold');
+set(gca, 'fontsize', 14, 'linewidth', 4, 'fontweight', 'bold');
+axis([1 ver 1 hor]);
+
+subplot(2,1,2);
+perc=ThisRep.FluoPropsGen.fluospotscontent_ext./ThisRep.FluoPropsGen.signalcontent_ext*100;
+plot(perc, 'r-o');
+title(strcat('Bacterium'));
+xlabel('Time (frames)','fontsize', 14, 'fontweight', 'bold');
+ylabel ('Percentage (px)','fontsize', 14, 'fontweight', 'bold');
+set(gca, 'fontsize', 14, 'linewidth', 4, 'fontweight', 'bold');
+axis tight
+
+dum=1;
+pause(0.5);

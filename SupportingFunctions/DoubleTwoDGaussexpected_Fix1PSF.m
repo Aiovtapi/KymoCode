@@ -1,0 +1,6 @@
+function E = DoubleTwoDGaussexpected_Fix1PSF(x,y,psf,params)
+% The expected counts per pixel.
+E = params (6).*twoDGauss_Symm_FixPSF (x,y,params (1),params (3),psf) +...
+    params (7).*twoDGauss_Symm_FixPSF (x,y,params (2),params (4),psf) +...
+    params (5);
+end

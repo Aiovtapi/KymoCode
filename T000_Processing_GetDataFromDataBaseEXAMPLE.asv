@@ -1,0 +1,46 @@
+%Processing_FetchDataFromDataBase
+%Load database, 
+%JacobKers 2012----------------------------------
+close all
+%exp='TEST'; %See 'Images_Set_Experiment(exp)';
+exp='A_CM_DnaXDnaN_DualColour_Col002_DnaNSignal';
+minsperframe=2.5;
+
+initval=A001_Images_Set_Experiment(exp);
+outname=strcat(initval.basepath,initval.outname);
+
+%load the databases--------------------------------------------------
+outname=strcat(initval.basepath,initval.outname); %processed inputs
+outname_usr=strcat(initval.basepath,initval.outname_usr);%manual inputs
+load(outname,'S');
+load(outname_usr,'M');
+%------------------------------------------------------------------
+
+[~,chan_no]=size(S);
+
+for ch=1:chan_no  %for each channel
+chan_no-ch   
+Div=S(ch).channels.AutoDivision;
+Fluo1=S(ch).channels.ReplicationCluster;
+Fluo2=S(ch).channels.ReplicationCluster;
+for bc=1:bacno  %for each bacterium 
+% bacno-bc
+
+if lrp>0&acc %if set is complete, and if we accepted this bacterium 
+
+%Get fluorescent values-------------------------------------
+frames=minsperframe*S(ch).channels.ReplicationCluster(lrp).PosKyTracCom.frames_ext;  %0) Select the time axis (in frames)
+FL_A=S(ch).channels.ReplicationCluster(j).Pos2DPreTrac.contentallspots'; %1) Select total count
+FL_B=S(ch).channels.SecondFluoCluster(j).Pos2DPreTrac.contentallspots'; %2) select  spots count
+%-------------------------------------------------------------------------
+
+%just plot it
+figure;
+plot(frames,FL_A,'o-'); hold on;
+plot(frames,FL_B, 'r-o');
+title(strcat('BacName',num2str(bacname)));
+[~]=ginput(1);
+close(gcf);
+end
+end
+end
