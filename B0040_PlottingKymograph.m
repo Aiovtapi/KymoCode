@@ -4,7 +4,7 @@ clear all;
 warning on;
 
 
-exp='B_DnaN_TUS_dif_21112014_DnaNSignal';
+exp='001_DnaN_TUS_dif_30122014_DnaNsignal';
 initval=A001_Images_Set_Experiment(exp);
 
 %KymoNr = 1;
