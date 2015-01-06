@@ -27,9 +27,9 @@ initval.maxfile=421;
 
 %used for kymograph processing-------------------------
 initval.channeldistance=32.0; %in pixels
-initval.channelno=1; %in pixels
-initval.perpadjust=30; %degrees
-initval.kymoangle=0;  %CCW
+initval.channelno=2; %number of channels
+initval.perpadjust=0; %degrees
+initval.kymoangle=47;  %CCW
 initval.kymolength=145;  %in pixels
 initval.kymohwidth=10;  %in pixels
 initval.correctdrift=1;
@@ -50,7 +50,7 @@ initval.skip2Danalysis=1;
 %initval.nms={'ExpCM_DnaXDnaN_DualColour_Col002_DnaXSignalChan_x209' ;'ExpCM_DnaXDnaN_DualColour_Col002_DnaXSignalChan_x231'; 'ExpCM_DnaXDnaN_DualColour_Col002_DnaXSignalChan_x273'; 'ExpCM_DnaXDnaN_DualColour_Col002_DnaXSignalChan_x295'; 'ExpCM_DnaXDnaN_DualColour_Col002_DnaXSignalChan_x317'; 'ExpCM_DnaXDnaN_DualColour_Col002_DnaXSignalChan_x339'} ; 
 %initval.nms={'ExpCM_DnaN-Dif-Gamma-ve-Position1_Series1Chan_x126' ;'ExpCM_DnaN-Dif-Gamma-ve-Position1_Series1Chan_x146'; 'ExpCM_DnaN-Dif-Gamma-ve-Position1_Series1Chan_x173'; 'ExpCM_DnaN-Dif-Gamma-ve-Position1_Series1Chan_x219'; 'ExpCM_DnaN-Dif-Gamma-ve-Position1_Series1Chan_x245'; 'ExpCM_DnaN-Dif-Gamma-ve-Position1_Series1Chan_x291'; 'ExpCM_DnaN-Dif-Gamma-ve-Position1_Series1Chan_x314'; 'ExpCM_DnaN-Dif-Gamma-ve-Position1_Series1Chan_x382'; 'ExpCM_DnaN-Dif-Gamma-ve-Position1_Series1Chan_x405'} ; 
 
-initval.nms={'ExpB_DnaN_TUS_dif_21112014_DnaNSignalChan_x393'};
+initval.nms={'Exp001_DnaN_TUS_dif_30122014_DnaNsignalChan_x221'};
 
 initval.outname='DnaN_TUS_dif';
 initval.outname_usr='DnaN_TUS_dif_UserInputs';

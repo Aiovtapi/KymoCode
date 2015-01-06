@@ -17,7 +17,7 @@
 % exp='TEST';
 %exp='A_CM_DnaXDnaN_DualColour_Col002_DnaNSignal';
 %exp='B_CM_DnaXDnaN_DualColour_Col002_DnaXSignal';
-exp='002_DnaN_TUS_dif_21112014_DnaNsignal';
+exp='001_DnaN_TUS_dif_30122014_DnaNsignal';
 %expno='TEST';
 
 actions.getdatabase=1;          %default=1 (new analysis)

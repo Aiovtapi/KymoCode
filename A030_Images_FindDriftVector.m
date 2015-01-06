@@ -10,7 +10,7 @@ function dum=A030_Images_FindDriftVector_ROIupdate
 
 close all; 
 %dipstart;
-expno='002_DnaN_TUS_dif_21112014_DnaNsignal';
+expno='001_DnaN_TUS_dif_30122014_DnaNsignal';
 
 initval=A001_Images_Set_Experiment(expno); %define your paths and files
 initval.domovieload=1;  %default=1 (new analysis) %if not saved workspace before

@@ -5,7 +5,7 @@ close all
 %select the experiment database-----------------------------
 %select the experiment database-----------------------------
 
-exp='002_DnaN_TUS_dif_21112014_DnaNsignal';
+exp='001_DnaN_TUS_dif_30122014_DnaNsignal';
 
 actions.savedata=1;             %default=1 (new analysis)
 actions.loaddatabase=1;         %default=1 (new analysis)
@@ -14,7 +14,7 @@ variants={'_all'};  %'_mother' 'M1D1' see line 96, allows different selections
 remark='__HFR_Exp1';  %This allows you to add comments to the filenames
 titlelabel='First Higher Frame Rate experiment';
 
-minsperframe=2.5;
+minsperframe=5;
 maxbins=50;
 
 

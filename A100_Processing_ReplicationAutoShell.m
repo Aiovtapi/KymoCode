@@ -3,8 +3,8 @@
 %JacobKers 2013----------------------------------------------------
 
 tic
-exp='002_DnaN_TUS_dif_21112014_DnaNsignal';
-secondexp='002_DnaN_TUS_dif_21112014_TUSsignal';
+exp='001_DnaN_TUS_dif_30122014_DnaNsignal';
+%secondexp='002_DnaN_TUS_dif_21112014_TUSsignal';
 
 %%-------------------------------------
 %First, perform Center-off mass tracking on clusters starting at time
@@ -50,7 +50,7 @@ end
 
 if 1, 
     disp('adding spot fluorescence info');
-   Processing00_TwoDSpot_ImageAnalyzerAuto_SecondLabel(exp,secondexp); 
+ %  Processing00_TwoDSpot_ImageAnalyzerAuto_SecondLabel(exp,secondexp); 
 end
 toc
 %--------------------------------------------------------------------
