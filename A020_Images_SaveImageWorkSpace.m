@@ -3,7 +3,7 @@
 
 
 close all;
-%expno='TEST';
+%expno='TEST'; TEST TEST
 %expno='A_CM_DnaXDnaN_DualColour_Col002_DnaNSignal';
 expno='001_DnaN_TUS_dif_30122014_DnaNsignal';
 
