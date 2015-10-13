@@ -15,7 +15,7 @@ fNameRBolled = '/Volumes/LittleMonster/PhD_Docs/D005_Experiments/20131217_DnaN_D
 
 maxVAlue= max(max(Beamframe));
 
-NewBeamImg = Beamframe./maxVAlue; %This is a test for github
+NewBeamImg = Beamframe./maxVAlue; 
 
 info = imfinfo(fNameRBolled);
 num_images = numel(info)
