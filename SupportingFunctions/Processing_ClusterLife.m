@@ -1,4 +1,4 @@
-function [fluopropcurves,areasums,prefits,finalfits]=Processing_ClusterLife(ChNo,BacNo,ThisRep,ThisDiv,initval,chanstk_FL,chantype);
+function [fluopropcurves,areasums,prefits,finalfits]=Processing_ClusterLife(ChNo,BacNo,ThisRep,ThisDiv,initval,chanstk_FL,chantype,chanstk_BF);
 %pre-fit, final fit, [X0,X1,Y0,Y1, Background amplitude,Peak0, Peak1]
 
 %-------demo settings-----
@@ -18,7 +18,11 @@ fitpresets.psf=initval.psf;  %user-set pointspread function
 %lbl=num2str(ThisRep.name);
 
 %Define a fixed-width area around the center-of-mass tracked position-----
-frs=ThisRep.FluoPropsGen.frs_ext;
+%frs=ThisRep.FluoPropsGen.frs_ext;
+
+%RDL -- for prolonged time bacpics -- frs2 is size of prolonged (Nframes = 10) edges fit
+frs=ThisDiv.edges.frs;
+
 % left=ThisRep.PosKyTracCom.trackpos_ext-fitpresets.hwi; 
 % right=ThisRep.PosKyTracCom.trackpos_ext+fitpresets.hwi ; 
 
@@ -33,7 +37,7 @@ Rpars=ThisDiv.edges.Lpars;  %1st order left
 left=(Mpars(1)*frs.^2+(Mpars(2)+Lpars(1))*frs+(Mpars(3)+Lpars(2)))';
 right=(Mpars(1)*frs.^2+(Mpars(2)+Rpars(1))*frs+(Mpars(3)+Rpars(2)))';
 spotpos=ThisRep.PosKyTracCom.trackpos_ext;
-
+spotpos=[spotpos ;zeros(length(frs)-length(spotpos),1)];
 
 
 
@@ -80,7 +84,16 @@ F2OK2=zeros(lfr,1);
 %%-----------------------------------------------------------------
 % Run a loop on the bacterial frames & positions to fetch
 %corresponding images %later to be expand to twoD fit)
-dif1=[]; dif2=[];     
+dif1=[]; dif2=[]; 
+% 
+
+% Lengthen the bacterial view by certain amount of pixels:
+
+AdditionalPixels=0;
+
+  right=right+AdditionalPixels;
+   left=left+AdditionalPixels;
+
 for k=1:lfr  %for all frames
 lfr-k;
 if show==1,close all; end
@@ -92,18 +105,40 @@ if show==1,close all; end
 %border check-------------------
 thisfr=max([1 round(frs(k))]);
 thisleft=round(max([(left(k)) 1]));    
-thisright=round(min([(right(k)) initval.kymolength])); 
+thisright=round(min([(right(k)) initval.kymolength]));
+
+if thisfr<=size(chanstk_FL,3)
 thischan_FL=fliplr(squeeze(chanstk_FL(:,:,thisfr)));
+else
+thischan_FL=zeros(size(chanstk_FL,1),size(chanstk_FL,2));
+end
+
+if thisfr<=size(chanstk_BF,3)
+thischan_BF=fliplr(squeeze(chanstk_BF(:,:,thisfr)));
+else
+thischan_BF=zeros(size(chanstk_BF,1),size(chanstk_BF,2));
+end
+
+
+% RDL -- Assumed that spotpos remains constant in
+% extended area when Bacpics are prolonged
+
+Du=nonzeros(spotpos);
+if spotpos(k)==0
+thisspot=Du(end);
+else 
 thisspot=spotpos(k);
+end
+
 lf_nr=round(max([thisspot-fitpresets.hwix 1])); 
 rht_nr=round(min([thisspot+fitpresets.hwix initval.kymolength]));     
 
-border_ok=(thisright>thisleft+6)& (rht_nr>lf_nr+6);       
+border_ok=(thisright>thisleft+6)&&(rht_nr>lf_nr+6);       
 
 
 if 0
     %%plots a single frame of the current channel that is being analysed
-    figure;
+    figure(1);
     imagesc(thischan_FL)
     axis equal tight
     box on
@@ -113,7 +148,11 @@ if 0
 end
 
 %create ROI;%---------------------Do 1D and 2D analysis------------- --------------
-if  border_ok  %if this is a reasonable ROI to fit
+if border_ok==1  %if this is a reasonable ROI to fit
+            
+    % RDL -- making the bac broader to observe dif site (mostly at pole)
+    % correctly in oriZ-dif strain.
+
         baclengths=right-left;
         maxbaclength=max(baclengths);
     
@@ -122,13 +161,21 @@ if  border_ok  %if this is a reasonable ROI to fit
         hi=int32(initval.kymohwidth+fitpresets.hwiy+1); 
         lf=int32(thisleft);
         rht=int32(thisright);
-     
-        FL_narrow=thischan_FL(initval.kymohwidth-fitpresets.hwiy+1:initval.kymohwidth+fitpresets.hwiy+1,lf_nr:rht_nr); %this is a narrow region around the spot
-        FL_full=thischan_FL(lo:hi,lf:rht);  %This is the full bacterial area;     
+
         
+        FL_narrow=thischan_FL(initval.kymohwidth-fitpresets.hwiy+1:initval.kymohwidth+fitpresets.hwiy+1,lf_nr:rht_nr); %this is a narrow region around the spot
+        [Ys,Xs]=size(thischan_FL);
+        % make sure 
+        if lo<0 || hi>Ys || lf<0 || rht>Xs
+            FL_full=zeros(hi-lo,rht-lf);
+            BF_full=zeros(hi-lo,rht-lf);
+        else
+        FL_full=thischan_FL(lo:hi,lf:rht); %This is the full bacterial area;  
+        BF_full=thischan_BF(lo:hi,lf:rht);
+        end
         
        if savebacpics
-           SavePaddedImage(FL_full,maxbaclength,ChNo,BacNo,k,initval,chantype);
+           SavePaddedImage(FL_full,maxbaclength,ChNo,BacNo,k,initval,chantype,thischan_FL,BF_full);
        end       
         %Get some general pattern properties from the image; we use 
         %a restricted area around the replication cluster
@@ -384,7 +431,8 @@ plot(f1.X1+1+0.5,f1.Y1+0.5,'o', 'MarkerSize', 12, 'MarkerEdgeColor','g');
 end
 
 [r,c]=size(FLspot);
-%border patrol------------------
+
+%border patrol
 x1=max(f1.X0+1, 1+hw); x1=min(x1, c-hw);
 y1=max(f1.Y0, 1+hw); y1=min(y1, r-hw);
 x2=max(f1.X1+1, 1+hw); x2=min(x2, c-hw);
@@ -396,7 +444,6 @@ h1=round([y1-hw:1:y1+hw]);
 w2=round([x2-hw:1:x2+hw]);
 h2=round([y2-hw:1:y2+hw]);
 
-
 %find common points
 w1w2=[w1 w2]; [~, mw, ~] = unique(w1w2); cmmw=w1w2(mw);
 ovl_lo=length(cmmw)-(2*hw+1)+1; wcommons=w1(ovl_lo:2*hw+1);
@@ -404,9 +451,9 @@ h1h2=[h1 h2]; [~, mh, ~] = unique(h1h2); cmmh=h1h2(mh);
 ovl_lo=length(cmmh)-(2*hw+1)+1; hcommons=h1(ovl_lo:2*hw+1);
 
 %areas
-area1=FLspot(h1,w1); 
-area2=FLspot(h2,w2);
-area3=FLspot(hcommons,wcommons);  %overlapping area!
+    area1=FLspot(h1,w1);
+    area2=FLspot(h2,w2);
+    area3=FLspot(hcommons,wcommons);  %overlapping area!
 
 %pixel numbers, this is later needed for background subtraction
 N1=(2*hw+1)^2; N2=N1;
@@ -414,7 +461,7 @@ N3=length(area3(:));
 Nall=N1+N2-N3;
 
 %summed intensities; 
-I1=sum(area1(:));  
+I1=sum(area1(:));
 I2=sum(area2(:));
 I3=sum(area3(:));
 
@@ -423,6 +470,7 @@ I_all=I1+I2-I3;
 else
 I_all=I1+I2;
 end
+
 end
 
 function [fluofull,f1D,f2D,I1, I2,I_all]=Set_as_bad_point;
@@ -478,29 +526,98 @@ fluo.peaky=NaN;
 fluo.peakx=NaN;
 end
 
-function SavePaddedImage(FL_full,maxbaclength,ChNo,BacNo,k,initval,chantype)
+
+function SavePaddedImage(FL_full,maxbaclength,ChNo,BacNo,k,initval,chantype,ChanFL,BF_full)
+       
+       % FLUORESCENCE IMAGE       
        %padd to equal lengths
-       mx=uint16(ceil(maxbaclength));
+       mx=uint32(ceil(maxbaclength))+1;
        [rs,cs]=size(FL_full);
        padd=ceil((mx-cs)/2);
-       padstrip=zeros(rs,padd);
+       padstrip=zeros(rs,padd); 
+       Adu=[padstrip FL_full padstrip];
+       if size(Adu,2) == mx
        Savim=[padstrip FL_full padstrip];
-       Savim=Savim(:,1:mx);  %just to make sure
+       else 
+       Adi=size(Adu,2)-mx;
+       padstrip2=zeros(rs,padd-Adi);
+       Savim=[padstrip FL_full padstrip2];
+       end 
+       [rs1,cs1]=size(Savim);
+       padd2=ceil((cs1-rs1)/2);
+       padstripupdown=zeros(padd2,cs1);
+       Adum=[padstripupdown; Savim; padstripupdown];
+       if size(Adum,1)~=size(Adum,2)
+       Adif=size(Adum,1)-size(Adum,2);
+       padstripupdown2=zeros(padd2-Adif,cs1);
+       Savim=[padstripupdown; Savim; padstripupdown2];
+       else
+       Savim=[padstripupdown; Savim; padstripupdown];
+       end
+       
+       % BRIGHTFIELD IMAGE
+       %padd to equal lengths
+%        mx=uint32(ceil(maxbaclength))+1;
+%        [rs,cs]=size(BF_full);
+%        padd=ceil((mx-cs)/2);
+%        padstrip=zeros(rs,padd); 
+%        Adu=[padstrip BF_full padstrip];
+%        if size(Adu,2) == mx
+%        Savim_BF=[padstrip BF_full padstrip];
+%        else 
+%        Adi=size(Adu,2)-mx;
+%        padstrip2=zeros(rs,padd-Adi);
+%        Savim_BF=[padstrip BF_full padstrip2];
+%        end 
+%        [rs1,cs1]=size(Savim_BF);
+%        padd2=ceil((cs1-rs1)/2);
+%        padstripupdown=zeros(padd2,cs1);
+%        Adum=[padstripupdown; Savim_BF; padstripupdown];
+%        if size(Adum,1)~=size(Adum,2)
+%        Adif=size(Adum,1)-size(Adum,2);
+%        padstripupdown2=zeros(padd2-Adif,cs1);
+%        Savim_BF=[padstripupdown; Savim_BF; padstripupdown2];
+%        else
+%        Savim_BF=[padstripupdown; Savim_BF; padstripupdown];
+%        end
+       
+       %Savim=Savim(:,1:mx);  %just to make sure
        Chl=num2str(ChNo,'%02.0f');
        Baxx=num2str(BacNo,'%04.0f');
        Imm=num2str(k,'%03.0f');
        baclabel= strcat('Fluo', num2str(chantype),....
             'Chan', num2str(Chl),...
             'Bac', num2str(Baxx));
+%        baclabel_BF= strcat('BriFi', num2str(chantype),....
+%             'Chan', num2str(Chl),...
+%             'Bac', num2str(Baxx));
        bacpth=strcat(initval.basepath,initval.FiguresFolder,...
-            'BacPics\',...
+            'BacPics/',...
             baclabel,...
-            '\');     
+            '/');  
+        
+%        bacpth_BF=strcat(initval.basepath,initval.FiguresFolder,...
+%             'BacPics/Brightfield/',...
+%             baclabel,...
+%             '/'); 
+        
        if ~isdir(bacpth), mkdir(bacpth); end
+%        if ~isdir(bacpth_BF), mkdir(bacpth_BF); end
+                   %'PadX',num2str(PadsizeX),...
+            %'PadY',num2str(PadsizeY),...
+            
         lbl_Fig=strcat(bacpth,...
             baclabel,...         
             'Im',num2str(Imm),...
             '.tif'); %bacterium picture
-        bacim= uint8(round(Savim/max(FL_full(:))*255 - 1));
+               
+%         lbl_Fig_BF=strcat(bacpth_BF,...
+%             baclabel_BF,...         
+%             'Im',num2str(Imm),...
+%             '.tif'); %bacterium picture
+        
+        bacim= uint16(Savim); 
+        %bacimBF= uint16(Savim_BF);
         imwrite(bacim,lbl_Fig,'tif');
+        %imwrite(bacimBF,lbl_Fig_BF,'tif');
 end

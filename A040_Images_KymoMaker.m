@@ -14,26 +14,23 @@
 %Below, you can define your own paths and files-------------------------
 %dipstart;
 
-% exp='TEST';
-%exp='A_CM_DnaXDnaN_DualColour_Col002_DnaNSignal';
-%exp='B_CM_DnaXDnaN_DualColour_Col002_DnaXSignal';
+% exp='001_DnaN_TUS_dif_30122014_difsignal';
 exp='001_DnaN_TUS_dif_30122014_DnaNsignal';
 %expno='TEST';
 
-actions.getdatabase=1;          %default=1 (new analysis)
+actions.getdatabase=1;          % default=1 (new analysis)
 actions.reloadclicks=0;         %default=0 (new analysis)
 actions.firsttime=1;
 initval=A001_Images_Set_Experiment(exp);
-
 
 %Get raw data--------------------------
 if actions.getdatabase
 ImagesWorkspaceName=strcat(initval.basepath,initval.outname,'_Images',num2str(initval.maxfile),'.mat');
 load(ImagesWorkspaceName,'aa', 'ff','drift');
 end
-%----------------------------------------
-
-[,~,~,le]=size(aa); 
+%--------------------------------------
+ 
+[~,~,le]=size(aa); 
 initval.maxfile=le;
 close all;
 
@@ -50,7 +47,7 @@ inname=strcat(initval.basepath,initval.outname_usr);  %separate database storing
 if actions.reloadclicks
 %option al second-channel loading
 
-if 0
+if 1
     load(inname,'manypoints'); 
 else %explicit other click-file!
     inname2=strcat(initval.basepath,'DnaN_TUS_dif_UserInputs');

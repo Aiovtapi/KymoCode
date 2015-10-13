@@ -5,7 +5,7 @@ close all; clear all
 
 %exp='TEST';
 %exp='CM_DnaN-Dif-Gamma-ve-Position1_Series1';
-exp='CM_DnaN_37Deg_Series1002';
+exp='001_DnaN_TUS_dif_30122014_DnaNsignal';
 
 actions.loaddatabase=1;         %default=1 (new analysis)
 

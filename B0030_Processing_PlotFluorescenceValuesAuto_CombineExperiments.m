@@ -25,8 +25,8 @@ FileName_FociCyto = 'Total_and_Foci_Increase_Initiation_Termination';
 
 scatwidth=0.8;
 %countsperlabel=1;
-countsperlabel=3600/2;
-maxax=1E5/countsperlabel;  %Sets scale axis graphs
+countsperlabel=1800/2;
+maxax=1E4/countsperlabel;  %Sets scale axis graphs
 %spotsanalysistype='medianexcess' %'area summing';
 %spotsanalysistype='1DGauss' %'area summing';
 %spotsanalysistype='area summing' %'area summing';

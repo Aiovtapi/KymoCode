@@ -10,3 +10,4 @@ function [aa,ff,drift]=Get_all_data(initval)
     lbl2=strcat(initval.basepath,initval.FLdatapath,initval.FLfiletemplate);
     ff = readtimeseries(lbl2,'tif',[1 initval.maxfile]);              %Fluorescencedata stack
     
+

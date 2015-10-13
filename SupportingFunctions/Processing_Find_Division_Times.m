@@ -16,7 +16,7 @@ actions.loaddatabase=1;     %default=1 (new analysis)
 actions.plot=1;             %default=0 (quick run)
 
 if nargin<1, 
-    exp='TEST';
+    exp='006_oriZ_dif_110515_DnaNsignal';
     %exp='CM_DnaN-Dif-Gamma-ve-Position1_Series1';
     %exp='CM_HFR1_JK' ; 
     %exp='2a';
@@ -301,7 +301,7 @@ end
     
     Forks=ThisDivInfo.Forks;
     divtime=Forks.right(1,1); 
-    if dR>0 & dL>0
+    if dR>0 && dL>0
     %f0= S(ch).channels.ReplicationCluster(m).PosKyTracCom.frames(1);    %start time for searching
     fL1= S(ch).channels.ReplicationCluster(dL).PosKyTracCom.frames(end); 
     fR1= S(ch).channels.ReplicationCluster(dR).PosKyTracCom.frames(end);
@@ -325,6 +325,7 @@ end
     RtraceFr=S(ch).channels.ReplicationCluster(dR).PosKyTracCom.frames';
     rightborderpos=[Rforkpos ; RtracePos];
     rightborderfr=[Rforkfr ; RtraceFr];
+    plot(rightborderfr,rightborderpos);
     if 0
     plot(rightborderfr,rightborderpos, 'r-'); 
     pcolor(1-BW); colormap grey, shading flat; hold on
@@ -339,23 +340,29 @@ end
     Rdivy=Forks.right(1,2);
     Ldivy=Forks.left(1,2);
     ThisDivInfo.divtype='DNF';  %'did not finish'
-    while nodiv & cnt<maxcnt  %search until end of two daugthers   
+    SecCount=0;
+    while nodiv  && cnt<maxcnt  %search until end of two daugthers   
     cnt=cnt+1;  
     [r,c]=size(BW);
-    x=rightborderfr(cnt);
+    x=rightborderfr(cnt); 
     
     %Crop for minimum row indeximage;
     ylo=max(ceil(leftborderpos(cnt)), 1);
     yhi=max(floor(rightborderpos(cnt)),2);
+    
     %Crop for maximum row indeximage;
      ylo=min(ylo, r-1);
      yhi=min(yhi,r);
-
-    if yhi>ylo, trc=BW(ylo:yhi,x); , %select the binary image part encompassed by borders
+     
+    
+    if yhi>ylo, trc=BW(ylo:yhi,x);  %select the binary image part encompassed by borders
     else trc=BW(ylo,x); end
-    if sum(trc)>0; 
+%     if sum(trc)>0;
+%         SecCount=SecCount+1;
+%     end
+    if sum(trc)>0 % && SecCount==10;
       nodiv=0;
-      divtime=x;
+      divtime=x; 
       Rdivy=ylo;
       Ldivy=yhi;
       ThisDivInfo.divtype='OK';    %'found a proper division'
@@ -368,7 +375,7 @@ end
     end    
     
     
-    function ThisDivInfo=Add_FamilyMembers(S,M,ch, m);
+    function ThisDivInfo=Add_FamilyMembers(S,M,ch,m);
   %%1 some genealogy: find names of the two daughters, and the parent ;
     %find if they exist
     [~,repno]=size(S(ch).channels.ReplicationCluster);
@@ -408,12 +415,12 @@ end
     m=ThisDiv.family.me.idx;
     pp=ThisDiv.family.parent.idx;
     if pp>0 %if parent exists
-        ThisDiv.birthtime= S(ch).channels.AutoDivision(pp).divisiontime;
-        ThisDiv.birthtype='OK';
+         ThisDiv.birthtime= S(ch).channels.AutoDivision(pp).divisiontime;
+         ThisDiv.birthtype='OK';
     else
         ThisDiv.birthtime=S(ch).channels.ReplicationCluster(m).PosKyTracCom.frames(1);
         %This is just the initation time
-        ThisDiv.birthtype='DNS';  %'did not start'
+        ThisDiv.birthtype='DNS';  %RDL changed from 'DNS' = 'did not start' to 'OK'
     end
     end
     
@@ -433,6 +440,7 @@ end
     pp=ThisDiv.family.parent.idx;
     dL=ThisDiv.family.rightdaughter.idx;
     dR=ThisDiv.family.leftdaughter.idx;
+    
     if 2*ThisDiv.family.parent.name==ThisDiv.family.me.name,
         leftdaughter =1;
     else
@@ -461,7 +469,7 @@ end
          sectionL3_time=S(ch).channels.ReplicationCluster(m).Forks.left(:,1);
          sectionL3_pos=S(ch).channels.ReplicationCluster(m).Forks.left(:,2);  
     
-    if dL>0        
+    if dL>0 
      sectionL4_time=S(ch).channels.ReplicationCluster(dL).PosKyTracCom.frames';
      sectionL4_pos=S(ch).channels.ReplicationCluster(dL).PosKyTracCom.trackpos;         
     end
@@ -511,7 +519,7 @@ end
     plot(Lclusters_time, left, 'o-'); hold on; %left edge
     plot(Lclusters_time, right, 'mo-'); hold on; %right edge
     pcolor(1-BW); colormap grey, shading flat; hold on
-    [~]=ginput(1);
+    %[~]=ginput(1);
     end
     
     %--------------------------------------------------------------
@@ -522,7 +530,8 @@ end
     edges.repfrs=sectionL2_time;
     edges.reppos=sectionL2_pos;
     edges.frs=Lclusters_time;
-    edges.left=left;
+    
+    edges.left=left; 
     edges.right=right;
         
     %evaluate edge points on criteria such as minimal length of the
@@ -536,26 +545,42 @@ end
     
         
     function edges=Expand_Edges(edges,BW);
-    close all;   
-    lifelength=length(edges.frs);
+    close all;  
+    
+    %----------------------------------------------------------------------
+    % RdL -- Making bacterial lifetime longer than 
+    % cycle for lengthened BacPics -- 
+    
+    Nfrs=0; % Number of frames added to cycle
+    Adum=edges.frs; %create dummy vars
+    Ldum=length(Adum);
+    
+    %redefine edges.frs with prolonged length
+    edges.frs2=linspace(Adum(1),Adum(Ldum)+Nfrs,Adum(Ldum)+Nfrs-Adum(1)+1)';
+    %----------------------------------------------------------------------
+    
+    lifelength=length(edges.frs2);
     edges.acceptpoints=zeros(lifelength,1);   %flags used to indicate if points are ok
     edges.edgesok=1;                   %flags used to indicate if bac edges are ok
     
     midbac=(edges.left+edges.right)/2;   %midline of bacterium
     baclength=edges.left-edges.right;    %length of bacterium     
     
-    
     %First, find and reject too short lengthts per time point
     sel=find(baclength>7); edges.acceptpoints(sel)=1;
      
     %Next, fits on the remaining 'good' points
-    Lpars=polyfit(edges.frs(sel),edges.left(sel)-midbac(sel),1); %linear fit on growth
-    Rpars=polyfit(edges.frs(sel),edges.right(sel)-midbac(sel),1); %linear fit on growth (just the negative)
-    Mpars=polyfit(edges.frs(sel),midbac(sel),2);  %polynomial fit on absolute position
+    Lpars=polyfit(edges.frs2(sel),edges.left(sel)-midbac(sel),1); %linear fit on growth
+    Rpars=polyfit(edges.frs2(sel),edges.right(sel)-midbac(sel),1); %linear fit on growth (just the negative)
+    Mpars=polyfit(edges.frs2(sel),midbac(sel),2);  %polynomial fit on absolute position
     
     edges.midfit=Mpars(1)*edges.frs.^2+Mpars(2)*edges.frs+Mpars(3);
     edges.leftfit=Lpars(1)*edges.frs+Lpars(2)+edges.midfit;
     edges.rightfit=Rpars(1)*edges.frs+Rpars(2)+edges.midfit;
+    
+    edges.midfit2=Mpars(1)*edges.frs2.^2+Mpars(2)*edges.frs2+Mpars(3);
+    edges.leftfit2=Lpars(1)*edges.frs2+Lpars(2)+edges.midfit2;
+    edges.rightfit2=Rpars(1)*edges.frs2+Rpars(2)+edges.midfit2;
     
     %Parameters of edges
     edges.Lpars=Lpars;
@@ -565,7 +590,7 @@ end
     %Based on the fits on the 'good' points, evaluate this bacterial cycle
     if Lpars(1)<0, 
         edges.edgesok=0; end  %We reject shrinking bacteria
-    if max(edges.midfit)-min(edges.midfit)>50,  
+    if max(edges.midfit)-min(edges.midfit)>75,  
         edges.edgesok=0; end  %We reject bacteria wandering too much 
     if min(edges.leftfit-edges.rightfit)<2, 
         edges.edgesok=0; end  %We reject weird growth beahivior
@@ -583,11 +608,22 @@ end
     end
     
     if 0 %show the results; absolute pane
-    plot(edges.frs,edges.leftfit,'r-'); hold on;             %fit
-    plot(edges.frs,edges.rightfit,'r-');
-    pcolor(1-BW); colormap grey, shading flat; hold on
+    hold on
+    plot(edges.frs,edges.leftfit,'r-');  %fit
+    plot(edges.frs,edges.rightfit,'r-'); 
+    pcolor(1-BW); colormap grey, shading flat; hold off
     [~]=ginput(1);   
     end
     
+    if 0 %plot relative -- RdL
+        hold on
+        plot(edges.midfit2)
+        plot(edges.leftfit2)
+        plot(edges.rightfit2)
+        plot(edges.left)
+        plot(edges.right)
+        plot(edges.reppos)
+        hold off
+    end
     edges=edges;
     end

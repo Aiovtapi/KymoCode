@@ -10,7 +10,7 @@ actions.dosave=1;  %default=1 (new analysis) Use this when props need to be stor
 testNur=1
 %select the experiment database-----------------------------
 if nargin<1
-exp='B_DnaN_TUS_dif_21112014_DnaNSignal';
+exp='TEST';
 %exp='2a';
 %exp='CM_HFR1_JK'
 %exp='DnaN_20msExp_10minFramRate Series 1'

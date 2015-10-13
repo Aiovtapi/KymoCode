@@ -1,7 +1,7 @@
 function RepliCluster00_TrackandcleanQuick(exp)
 %ReplicationCluster
 %-------------------------------------------------------------------------
-if nargin<1, exp='B_DnaN_TUS_dif_21112014_DnaNSignal';end 
+if nargin<1, exp='001_DnaN_TUS_dif_30122014_TUSsignal';end 
 
 initval_ori=A001_Images_Set_Experiment(exp);
 chans=length(initval_ori.nms);
@@ -43,7 +43,7 @@ for i=1:le
     ti=ReplicationCluster(i).PosKyTracCom.frames;
     %plot(pos+1,ti, 'b-'); hold on
     plot(pos+0.5,ti+0.5, 'bo-');
-    title(strcat('Edges Analysis',WorkspaceOutName));    
+    title(strcat('Edges Analysis ',WorkspaceOutName));    
 end
  pause(5);
  

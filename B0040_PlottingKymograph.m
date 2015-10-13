@@ -9,7 +9,7 @@ initval=A001_Images_Set_Experiment(exp);
 
 %KymoNr = 1;
 
-SelectedKymoGraphName = strcat('Kymograph_FLExpB_DnaN_TUS_dif_21112014_DnaNSignalChan_x393')%,num2str(KymoNr));
+SelectedKymoGraphName = strcat('Kymograph_FLExp001_DnaN_TUS_dif_30122014_DnaNsignalChan_x245')%,num2str(KymoNr));
 
 
 Kymo=double((imread(strcat(initval.basepath,'Kymographs/',SelectedKymoGraphName,'.tif')))); %kymograph
@@ -31,7 +31,7 @@ set(gca,'YDir','reverse');
 
 
    set(gca, 'fontsize', 26, 'linewidth', 2, 'fontweight', 'bold','box','off');
-   title('Example fluorescence kymograph DnaN', 'fontsize', 18, 'fontweight', 'bold')
+   title('Fluorescence Kymograph dif site', 'fontsize', 18, 'fontweight', 'bold')
    ylabel('Time (min)', 'fontsize', 26, 'fontweight', 'bold')
    xlabel('Position (px)', 'fontsize', 26, 'fontweight', 'bold')
    %a = annotation('textbox','Position',[0.65 0.65 0.35 0.16], 'fontsize', 16, 'linewidth', 2, 'fontweight', 'bold','FitBoxToText','on','String', sprintf('N = %d',N_CombinedSeries) );

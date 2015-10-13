@@ -15,22 +15,27 @@ switch user
 %           initval.FiguresFolder='Figures/';
 %           initval.FLdatapath='Fluorescence/DnaX_YPet_Fluorescence_Aligned/';
     case 'Roy'
-        initval.basepath='/Users/rleeuw/Data/20141230_dnaN_dif_tus/dnaN_dif_tus_40msExpTime_5minAcqTimeYFP_30msExpCFP_002_C1/';
+        initval.basepath='/Users/rleeuw/Work/Data/141230_dnaN_dif_tus/dnaN_dif_tus/';
         initval.BFdatapath='Brightfield/';
         initval.FiguresFolder='Figures/';
         initval.FLdatapath='Fluorescence/RFP/';
+    case 'RoyPC'
+%         initval.basepath='D:\rleeuw\Data\141230_dnaN_dif_tus\dnaN_dif_tus_40msExpTime_5minAcqTimeYFP_30msExpCFP_002_C1\';
+%         initval.BFdatapath='Brightfield\';
+%         initval.FiguresFolder='Figures\';
+%         initval.FLdatapath='Fluorescence\RFP\';
 end
 
-initval.BFfiletemplate='BF.tif';
+initval.BFfiletemplate='BF1.tif';
 initval.FLfiletemplate='RFP_R_I_Corrected.tif';
 initval.maxfile=421;
 
 %used for kymograph processing-------------------------
 initval.channeldistance=32.0; %in pixels
-initval.channelno=2; %number of channels
+initval.channelno=1; %number of channels
 initval.perpadjust=0; %degrees
 initval.kymoangle=47;  %CCW
-initval.kymolength=145;  %in pixels
+initval.kymolength=150;  %in pixels
 initval.kymohwidth=10;  %in pixels
 initval.correctdrift=1;
 initval.entranceoffset=0;  %12
@@ -48,9 +53,9 @@ initval.skip2Danalysis=1;
 
 %Used for database collection----------------
 %initval.nms={'ExpCM_DnaXDnaN_DualColour_Col002_DnaXSignalChan_x209' ;'ExpCM_DnaXDnaN_DualColour_Col002_DnaXSignalChan_x231'; 'ExpCM_DnaXDnaN_DualColour_Col002_DnaXSignalChan_x273'; 'ExpCM_DnaXDnaN_DualColour_Col002_DnaXSignalChan_x295'; 'ExpCM_DnaXDnaN_DualColour_Col002_DnaXSignalChan_x317'; 'ExpCM_DnaXDnaN_DualColour_Col002_DnaXSignalChan_x339'} ; 
-%initval.nms={'ExpCM_DnaN-Dif-Gamma-ve-Position1_Series1Chan_x126' ;'ExpCM_DnaN-Dif-Gamma-ve-Position1_Series1Chan_x146'; 'ExpCM_DnaN-Dif-Gamma-ve-Position1_Series1Chan_x173'; 'ExpCM_DnaN-Dif-Gamma-ve-Position1_Series1Chan_x219'; 'ExpCM_DnaN-Dif-Gamma-ve-Position1_Series1Chan_x245'; 'ExpCM_DnaN-Dif-Gamma-ve-Position1_Series1Chan_x291'; 'ExpCM_DnaN-Dif-Gamma-ve-Position1_Series1Chan_x314'; 'ExpCM_DnaN-Dif-Gamma-ve-Position1_Series1Chan_x382'; 'ExpCM_DnaN-Dif-Gamma-ve-Position1_Series1Chan_x405'} ; 
+%initval.nms={'ExpCM_Dn0aN-Dif-Gamma-ve-Position1_Series1Chan_x126' ;'ExpCM_DnaN-Dif-Gamma-ve-Position1_Series1Chan_x146'; 'ExpCM_DnaN-Dif-Gamma-ve-Position1_Series1Chan_x173'; 'ExpCM_DnaN-Dif-Gamma-ve-Position1_Series1Chan_x219'; 'ExpCM_DnaN-Dif-Gamma-ve-Position1_Series1Chan_x245'; 'ExpCM_DnaN-Dif-Gamma-ve-Position1_Series1Chan_x291'; 'ExpCM_DnaN-Dif-Gamma-ve-Position1_Series1Chan_x314'; 'ExpCM_DnaN-Dif-Gamma-ve-Position1_Series1Chan_x382'; 'ExpCM_DnaN-Dif-Gamma-ve-Position1_Series1Chan_x405'} ; 
 
-initval.nms={'Exp001_DnaN_TUS_dif_30122014_DnaNsignalChan_x221'};
+initval.nms={'Exp001_DnaN_TUS_dif_30122014_DnaNsignalChan_x248'};
 
 initval.outname='DnaN_TUS_dif';
 initval.outname_usr='DnaN_TUS_dif_UserInputs';
@@ -59,9 +64,9 @@ initval.extension=7;
 initval.BW_Threshold=1;
 
 %used for clicking-------------------------------------
-%initval.zoom=200;
+initval.zoom=100;
 initval.estimateddoublingtime=48; %in frames   
-initval.zoom=1.3*initval.estimateddoublingtime;
+%initval.zoom=1.3*initval.estimateddoublingtime;
 
 
 

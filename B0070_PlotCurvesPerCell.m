@@ -3,7 +3,7 @@
 %JacobKers 2012----------------------------------
 close all
 %exp='TEST'; %See 'Images_Set_Experiment(exp)';
-exp='B_DnaN_TUS_dif_21112014_DnaNSignal';
+exp='001_DnaN_TUS_dif_30122014_DnaNsignal';
 minsperframe=2.5;
 
 initval=A001_Images_Set_Experiment(exp);
@@ -28,7 +28,7 @@ for bc=1:bacno  %for each bacterium
  ok=S(ch).channels.AutoDivision(bc).accepted  %manual accept/reject
 if ok
     %Get fluorescent values-------------------------------------
-    frames=minsperframe*S(ch).channels.ReplicationCluster(bc).PosKyTracCom.frames_ext;  %0) Select the time axis (in frames)
+    frames=minsperframe*S(ch).channels.ReplicationCluster(bc).PosKyTracCom.frames;  %0) Select the time axis (in frames)
     switch 1
         case 1
         FL_A=S(ch).channels.ReplicationCluster(bc).Pos2DPreTrac.contentallspots'; %1) Select total count

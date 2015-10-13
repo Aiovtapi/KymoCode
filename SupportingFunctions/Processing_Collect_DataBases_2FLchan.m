@@ -22,7 +22,7 @@ for i=1:chans
 infi=strcat(initval.basepath,initval.nms{i});  %main channel (DnaN)
 buf=load(infi);
 
-infi2=strcat(initval.basepath,initval_chan2.nms{i});  %secondary channel (DnaX)
+infi2=strcat(initval_chan2.basepath,initval_chan2.nms{i});  %secondary channel (DnaX)
 buf2=load(infi2);
 
 initval=A001_Images_Set_Experiment(exp);  %just to be sure

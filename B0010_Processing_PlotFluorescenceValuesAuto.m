@@ -5,7 +5,7 @@ close all
 clear all
 %select the experiment database-----------------------------
 
-exp='001_DnaN_TUS_dif_30122014_DnaNsignal';
+exp='001_DnaN_TUS_dif_30122014_difsignal';
 
 
 actions.savedata=1;             %default=1 (new analysis)

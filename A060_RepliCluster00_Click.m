@@ -4,10 +4,11 @@ function dum=RepliCluster00_Click%Analyze_ReplicationCluster
 tic
 close all;
 
+% exp='001_DnaN_TUS_dif_30122014_difsignal';
 exp='001_DnaN_TUS_dif_30122014_DnaNsignal';
 
-actions.init=1;        %default=1 (new analysis)
-actions.clickcycles=1; %default=1 (new analysis) else load
+actions.init=0;        %default=1 (new analysis)
+actions.clickcycles=0; %default=1 (new analysis) else load
 actions.divisionoverlay=0;
 actions.eliminate_growth=1;
 

@@ -70,7 +70,8 @@ frs= ThisBac.edges.frs;
 if ok2&ok3&ok4
 divtime=frs(end); 
 birthtime=frs(1);     
-rht= ThisBac.edges.leftfit+1;
+
+rht= ThisBac.edges.leftfit+1;  % 
 lft= ThisBac.edges.rightfit-1;
 % rht= ThisBac.edges.leftfit;
 % lft= ThisBac.edges.rightfit;

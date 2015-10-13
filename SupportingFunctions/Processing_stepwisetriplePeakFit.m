@@ -238,7 +238,7 @@ for i=1:lf % for all initial peak positions
     indexaxis=[lo:1:hi]';
     subsection=data(indexaxis);
     %2) perform a parabolic fit and optionally plot results----------------
-    subs2=(subsection-mean(subsection))/(max(subsection)-min(subsection)); %scale
+    subs2=(subsection-nanmean(subsection))/range(subsection); %scale
     ax2=indexaxis-mean(indexaxis);
     prms=polyfit(ax2,subs2,2); %fit
     prms(1)=prms(1)*range(subsection);

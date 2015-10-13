@@ -3,8 +3,10 @@
 %JacobKers 2013----------------------------------------------------
 
 tic
+% exp='001_DnaN_TUS_dif_30122014_DnaNsignal';
+% exp2='001_DnaN_TUS_dif_30122014_TUSsignal';
+% exp3='001_DnaN_TUS_dif_30122014_difsigqnal';
 exp='001_DnaN_TUS_dif_30122014_DnaNsignal';
-%secondexp='002_DnaN_TUS_dif_21112014_TUSsignal';
 
 %%-------------------------------------
 %First, perform Center-off mass tracking on clusters starting at time
@@ -19,7 +21,7 @@ disp('collecting...');
 if 1, Processing_Collect_DataBases(exp); end
 
 %%------------------------------------------------------------
-%In this step, the moments of birth and division are deteced (from the brightfield data)  associated 
+%In this step, the moments of birth and division are detected (from the brightfield data)  associated 
 %with a replication cycle. In between these, the edges are detected time-point wise; 
 %these points are cleaned from erroneous detections and used for
 %(time-position) fits on the positions of this bacterium's edges 
@@ -40,24 +42,21 @@ disp('finding init and ter......');
 if 1, Processing_InitTer_analysisAuto(exp); end
 
 %--------------------------------------------------------------------------
-%Now, a detailed (and time consuming) analysis on the individual focci, based on first 1D-double
+%Now, a detailed (and time consuming) analysis on the individual foci, based on first 1D-double
 %Gaussian fitting, then a full double 2D Gaussian fit.
 
 if 1, 
     disp('adding spot fluorescence info');
-    Processing00_TwoDSpot_ImageAnalyzerAuto(exp); 
+    Processing00_TwoDSpot_ImageAnalyzerAuto(exp,1); 
 end
 
-if 1, 
-    disp('adding spot fluorescence info');
- %  Processing00_TwoDSpot_ImageAnalyzerAuto_SecondLabel(exp,secondexp); 
-end
 toc
+
 %--------------------------------------------------------------------
 %Next, a manual evaluation of bacterium cycles, based on fluorescence
 %position-time graphs. This part includes automatic cleaning steps (which
-%is preferred) before the user applies final judgment.
-if 1, A111_Processing_ManualAcceptRejectBacteriaAutoDiv(exp); end
+%is preferred) before the user applies final judgement.
+%if 1, A111_Processing_ManualAcceptRejectBacteriaAutoDiv(exp); end
 
 
 

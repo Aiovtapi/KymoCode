@@ -123,7 +123,7 @@ pause(0.01);
 end
 
 hold on;
-%%%%%%%%%%%%%%%%%%%%%%%5
+%%%%%%%%%%%%%%%%%%%%%%%
 
 
 if actions.eliminate_growth  %coorect for the image deformation
@@ -153,7 +153,7 @@ RepClicks(clusterno).PosClick.lastframe=round(yend);
 RepClicks(clusterno).PosClick.lastpos=round(xend);
 
 %4) make a first approximation of 'tracked' positions----------
-life=yend-ystart+1;
+life=(yend-ystart)*2;%life=yend-ystart+1;
 bf=[ystart yend]; ystart=min(bf); yend=max(bf); %just to be sure
 poss=linspace(xstart,xend,life);
 frs=[ystart:1:yend];

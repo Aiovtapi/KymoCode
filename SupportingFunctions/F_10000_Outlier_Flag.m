@@ -30,8 +30,8 @@ while ratio<sigchange     %if not too much changes anymore; the higher this numb
     selc=find(flag==1);
     data(flag==1); 
     ls=length(selc);
-    av=median(data(selc));       %since we expect skewed distribution, we use the median iso the mea     
-    sigma=std(data(selc));
+    av=nanmedian(data(selc));       %since we expect skewed distribution, we use the median iso the mea     
+    sigma=nanstd(data(selc));
     ratio=sigma/sigma_old;
     switch how
         case 'positive',  flag=(data-av)<tolerance*sigma;     %adjust outlier flags
@@ -50,7 +50,7 @@ while ratio<sigchange     %if not too much changes anymore; the higher this numb
     %---------------------------- 
 end
 cleandata=data(selc); 
-hx=(min(cleandata):((max(cleandata)-min(cleandata)))/binz:max(cleandata));   %make an axis
+hx=(min(cleandata):(range(cleandata))/binz:max(cleandata));   %make an axis
 sthst=hist(cleandata,hx);
 
 

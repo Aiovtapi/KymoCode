@@ -3,17 +3,15 @@
 %JacobKers 2013----------------------------------------------------
 
 tic
-exp='A_CM_DnaXDnaN_DualColour_Col002_DnaNSignal';
-expFLchan2='B_CM_DnaXDnaN_DualColour_Col002_DnaXSignal';
+exp='001_DnaN_TUS_dif_30122014_DnaNsignal';
+expFLchan2='001_DnaN_TUS_dif_30122014_difsignal';
 
-exp='TEST';
-expFLchan2='TEST';
 initval=A001_Images_Set_Experiment(exp);
 %%-------------------------------------
 %First, perform Center-off mass tracking on clusters starting at time
 %points indicated by users 
 
-if 0, 
+if 1, 
     disp('cleaning, quick tracking...');
     RepliCluster00_TrackandcleanQuick(exp); 
 end
@@ -22,7 +20,7 @@ end
 %Next, Collect all channel data in one big database (just an administrative
 %step)
 
-if 0, 
+if 1, 
     disp('collecting...');
     Processing_Collect_DataBases_2FLchan(exp,expFLchan2); 
 end
@@ -33,7 +31,7 @@ end
 %these points are cleaned from erroneous detections and used for
 %(time-position) fits on the positions of this bacterium's edges 
 
-if 0, 
+if 1, 
     disp('find division times...');
     Processing_Find_Division_Times(exp); 
 end %NB:still need to put off ginput for BW traces
@@ -42,7 +40,7 @@ end %NB:still need to put off ginput for BW traces
 %Next, Get various fluorescence props like total fluorescence count, median excess
 %count (a robust spots count estimate )
 
-if 0, 
+if 1, 
     disp('adding general fluorescence info');
     Processing_AnalyzeDivReptimingAuto(exp); 
 end  
@@ -52,7 +50,7 @@ end
 %termination (as opposed to the manual clicks) based on step fittng the
 %spot focii signal
 
-if 0, 
+if 1, 
     disp('finding init and ter......');
     Processing_InitTer_analysisAuto(exp); 
 end
@@ -64,16 +62,16 @@ end
 %Next, a manual evaluation of bacterium cycles, based on fluorescence
 %position-time graphs. This part includes automatic cleaning steps (which
 %is preferred) before the user applies final judgment
-if 0, 
+if 1, 
     disp('waiting for your verdicts....');
     A111_Processing_ManualAcceptRejectBacteriaAutoDiv(exp); 
 end
 
 if 1, 
     disp('adding spot fluorescence info; pass 1.....');
-    Processing00_TwoDSpot_ImageAnalyzerAuto_FL2chan(exp,1); %DnaX channel
+    Processing00_TwoDSpot_ImageAnalyzerAuto_FL2chan(exp,1); %DnaN channel
     disp('adding spot fluorescence info; pass 2.....');
-    Processing00_TwoDSpot_ImageAnalyzerAuto_FL2chan(exp,2); %DnaN channel
+    Processing00_TwoDSpot_ImageAnalyzerAuto_FL2chan(exp,2); %dif channel
 end
 
 

@@ -10,6 +10,7 @@ function dum=A030_Images_FindDriftVector_ROIupdate
 
 close all; 
 %dipstart;
+% expno='001_DnaN_TUS_dif_30122014?_DnaNsignal';
 expno='001_DnaN_TUS_dif_30122014_DnaNsignal';
 
 initval=A001_Images_Set_Experiment(expno); %define your paths and files
@@ -25,10 +26,10 @@ load(ImagesWorkspaceName,'aa');
 imx=max(max(aa(:,:,1))); imn=min(min(aa(:,:,1)));
 dipshow(aa(:,:,1),[imn imx]);   %show first im
 [rclick,cclick]=ginput(1);     %pick a ROI
-lor=rclick-initval.hROI;
-hir=rclick+initval.hROI;
-loc=cclick-initval.hROI;
-hic=cclick+initval.hROI;
+lor=floor(rclick-initval.hROI);
+hir=floor(rclick+initval.hROI);
+loc=floor(cclick-initval.hROI);
+hic=floor(cclick+initval.hROI);
 bb=double(dip_array((aa(lor:hir,loc:hic,:))));
 kernel=squeeze(bb(:,:,1));
 kernel=abs(kernel-mean(mean(kernel)));
@@ -60,14 +61,14 @@ x0=cclick;
 y0=rclick;
 
 for i=1:ls
-    ls-i   
+    ls-i;  
     if initval.updateROI
         newx0=x0;
         newy0=y0;
-        lox=newx0-initval.hROI;
-        hix=newx0+initval.hROI;
-        loy=newy0-initval.hROI;
-        hiy=newy0+initval.hROI;;
+        lox=floor(newx0-initval.hROI);
+        hix=floor(newx0+initval.hROI);
+        loy=floor(newy0-initval.hROI);
+        hiy=floor(newy0+initval.hROI);
         im=double(squeeze(dip_array((aa(loy:hiy,lox:hix,i-1)))));
         [r0,c0]=Track_Kernel(im,fkernel,i,strcat(initval.basepath,initval.FiguresFolder,'DriftVector_ROI_FFT/'),strcat(initval.basepath,initval.FiguresFolder,'DriftVector_CR/'));
         x0=newx0+c0-initval.hROI+1;

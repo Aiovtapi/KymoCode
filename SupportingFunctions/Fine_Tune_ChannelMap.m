@@ -16,7 +16,6 @@
  
  %2)find cross-channel adjustment using Center-of-mass on x-section
  prf2=mean((channelroi-mean(mean((channelroi))))).^2;
- 
  [~,ycor,~]=Get_1DCOM(prf2); 
 
  
