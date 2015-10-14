@@ -32,7 +32,7 @@ M(1).channels.initval
     %              outname: label used database storage
     %          outname_usr: label used for manual input database (stored separately)
     %            extension: number of frames before initiation and after termination
-    %     WorkspaceOutName: name under which data for one channel is stored, e.g. 'Exp2Chan_x103.mat' % test
+    %     WorkspaceOutName: name under which data for one channel is stored, e.g. 'Exp2Chan_x103.mat'
   
 
  M(1).channels.presets %(used only inside code, stored for repeats)
