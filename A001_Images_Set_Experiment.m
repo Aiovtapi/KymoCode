@@ -32,24 +32,24 @@ addpath(strcat(projectpath,versionpath));
 addpath(strcat(projectpath,versionpath,toolspath));
 
 initval.plotintermediateresults=0;
-%experiment-specific settings-------------------------------------
+% experiment-specific settings-------------------------------------
 switch exp    
    case   '001_DnaN_TUS_dif_30122014_DnaNsignal',            initval=Exp001_DnaN_TUS_dif_30122014_DnaNsignal(initval, user);
    case   '001_DnaN_TUS_dif_30122014_TUSsignal',             initval=Exp001_DnaN_TUS_dif_30122014_TUSsignal(initval, user);
    case   '001_DnaN_TUS_dif_30122014_difsignal',             initval=Exp001_DnaN_TUS_dif_30122014_difsignal(initval, user);
-   case   '002_oriZ_dif_2304_DnaNsignal',             initval=Exp002_oriZ_dif_23042015_DnaNsignal(initval, user);
-   case   '002_oriZ_dif_2304_R2signal',             initval=Exp002_oriZ_dif_23042015_R2signal(initval, user);
+   case   '002_oriZ_dif_2304_DnaNsignal',                    initval=Exp002_oriZ_dif_23042015_DnaNsignal(initval, user);
+   case   '002_oriZ_dif_2304_R2signal',                      initval=Exp002_oriZ_dif_23042015_R2signal(initval, user);
 
-   case   '005_oriZ_dif_110515_R2signal',             initval=Exp005_oriZ_dif_11052015_R2signal(initval, user);
-   case   '005_oriZ_dif_110515_DnaNsignal',             initval=Exp005_oriZ_dif_11052015_DnaNsignal(initval, user);
+   case   '005_oriZ_dif_110515_R2signal',                    initval=Exp005_oriZ_dif_11052015_R2signal(initval, user);
+   case   '005_oriZ_dif_110515_DnaNsignal',                  initval=Exp005_oriZ_dif_11052015_DnaNsignal(initval, user);
        
-   case   '006_oriZ_dif_110515_R2signal',             initval=Exp006_oriZ_dif_11052015_R2signal(initval, user);
-   case   '006_oriZ_dif_110515_DnaNsignal',             initval=Exp006_oriZ_dif_11052015_DnaNsignal(initval, user);
+   case   '006_oriZ_dif_110515_R2signal',                    initval=Exp006_oriZ_dif_11052015_R2signal(initval, user);
+   case   '006_oriZ_dif_110515_DnaNsignal',                  initval=Exp006_oriZ_dif_11052015_DnaNsignal(initval, user);
        
-   case   '105_oriZ_dTus_230615_R2signal',             initval=Exp105_oriZ_dTus_23062015_R2signal(initval, user);
-   case   '105_oriZ_dTus_230615_DnaNsignal',             initval=Exp105_oriZ_dTus_23062015_DnaNsignal(initval, user); 
+   case   '105_oriZ_dTus_230615_R2signal',                   initval=Exp105_oriZ_dTus_23062015_R2signal(initval, user);
+   case   '105_oriZ_dTus_230615_DnaNsignal',                 initval=Exp105_oriZ_dTus_23062015_DnaNsignal(initval, user); 
      
-   case   '001_DnaN_TUS_dif_30122014_DnaNsignal_P',            initval=Exp001_DnaN_TUS_dif_30122014_DnaNsignal_P(initval, user);
+   case   '001_DnaN_TUS_dif_30122014_DnaNsignal_P',          initval=Exp001_DnaN_TUS_dif_30122014_DnaNsignal_P(initval, user);
 
 
 end

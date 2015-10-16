@@ -12,13 +12,11 @@
 %Jacob Kerssemakers 2011
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %Below, you can define your own paths and files-------------------------
-%dipstart;
 
-% exp='001_DnaN_TUS_dif_30122014_difsignal';
-exp='001_DnaN_TUS_dif_30122014_DnaNsignal';
-%expno='TEST';
+exp='001_DnaN_TUS_dif_30122014_DnaNsignal_P';
 
-actions.getdatabase=1;          % default=1 (new analysis)
+
+actions.getdatabase=1;          % default=1 
 actions.reloadclicks=0;         %default=0 (new analysis)
 actions.firsttime=1;
 initval=A001_Images_Set_Experiment(exp);

@@ -36,7 +36,7 @@ initval.maxfile=385;
 
 %used for kymograph processing-------------------------
 initval.channeldistance=31.0; %in pixels
-initval.channelno=4; %number of channels
+initval.channelno=1; %number of channels
 initval.perpadjust=0; %degrees
 initval.kymoangle=46;  %CCW
 initval.kymolength=150;  %in pixels
