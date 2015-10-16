@@ -7,7 +7,7 @@ function A000_IlluminationCorrection
 %warning on;
 
 %%--Import and normalize beam profile image
-Beamframe = double((imread('BeamShape_515nm.tiff')));
+Beamframe = double((imread('BeamShape515.tif')));
 
 %Beamframe = double((imread(initval.BeamProfile))); 
 
@@ -18,8 +18,8 @@ Beamframe = double((imread('BeamShape_515nm.tiff')));
 % fNameToWriteIllumCorrected = 'D:\jkerssemakers\My Documents\BN_ND_Data_Recent Master\BactRepl_Charl\20140127_DnaX_YPet_AND_mCherry_DnaN\Fluorescence\mCherry_Fluorescence_RLBalled_IllumCorrected\mCherry_Fluorescence_RLBalled_IllumCorrected.tif';
 % fNameRBolled = 'D:\jkerssemakers\My Documents\BN_ND_Data_Recent Master\BactRepl_Charl\20140127_DnaX_YPet_AND_mCherry_DnaN\Fluorescence\mCherry_DnaN_Rballed.tif';
 
-fNameToWriteIllumCorrected = '/Users/rleeuw/Work/Data/20150610_OriZdTus/Exp005/FL/CFP/CFP_RB_IC.tif';
-fNameRBolled = '/Users/rleeuw/Work/Data/20150610_OriZdTus/Exp005/FL/CFP/CFP_RB.tif';
+fNameToWriteIllumCorrected = 'D:\peterbrazda\DATA\141230_dnaN_dif_Tus\Exp3\Fluorescence\RFP\RFP2.tif';
+fNameRBolled = 'D:\peterbrazda\DATA\141230_dnaN_dif_Tus\Exp3\Fluorescence\RFP\RFP_Roll_Corrected.tif';
 
 % FolderExistence = exist(strcat(initval.BasePath,initval.FL_Path_IllumCorrected));
 % if FolderExistence == 0

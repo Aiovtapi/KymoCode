@@ -25,7 +25,7 @@ switch user
           toolspath='SupportingFunctions';
       case 'Peter' ,
           projectpath='D:\peterbrazda\ImageAnalysis\';
-          versionpath='201510_TUSdifDnaN_Montage\';
+          versionpath='KymoCode\';
           toolspath='SupportingFunctions';
 end
 addpath(strcat(projectpath,versionpath));

@@ -6,7 +6,7 @@ tic
 % exp='001_DnaN_TUS_dif_30122014_DnaNsignal';
 % exp2='001_DnaN_TUS_dif_30122014_TUSsignal';
 % exp3='001_DnaN_TUS_dif_30122014_difsigqnal';
-exp='001_DnaN_TUS_dif_30122014_DnaNsignal';
+exp='001_DnaN_TUS_dif_30122014_DnaNsignal_P';
 
 %%-------------------------------------
 %First, perform Center-off mass tracking on clusters starting at time

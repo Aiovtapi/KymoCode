@@ -1,6 +1,5 @@
 function initval=Exp001_DnaN_TUS_dif_30122014_DnaNsignal_P(initval, user) 
 
-
 switch user
       case 'Jacob', 
 %           initval.basepath='D:\jkerssemakers\My Documents\BN_ND_Data_Recent Master\BactRepl_Charl\20132511_NewExps\GammaMinus\Series1\';
