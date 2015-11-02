@@ -1,4 +1,4 @@
-function [x0,Case,ydatacrpdR1,Ydata,Size,Yg] = Spotter(ydatacrpd,SA,Sx,Sy,Px,Py,Bs,lob,upb)
+function [x0,Case,ydatacrpdR1,Ydata,Size,Yg,Xg] = Spotter(ydatacrpd,SA,Sx,Sy,Px,Py,Bs,lob,upb)
 % Spotter: main spot detection + spot cut-out function
 
 Bss=2*Bs+1;

@@ -27,10 +27,11 @@ initval=A001_Images_Set_Experiment(expno); %define your paths and files
 
 %% Inputs 
 
-for Cell=1:3
+for B=1:3
 Bac=num2str(B);
+BacNum=B; 
 
-Mainfolder=strcat(initval.basepath,'StacksLong/Tus/');
+Mainfolder=strcat(initval.basepath,'StacksLong/dif/');
 Stackpth=strcat(Mainfolder,Bac);
 d1{1}=readtimeseries(strcat(Stackpth,'/',Bac,'Im'),'tif'); %read zstack
 data=dip_array(d1{1}); %turn into uint16 array
@@ -183,7 +184,7 @@ for i=1:Zsize
     % If sigmaX == 2 or sigmaX == 1
     
     %For BorderCase == 0
-    if (round(x{j}(i,3))==2 || round(x{j}(i,3))==1) && BorderCase ==0;
+    if round(x{j}(i,3))==2 || round(x{j}(i,3))==1 && BorderCase ==0;
     
         for n=[-1 0 1] 
             if round(x{j}(i,5))==2 || round(x{j}(i,5))==1
@@ -311,5 +312,5 @@ toc
 % end
 
 %% Save results
- save(strcat(Mainfolder,'DataMULTI/',num2str(Cell)),'x','XNorm','Nspots');
+ save(strcat(Mainfolder,'DataMULTI/',num2str(BacNum)),'x','XNorm','Nspots');
 end
