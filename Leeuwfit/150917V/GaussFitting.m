@@ -28,9 +28,9 @@ initval=A001_Images_Set_Experiment(expno); %define your paths and files
 %% Inputs 
 
 for Cell=1:3
-Bac=num2str(B);
+Bac=num2str(Cell);
 
-Mainfolder=strcat(initval.basepath,'StacksLong/Tus/');
+Mainfolder=strcat(initval.basepath,'StacksLong/dif/');
 Stackpth=strcat(Mainfolder,Bac);
 d1{1}=readtimeseries(strcat(Stackpth,'/',Bac,'Im'),'tif'); %read zstack
 data=dip_array(d1{1}); %turn into uint16 array
@@ -136,16 +136,42 @@ for i=1:Zsize
 
     XNorm{j}(i,2)=x{j}(i,2)/Size{i,j}(2);
     
-    XNorm{j}(i,4)=(1-x{j}(i,4)-lob)/chanthickness; 
+    XNorm{j}(i,4)=(x{j}(i,4)-lob)/chanthickness; 
     % 1- in above, to make sure that 0.9 is upper! part of channel in image
     
     end 
 end
 
-
-%% Integrated Intensity Calculation
+%% Integrated Intensity V2.0
 II=cell(5,5,Zsize);
 FCII=cell(1,Zsize);
+
+for i=1:Zsize
+    for j=1:Nspots
+        
+        [xx_ori,yy_ori]=meshgrid(-3:3,-3:3);
+        [c,r]=size(ydatacrpdR1{i,j});
+        [XX,YY]=meshgrid(1:c,1:r);
+        
+        if x{j}(i,2)>3 && x{j}(i,2)<Size{i,j}(2)-3
+        xx0=x{j}(i,2)+xx_ori;
+        elseif x{j}(i,2)>Size{i,j}(2)-3 && Size{i,j}(2)>1
+        xx0=Size{i,j}(2)-3+xx_ori;
+        else
+        xx0=xx_ori+3;
+        end
+        
+        yy0=x{j}(i,4)+yy_ori;
+        
+        ROI=interp2(ydatacrpdR1{i,j},xx0,yy0);
+        
+        FCII{i}=ydatacrpd{i}(lob:upb,1:Size{i,j}(2));
+        x{j}(i,7)=sum(sum(FCII{i}));
+    end
+end
+
+
+%% Integrated Intensity Calculation
 
 
 for i=1:Zsize
@@ -279,7 +305,6 @@ for i=1:Zsize
     end
 end
 
-toc
 
 
 %% plot
@@ -313,3 +338,4 @@ toc
 %% Save results
  save(strcat(Mainfolder,'DataMULTI/',num2str(Cell)),'x','XNorm','Nspots');
 end
+toc
