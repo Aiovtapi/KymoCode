@@ -19,6 +19,8 @@ T=cell(Ncells+1,1);
 d=cell(Ncells+1,1);
 S=cell(Ncells,1);
 Sd=cell(Ncells,1);
+framesd=zeros(Ncells,1);
+framesT=zeros(Ncells,1);
 
 BacLife=zeros(Ncells,1); BacLifed=zeros(Ncells,1);
 MainPathTus=strcat(initval.basepath,'StacksLong/Tus/DataMULTI/');
@@ -29,7 +31,9 @@ MainPathdif=strcat(initval.basepath,'StacksLong/dif/DataMULTI/');
 tic
 for i=1:Ncells;
     T{i}=load(strcat(MainPathTus,num2str(i),'.mat'));
+    framesT(i)=length(T{i}.x{1}(:,1));
     d{i}=load(strcat(MainPathdif,num2str(i),'.mat'));
+    framesd(i)=length(d{i}.x{1}(:,1));
 end
 
 Nspots=T{i}.Nspots;
@@ -75,7 +79,6 @@ d{n}.Y{j}=d{1}.XNorm{j}(:,4);
 
 T{n}.IntI{j}=T{1}.x{j}(:,6);
 d{n}.IntI{j}=d{1}.x{j}(:,6);
-
    end
 end
 
@@ -152,10 +155,54 @@ for i=1:Ncells
     Sd{i}.x{j}(:,7)=imresize(d{i}.x{j}(:,7),[MeanBacLifed 1],'bilinear');
     Sd{i}.x{j}(:,2)=imresize(d{i}.XNorm{j}(:,2),[MeanBacLifed 1],'bilinear');
     Sd{i}.x{j}(:,4)=imresize(d{i}.XNorm{j}(:,4),[MeanBacLifed 1],'bilinear');
+    
+    radiusd{i}.x{j}=sqrt(Sd{i}.x{j}(:,2).^2+Sd{i}.x{j}(:,4).^2);
     end
 end
 
-% Construct K for taking means of elements at same time point
+%% Spot tracking algorithms
+
+% 0. Detect particles. Done
+
+% 1. Link particles between consecutive frames. (Using Cost Matrix Linking)
+
+%Cutoffs:
+
+% Should be estimated as 1.05 x maximal cost of all previous links.
+
+bCost=ones(Nspots,1)*0.1; % cost for allowing particles in frame t+1 to get linked by nothing in frame t.
+dCost=ones(Nspots,1)*0.2; %cost for allowing particles in frame t to link to nothing in frame t+1.
+
+bMatrix=diag(bCost);
+dMatrix=diag(dCost);
+
+
+for i=1:Ncells
+    for t=1:MeanBacLifed-1
+        for j=1:Nspots
+            for k=1:Nspots
+                % Cost for linking particle i in fame t to particle j in
+                % frame t+1.
+                Clinkd{i,t}(j,k)=(radiusd{i}.x{j}(t)-radiusd{i}.x{k}(t+1)).^2;
+                AuxiliaryBlockd{i,t}(k,j)=Clinkd{i,t}(j,k);
+                Clinkd{i,t}(j+Nspots,k)=bMatrix(j,k);
+                Clinkd{i,t}(j,k+Nspots)=dMatrix(j,k);
+                Clinkd{i,t}(j+Nspots,k+Nspots)=Clinkd{i,t}(k,j);
+                % t is the frame number
+                % i is the cell number
+                % j is the spot number
+            end
+        end
+    end
+end
+
+
+% 2. close gaps and capture merging and splitting events. (Using Cost
+% Matrix Gap Closing, merging, splitting.)
+
+
+
+%% Construct K for taking means of elements at same time point
 
 for i=1:Ncells
     for j=1:Nspots
@@ -175,80 +222,44 @@ for n=1:MeanBacLifed
         Kdi{j}(:,i)=Sd{i}.x{j}(:,1);
         KdiFC{j}(:,i)=Sd{i}.x{j}(:,7);
         Kdx{j}(:,i)=Sd{i}.x{j}(:,2);
-        Kdy{j}(:,i)=Sd{i}.x(:,4);
+        Kdy{j}(:,i)=Sd{i}.x{j}(:,4);
         
     end
 end
 
-M=zeros(MeanBacLifeT,6);
-Md=zeros(MeanBacLifeT,6);
-
+M=cell(Nspots,1); Mratio=zeros(Nspots,1); Mratiostd=zeros(Nspots,1);
+Md=cell(Nspots,1); Mdratio=zeros(Nspots,1); Mdratiostd=zeros(Nspots,1);
 
 for j=1:Nspots
         
-        M{j}(:,1)=mean(Ki{j},2);
-        M{j}(:,2)=mean(Kx{j},2);
-        M{j}(:,3)=std(Kx{j},2);
-        M{j}(:,4)=mean(Ky{j},2);
-        M{j}(:,5)=std(Ky{j},2);
-        M{j}(n,6)=std(Ki{j},2);
-        M{j}(n,7)=mean(KiFC(n,:));
-        M{j}(n,8)=std(KiFC(n,:));
+        M{j}(:,1)=mean(Ki{j},2); % mean integrated intensity
+        M{j}(:,2)=mean(Kx{j},2); % mean x position
+        M{j}(:,3)=std(Kx{j},1,2); % std x position
+        M{j}(:,4)=mean(Ky{j},2); % mean y position
+        M{j}(:,5)=std(Ky{j},1,2); % std y position
+        M{j}(:,6)=std(Ki{j},1,2); % std intensities
+        M{j}(:,7)=mean(KiFC{j},2); % mean full cell integrated intensity
+        M{j}(:,8)=std(KiFC{j},1,2); % std full cell integrated intensity
         
+        Md{j}(:,1)=mean(Kdi{j},2);
+        Md{j}(:,2)=mean(Kdx{j},2);
+        Md{j}(:,3)=std(Kdx{j},1,2);
+        Md{j}(:,4)=mean(Kdy{j},2);
+        Md{j}(:,5)=std(Kdy{j},1,2);
+        Md{j}(:,6)=std(Kdi{j},1,2);
+        Md{j}(:,7)=mean(KdiFC{j},2);
+        Md{j}(:,8)=std(KdiFC{j},1,2);
+
 end
 
-for n=1:MeanBacLifed    
-    Md(n,1)=mean(Kdi(n,:));
-    MdR1(n,1)=mean(KdiR1(n,:));
-    MdR2(n,1)=mean(KdiR2(n,:));
-    MdR3(n,1)=mean(KdiR3(n,:));
-    
-    Md(n,2)=mean(Kdx(n,:));
-    MdR1(n,2)=mean(KdxR1(n,:));
-    MdR2(n,2)=mean(KdxR2(n,:));
-    MdR3(n,2)=mean(KdxR3(n,:));
-    
-    Md(n,3)=std(Kdx(n,:));
-    MdR1(n,3)=std(KdxR1(n,:));
-    MdR2(n,3)=std(KdxR2(n,:));
-    MdR3(n,3)=std(KdxR3(n,:));
-    
-    Md(n,4)=mean(Kdy(n,:));
-    MdR1(n,4)=mean(KdyR1(n,:));
-    MdR2(n,4)=mean(KdyR2(n,:));
-    MdR3(n,4)=mean(KdyR3(n,:));
-    
-    Md(n,5)=std(Kdy(n,:));
-    MdR1(n,5)=std(KdyR1(n,:));
-    MdR2(n,5)=std(KdyR2(n,:));
-    MdR3(n,5)=std(KdyR3(n,:));
-    
-    Md(n,6)=std(Kdi(n,:));
-    MdR1(n,6)=std(KdiR1(n,:));
-    MdR2(n,6)=std(KdiR2(n,:));
-    MdR3(n,6)=std(KdiR3(n,:));
-    
-    Md(n,7)=mean(KdiFC(n,:));
-    Md(n,8)=std(KdiFC(n,:));
-end
-
-Mratio=M(:,1)./M(:,7);
-Mratiostd=std(Mratio);
-
-Mdratio=Md(:,1)./Md(:,7);
-Mdratiostd=std(Mdratio);
-
-%% Estimation of Single Tus Protein 
-SPItus=mean([(MeanIntT-MeanIntDR1) (MeanIntDR1-MeanIntDR2) ...
-    (MeanIntDR2-MeanIntDR3)]);
 %% Importing the real lifetime data from 'original' Bacpics
 MainPathTusOri=strcat(initval.basepath,'Stacks/Tus/DataMULTI/');
 MainPathdifOri=strcat(initval.basepath,'Stacks/dif/DataMULTI/');
 
 for i=1:Ncells;
-    Dori{i}=load(strcat(MainPathTusOri,num2str(i),'.mat'));
+    Tori{i}=load(strcat(MainPathTusOri,num2str(i),'.mat'));
     dori{i}=load(strcat(MainPathdifOri,num2str(i),'.mat'));
-    CelllifeT(i)=length(Dori{i}.XNorm(:,1));
+    CelllifeT(i)=length(Tori{i}.XNorm(:,1));
     Celllifed(i)=length(dori{i}.XNorm(:,1));
 end
 

@@ -51,8 +51,8 @@ title('Detected localizations within the cell dif','FontSize',20)
 
 %% Plot w.r.t. life cycle
 txtbox7={TotCellsStr};
-xcc=linspace(0,1,MeanBacLifeT+1);
-xccd=linspace(0,1,MeanBacLifed+1);
+xcc=linspace(0,1,MaxBacLife);
+xccd=linspace(0,1,MaxBacLifed);
 
 % figure(7)
 % hold on
@@ -66,12 +66,12 @@ xccd=linspace(0,1,MeanBacLifed+1);
 
 figure(8)
 hold on
-% plot(xcc,M{j}(:,7),'b','LineWidth',4)
-% plot(xcc,M{j}(:,7)+M{j}(:,8),'--b')
-% plot(xcc,M{j}(:,7)-M{j}(:,8),'--b')
-plot(xcc,M{j}(:,7)+M{j+1}(:,7)+M{j+2}(:,7),'r','LineWidth',4)
-plot(xcc,M{j}(:,7)+M{j+1}(:,7)+M{j+2}(:,7)+sqrt(M{j}(:,6).^2+M{j+1}(:,6).^2+M{j+2}(:,6).^2),'--r')
-plot(xcc,M{j}(:,7)+M{j+1}(:,7)+M{j+2}(:,7)-sqrt(M{j}(:,6).^2+M{j+1}(:,6).^2+M{j+2}(:,6).^2),'--r')
+plot(xcc,M{j}(:,7),'b','LineWidth',4)
+plot(xcc,M{j}(:,1)+MR1(:,1)+MR2(:,1)+MR3(:,1),'r','LineWidth',4)
+plot(xcc,M(:,7)+M(:,8),'--b')
+plot(xcc,M(:,7)-M(:,8),'--b')
+plot(xcc,M(:,1)+MR1(:,1)+MR2(:,1)+MR3(:,1)+sqrt(M(:,6).^2+MR1(:,6).^2+MR2(:,6).^2+MR3(:,6).^2),'--r')
+plot(xcc,M(:,1)+MR1(:,1)+MR2(:,1)+MR3(:,1)-sqrt(M(:,6).^2+MR1(:,6).^2+MR2(:,6).^2+MR3(:,6).^2),'--r')
 hold off
 xlabel('Normalized Cell Time (-)','FontSize',20,'FontWeight','bold');
 ylabel('Integrated Intensity (-)','FontSize',20,'FontWeight','bold');
