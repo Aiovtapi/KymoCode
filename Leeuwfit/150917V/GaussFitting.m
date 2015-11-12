@@ -53,7 +53,7 @@ Size=cell(Zsize,Nspots);
 lb = [0,0,0,0,0]; %lower bounds for fit
 
 % fit using levenberg-marquardt algorithm
-OPTIONS = optimoptions('lsqcurvefit','Algorithm','levenberg-marquardt');
+OPTIONS = optimoptions('lsqcurvefit','Algorithm','trust-region-reflective');
 
 %% Load Data
 % parameters : [Amplitude, x0, sigmax, y0, sigmay, angel(in rad)]
@@ -103,7 +103,7 @@ for i=1:Zsize
     % Do the Gaussian fitting
     
     [x{j}(i,:),resnorm,residual,exitflag] = lsqcurvefit(@GaussPlosFunc, ...
-       x0{j}(i,:),xdata(:,j),Ydata{i,j},[],[],OPTIONS);
+       x0{j}(i,:),xdata(:,j),Ydata{i,j},lb,ub,OPTIONS);
     
     end
 end
@@ -149,8 +149,14 @@ FCII=cell(1,Zsize);
 ROI=cell(Zsize,Nspots);
 
 for i=1:Zsize
+    
+     % Full Cell Integrated Intensity
+     FCII{i}=ydatacrpd{i}(lob:upb,1:Size{i,j}(2));
+     
     for j=1:Nspots
         
+        %This is the full cell integrated intensity
+        x{j}(i,7)=sum(sum(FCII{i}));
         % to do: compare spot positions 
         if Size{i,j}(2)>1 % there still has to be an image.
             
@@ -191,10 +197,12 @@ for i=1:Zsize
            ,yROI,ClipmaskR,GaussmaskW);
        
         else 
+            
         ROI{i,j}=0;
         nwx{i,j}=0; nwy{i,j}=0; Ispot{i,j}=0; Ibackground_level{i,j}=0;
         spotim_clipped{i,j}=0;
         bckim{i,j}=0;
+        
         end
         
         x{j}(i,8)=Ispot{i,j};
@@ -209,136 +217,136 @@ end
 %% Integrated Intensity Calculation
 
 
-for i=1:Zsize
-    
-    % Full Cell Integrated Intensity
-    FCII{i}=ydatacrpd{i}(lob:upb,1:Size{i,j}(2));
-    
-    for j=1:Nspots
-    
-    %This is the full cell integrated intensity
-    x{j}(i,7)=sum(sum(FCII{i}));
-    
-        % define bordercases
-        % when x it is too close to the left border of image
-        if round(x{j}(i,2))<=1
-        BorderCase=-1;
-        % when x is too close to the right border of image
-        elseif round(x{j}(i,2))>=Size{i,j}(2)-1 
-        BorderCase=1;
-        else 
-        BorderCase=0;
-        end
-    
-        
-        %define bordercases for wider spot
-        if round(x{j}(i,2))<=3
-        BorderCaseWide=-1;
-        % when x is too close to the right border of image
-        elseif round(x{j}(i,2))>=Size{i,j}(2)-3
-        BorderCaseWide=1;
-        else 
-        BorderCaseWide=0;
-        end
-    % SPOT around centroid
-    % If sigmaX == 2 or sigmaX == 1
-    
-    %For BorderCase == 0
-    if (round(x{j}(i,3))==2 || round(x{j}(i,3))==1) && BorderCase ==0;
-    
-        for n=[-1 0 1] 
-            if round(x{j}(i,5))==2 || round(x{j}(i,5))==1
-                for k=[-1 0 1]
-                    II{n+2,k+2,i}=ydatacrpd{i}(round(x{j}(i,4))+k,round(x{j}(i,2))+n);
-                end
-            end
-            if round(x{j}(i,5))==3 || round(x{j}(i,5))==4
-                for k=[-2 -1 0 1 2]
-                    II{n+2,k+3,i}=ydatacrpd{i}(round(x{j}(i,4))+k,round(x{j}(i,2))+n);
-                end
-            end
-        end
-    
-    % For BorderCase == -1
-    elseif (round(x{j}(i,3))==2 || round(x{j}(i,3))==1) && BorderCase == -1;
-        
-        for n=[-1 0 1] 
-            if round(x{j}(i,5))==2 || round(x{j}(i,5))==1
-                for k=[-1 0 1]
-                    II{n+2,k+2,i}=ydatacrpd{i}(round(x{j}(i,4))+k,2+n); %2 indicates minimum distance
-                end                                                     %from left border                                    
-            elseif round(x{j}(i,5))==3 || round(x{j}(i,5))==4
-                for k=[-2 -1 0 1 2]
-                    II{n+2,k+3,i}=ydatacrpd{i}(round(x(i,4))+k,2+n); 
-                end
-            end
-        end
-
-    %For BorderCase == 1
-    elseif (round(x{j}(i,3))==2 || round(x{j}(i,3))==1) && BorderCase == 1;
-        
-        for n=[-1 0 1] 
-            if round(x{j}(i,5))==2 || round(x{j}(i,5))==1
-                for k=[-1 0 1]
-                    II{n+2,k+2,i}=ydatacrpd{i}(round(x{j}(i,4))+k,Size{i,j}(2)-2+n); 
-
-                end                                                                                         
-            elseif round(x{j}(i,5))==3 || round(x{j}(i,5))==4
-                for k=[-2 -1 0 1 2]
-                    II{n+2,k+3,i}=ydatacrpd{i}(round(x{j}(i,4))+k,Size{i,j}(2)-2+n); 
-                end
-            end
-        end
-    
-    % For sigmaX==3 or sigmaX==4 and Bordercase == 0
-    elseif (round(x{j}(i,3))==3 || round(x{j}(i,3))==4) && BorderCaseWide == 0;
-        
-        for n=[-2 -1 0 1 2] 
-            if round(x{j}(i,5))==2 || round(x{j}(i,5))==1
-                for k=[-1 0 1]
-                    II{n+3,k+2,i}=ydatacrpd{i}(round(x{j}(i,4))+k,round(x{j}(i,2))+n);
-                end
-            elseif round(x{j}(i,5))==3 || round(x{j}(i,5))==4
-                for k=[-2 -1 0 1 2]
-                    II{n+3,k+3,i}=ydatacrpd{i}(round(x{j}(i,4))+k,round(x{j}(i,2))+n);
-                end
-            end
-        end
-        
-    elseif (round(x{j}(i,3))==3 || round(x{j}(i,3))==4) && BorderCaseWide == -1;
-        
-        for n=[-2 -1 0 1 2] 
-            if round(x{j}(i,5))==2 || round(x{j}(i,5))==1
-                for k=[-1 0 1]
-                    II{n+3,k+2,i}=ydatacrpd{i}(round(x{j}(i,4))+k,3+n);
-                end
-            elseif round(x{j}(i,5))==3 || round(x{j}(i,5))==4
-                for k=[-2 -1 0 1 2]
-                    II{n+3,k+3,i}=ydatacrpd{i}(round(x{j}(i,4))+k,3+n);
-                end
-            end
-        end
-        
-    elseif (round(x{j}(i,3))==3 || round(x{j}(i,3))==4) && BorderCaseWide == 1;
-        
-        for n=[-2 -1 0 1 2] 
-            if round(x{j}(i,5))==2 || round(x{j}(i,5))==1
-                for k=[-1 0 1]
-                    II{n+3,k+2,i}=ydatacrpd{i}(round(x{j}(i,4))+k,Size{i,j}(2)-3+n);
-                end
-            elseif round(x{j}(i,5))==3 || round(x{j}(i,5))==4
-                for k=[-2 -1 0 1 2]
-                    II{n+3,k+3,i}=ydatacrpd{i}(round(x{j}(i,4))+k,Size{i,j}(2)-3+n);
-                end
-            end
-        end
-    end
-    
-        SII=[II{:,:,i}];
-        x{j}(i,6)=sum(SII(:));
-        XNorm{j}(i,6)=sum(SII(:));
-    end
-end
+% for i=1:Zsize
+%     
+%     % Full Cell Integrated Intensity
+%     FCII{i}=ydatacrpd{i}(lob:upb,1:Size{i,j}(2));
+%     
+%     for j=1:Nspots
+%     
+%     %This is the full cell integrated intensity
+%     x{j}(i,7)=sum(sum(FCII{i}));
+%     
+%         % define bordercases
+%         % when x it is too close to the left border of image
+%         if round(x{j}(i,2))<=1
+%         BorderCase=-1;
+%         % when x is too close to the right border of image
+%         elseif round(x{j}(i,2))>=Size{i,j}(2)-1 
+%         BorderCase=1;
+%         else 
+%         BorderCase=0;
+%         end
+%     
+%         
+%         %define bordercases for wider spot
+%         if round(x{j}(i,2))<=3
+%         BorderCaseWide=-1;
+%         % when x is too close to the right border of image
+%         elseif round(x{j}(i,2))>=Size{i,j}(2)-3
+%         BorderCaseWide=1;
+%         else 
+%         BorderCaseWide=0;
+%         end
+%     % SPOT around centroid
+%     % If sigmaX == 2 or sigmaX == 1
+%     
+%     %For BorderCase == 0
+%     if (round(x{j}(i,3))==2 || round(x{j}(i,3))==1) && BorderCase ==0;
+%     
+%         for n=[-1 0 1] 
+%             if round(x{j}(i,5))==2 || round(x{j}(i,5))==1
+%                 for k=[-1 0 1]
+%                     II{n+2,k+2,i}=ydatacrpd{i}(round(x{j}(i,4))+k,round(x{j}(i,2))+n);
+%                 end
+%             end
+%             if round(x{j}(i,5))==3 || round(x{j}(i,5))==4
+%                 for k=[-2 -1 0 1 2]
+%                     II{n+2,k+3,i}=ydatacrpd{i}(round(x{j}(i,4))+k,round(x{j}(i,2))+n);
+%                 end
+%             end
+%         end
+%     
+%     % For BorderCase == -1
+%     elseif (round(x{j}(i,3))==2 || round(x{j}(i,3))==1) && BorderCase == -1;
+%         
+%         for n=[-1 0 1] 
+%             if round(x{j}(i,5))==2 || round(x{j}(i,5))==1
+%                 for k=[-1 0 1]
+%                     II{n+2,k+2,i}=ydatacrpd{i}(round(x{j}(i,4))+k,2+n); %2 indicates minimum distance
+%                 end                                                     %from left border                                    
+%             elseif round(x{j}(i,5))==3 || round(x{j}(i,5))==4
+%                 for k=[-2 -1 0 1 2]
+%                     II{n+2,k+3,i}=ydatacrpd{i}(round(x(i,4))+k,2+n); 
+%                 end
+%             end
+%         end
+% 
+%     %For BorderCase == 1
+%     elseif (round(x{j}(i,3))==2 || round(x{j}(i,3))==1) && BorderCase == 1;
+%         
+%         for n=[-1 0 1] 
+%             if round(x{j}(i,5))==2 || round(x{j}(i,5))==1
+%                 for k=[-1 0 1]
+%                     II{n+2,k+2,i}=ydatacrpd{i}(round(x{j}(i,4))+k,Size{i,j}(2)-2+n); 
+% 
+%                 end                                                                                         
+%             elseif round(x{j}(i,5))==3 || round(x{j}(i,5))==4
+%                 for k=[-2 -1 0 1 2]
+%                     II{n+2,k+3,i}=ydatacrpd{i}(round(x{j}(i,4))+k,Size{i,j}(2)-2+n); 
+%                 end
+%             end
+%         end
+%     
+%     % For sigmaX==3 or sigmaX==4 and Bordercase == 0
+%     elseif (round(x{j}(i,3))==3 || round(x{j}(i,3))==4) && BorderCaseWide == 0;
+%         
+%         for n=[-2 -1 0 1 2] 
+%             if round(x{j}(i,5))==2 || round(x{j}(i,5))==1
+%                 for k=[-1 0 1]
+%                     II{n+3,k+2,i}=ydatacrpd{i}(round(x{j}(i,4))+k,round(x{j}(i,2))+n);
+%                 end
+%             elseif round(x{j}(i,5))==3 || round(x{j}(i,5))==4
+%                 for k=[-2 -1 0 1 2]
+%                     II{n+3,k+3,i}=ydatacrpd{i}(round(x{j}(i,4))+k,round(x{j}(i,2))+n);
+%                 end
+%             end
+%         end
+%         
+%     elseif (round(x{j}(i,3))==3 || round(x{j}(i,3))==4) && BorderCaseWide == -1;
+%         
+%         for n=[-2 -1 0 1 2] 
+%             if round(x{j}(i,5))==2 || round(x{j}(i,5))==1
+%                 for k=[-1 0 1]
+%                     II{n+3,k+2,i}=ydatacrpd{i}(round(x{j}(i,4))+k,3+n);
+%                 end
+%             elseif round(x{j}(i,5))==3 || round(x{j}(i,5))==4
+%                 for k=[-2 -1 0 1 2]
+%                     II{n+3,k+3,i}=ydatacrpd{i}(round(x{j}(i,4))+k,3+n);
+%                 end
+%             end
+%         end
+%         
+%     elseif (round(x{j}(i,3))==3 || round(x{j}(i,3))==4) && BorderCaseWide == 1;
+%         
+%         for n=[-2 -1 0 1 2] 
+%             if round(x{j}(i,5))==2 || round(x{j}(i,5))==1
+%                 for k=[-1 0 1]
+%                     II{n+3,k+2,i}=ydatacrpd{i}(round(x{j}(i,4))+k,Size{i,j}(2)-3+n);
+%                 end
+%             elseif round(x{j}(i,5))==3 || round(x{j}(i,5))==4
+%                 for k=[-2 -1 0 1 2]
+%                     II{n+3,k+3,i}=ydatacrpd{i}(round(x{j}(i,4))+k,Size{i,j}(2)-3+n);
+%                 end
+%             end
+%         end
+%     end
+%     
+%         SII=[II{:,:,i}];
+%         x{j}(i,6)=sum(SII(:));
+%         XNorm{j}(i,6)=sum(SII(:));
+%     end
+% end
 
 
 

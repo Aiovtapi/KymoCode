@@ -9,13 +9,53 @@
 % M = Mean value at time points 
 % M = [IntSpot Xpos stdX Ypos stdY stdIntSpot IntCell stdIntCell]
 
-%GaussCalcs
-%% Histogram Intensities
+GaussCalcs2
+
+%% dif Position vs. time
+
+figure(1)
+hold on
+plot(0:2/(MeanBacLifed-1):2,Sd{3}.x{1}(:,2),'b','LineWidth',5);
+plot(0:2/(MeanBacLifed-1):2,Sd{3}.x{2}(:,2),'r','LineWidth',5);
+plot(0:2/(MeanBacLifed-1):2,Sd{3}.x{3}(:,2),'k','LineWidth',5);
+hold off
+axis([0 2 0 1])
+xlabel('Normalized Cell Time (-)');
+ylabel('Normalized Cell Position (-)');
+set(gca,'FontSize',20);
+
+%% Tus Position vs. time
+
+figure(2)
+hold on
+plot(0:2/(MeanBacLifeT-1):2,S{3}.x{1}(:,2),'b','LineWidth',5);
+plot(0:2/(MeanBacLifeT-1):2,S{3}.x{2}(:,2),'r','LineWidth',5);
+plot(0:2/(MeanBacLifeT-1):2,S{3}.x{3}(:,2),'k','LineWidth',5);
+hold off
+axis([0 2 0 1])
+xlabel('Normalized Cell Time (-)');
+ylabel('Normalized Cell Position (-)');
+set(gca,'FontSize',20);
+
+
+%% Tus VS dif
+
+figure(3)
+hold on
+plot(0:2/(MeanBacLifeT-1):2,S{3}.x{3}(:,2),'b','LineWidth',5);
+plot(0:2/(MeanBacLifed-1):2,Sd{3}.x{3}(:,2),'r','LineWidth',5);
+hold off
+axis([0 2 0 1])
+xlabel('Normalized Cell Time (-)');
+ylabel('Normalized Cell Position (-)');
+set(gca,'FontSize',20);
+
+%% Histogram Intensities Tus
 n=Ncells;
-j=1;
+
 figure(4)
 hold on
-hist(nonzeros(d{n+1}.IntI{j}),20);
+hist(nonzeros(T{n+1}.),20);
   h = findobj(gca,'Type','patch');
   h.FaceColor = [0 0.7 0.7];
   h.EdgeColor = 'w';
@@ -23,8 +63,29 @@ hold off
 
 xlabel('Integrated Intensity counts (-)','FontSize',20,'FontWeight','bold');
 ylabel('Frequency (-)','FontSize',20,'FontWeight','bold');
-title('Brightest Spot Frequency of Intensity counts (dif)','FontSize',20)
-txtbox1={TotCellsStr,MeanIntStrT{j},StdIntStrT{j}};
+title('Spot Intensity counts (Tus)','FontSize',20)
+txtbox1={TotCellsStr,sprintf('Mean = %g',HisIntT), ...
+    sprintf('Mean = %g',HisIntT),sprintf('Npoints = %g', NpointsT)};
+annotation('textbox', [0.65,0.8,0.1,0.1],...
+           'String', txtbox1,'FontSize',20,'FontWeight','bold')
+set(gca,'FontSize',20);
+
+%% Histogram Intensities dif
+
+n=Ncells;
+j=1;
+figure(4)
+hold on
+hist(nonzeros([d{n+1}.IntI{1} d{n+1}.IntI{2} d{n+1}.IntI{3}]),20);
+  h = findobj(gca,'Type','patch');
+  h.FaceColor = [0 0.7 0.7];
+  h.EdgeColor = 'w';
+hold off
+
+xlabel('Integrated Intensity counts (-)','FontSize',20,'FontWeight','bold');
+ylabel('Frequency (-)','FontSize',20,'FontWeight','bold');
+title('Spot Intensity counts (dif)','FontSize',20)
+txtbox1={TotCellsStr,MeanIntStrd{j},StdIntStrd{j},sprintf('Npoints = %g', NpointsT)};
 annotation('textbox', [0.65,0.8,0.1,0.1],...
            'String', txtbox1,'FontSize',20,'FontWeight','bold')
 set(gca,'FontSize',20);
@@ -90,17 +151,17 @@ figure(8)
 hold on
 % plot(M(:,2),xcc/Fac,'b','LineWidth',4)%M(:,2)-M(:,3),xcc,'b',M(:,2)+M(:,3),xcc,'b',...
 %    plot(MR1(:,2),xcc/Fac,'b','LineWidth',4)
-   plot(MR2(:,2),xcc/Fac,'b','LineWidth',4)
+%   plot(MR2(:,2),xcc/Fac,'b','LineWidth',4)
 %   plot(MR3(:,2),xcc/Fac,'b','LineWidth',4)
- plot(Md(:,2),xccd/Fac,'r','LineWidth',4)%,Md(:,2)-Md(:,3),xccd,'r',Md(:,2)+Md(:,3),xccd,'r')
+ plot(M{1}(:,2),'r','LineWidth',4)%,Md(:,2)-Md(:,3),xccd,'r',Md(:,2)+Md(:,3),xccd,'r')
 %  plot(MdR1(:,2),xccd/Fac,'r','LineWidth',4)
 %   plot(MdR2(:,2),xccd/Fac,'r','LineWidth',4)
 %     plot(MdR3(:,2),xccd/Fac,'r','LineWidth',4)
-line([0 1],[1 1],'LineWidth',2)
-line([0.5 0.5],[1 2])
+% line([0 1],[1 1],'LineWidth',2)
+% line([0.5 0.5],[1 2])
 % hline2=refline([0 MeanCellLifeT*5]);
 % hline2.Color='k';
-axis([0 1 0 2])
+% axis([0 1 0 2])
 hold off
 
 ylabel('Normalized Cell Time (-)','FontSize',20);
