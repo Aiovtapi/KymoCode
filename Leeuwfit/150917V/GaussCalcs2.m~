@@ -13,7 +13,7 @@ initval.basepath='/Users/rleeuw/Work/Data/141230_dnaN_dif_tus/dnaN_dif_tus_40msE
 %initval.basepath='/Users/rleeuw/Work/Data/OriZ-Dif_Results/';
 %% Define variables
 
-Ncells=3;
+Ncells=21;
 
 T=cell(Ncells+1,1);
 d=cell(Ncells+1,1);
@@ -23,8 +23,8 @@ framesd=zeros(Ncells,1);
 framesT=zeros(Ncells,1);
 
 BacLife=zeros(Ncells,1); BacLifed=zeros(Ncells,1);
-MainPathTus=strcat(initval.basepath,'StacksLong/Tus/DataMULTI/');
-MainPathdif=strcat(initval.basepath,'StacksLong/dif/DataMULTI/');
+MainPathTus=strcat(initval.basepath,'Stacks/Tus/DataMULTI/');
+MainPathdif=strcat(initval.basepath,'Stacks/dif/DataMULTI/');
 
 
 %% Load data
@@ -38,7 +38,8 @@ for i=1:Ncells;
 end
 
 Nspots=T{i}.Nspots;
-
+Npointsd=sum(framesd); 
+NpointsT=sum(framesT);
 %% Calculations and Filtering
 
 MeanIntT=cell(Nspots,1);MeanIntFCT=cell(Nspots,1);StdIntT=cell(Nspots,1);
@@ -67,8 +68,8 @@ KdiFC=cell(Nspots,1);
 Kdx=cell(Nspots,1);
 Kdy=cell(Nspots,1);
 
-MeanBacLifeT=mean(BacLife);
-MeanBacLifed=mean(BacLifed);
+MeanBacLifeT=round(mean(BacLife));
+MeanBacLifed=round(mean(BacLifed));
 
 
 for i=1:Ncells
@@ -96,22 +97,44 @@ end
 
 % Should be estimated as 1.05 x maximal cost of all previous links.
 
-bCost=ones(Nspots,1)*0.3;
-dCost=ones(Nspots,1)*0.3;
+bCostd=ones(Nspots,1)*0.3;
+dCostd=ones(Nspots,1)*0.3;
 
+bCostT=ones(Nspots,1)*0.3;
+dCostT=ones(Nspots,1)*0.3;
 
-bMatrix=diag(bCost);
-dMatrix=diag(dCost);
+bMatrixd=diag(bCostd);
+dMatrixd=diag(dCostd);
+
+bMatrixT=diag(bCostT);
+dMatrixT=diag(dCostT);
 
 Ctotald=[];
+CtotalT=[];
+
+Clinkd=cell(Ncells,MeanBacLifed);
+ClinkT=cell(Ncells,MeanBacLifed);
 
 VectorxTd=cell(Ncells,MeanBacLifed);
 VectoryTd=cell(Ncells,MeanBacLifed);
 
+VectorxTT=cell(Ncells,MeanBacLifed);
+VectoryTT=cell(Ncells,MeanBacLifed);
+
 VectorXTd=cell(Ncells,MeanBacLifed);
 VectorYTd=cell(Ncells,MeanBacLifed);
 
+VectorXTT=cell(Ncells,MeanBacLifed);
+VectorYTT=cell(Ncells,MeanBacLifed);
+
 VectorITd=cell(Ncells,MeanBacLifed);
+VectorITT=cell(Ncells,MeanBacLifed);
+
+VectoriTd=cell(Ncells,MeanBacLifed);
+VectoriTT=cell(Ncells,MeanBacLifed);
+
+AuxiliaryMatrixd=cell(Ncells,MeanBacLifed);
+AuxiliaryMatrixT=cell(Ncells,MeanBacLifed);
 
 %define initial costs for first frame
 
@@ -131,6 +154,74 @@ for i=1:Ncells
                 
                 Clinkd{i,t}(j,k)=(sqrt(Sd{i}.x{j}(t,2).^2+Sd{i}.x{j}(t,4).^2)- ...
                     sqrt(Sd{i}.x{k}(t+1,2).^2+Sd{i}.x{k}(t+1,4).^2)).^2;
+
+                %Clinkd{i,t}(j+Nspots,k+Nspots)=Clinkd{i,t}(k,j); %lower right matrix (transpose of upper left)
+                
+                % t is the frame number
+                % i is the cell number
+                % j is the spot number
+               
+            end
+                    VectorxTd{i,t}=[VectorxTd{i,t} Sd{i}.x{j}(t+1,2)]; %Vectors used for matrix product with the LAP solution
+                    VectoryTd{i,t}=[VectoryTd{i,t} Sd{i}.x{j}(t+1,4)]; %This will transfer the position data to according spots
+                    VectoriTd{i,t}=[VectoriTd{i,t} Sd{i}.x{j}(t+1,1)];
+                  
+        end
+        
+        
+                AuxiliaryMatrixd{i,t}=0.001*Clinkd{i,t}'; % given the lower cost of the matrix so that it doesn't influence final solution
+
+                Clinkd{i,t}(j+1:j+Nspots,1:k)=bMatrixd; %lower left matrix
+                Clinkd{i,t}(1:j,k+1:k+Nspots)=dMatrixd; %upper right matrix
+                Clinkd{i,t}(j+1:j+Nspots,k+1:k+Nspots)=AuxiliaryMatrixd{i,t};
+                
+                Ctotald=[Ctotald Clinkd{i,t}];
+                
+                bCostd=ones(Nspots,1)*max([bCostd(1) max(Ctotald(:))]); % cost for allowing particles in frame t+1 to get linked by nothing in frame t.
+                dCostd=ones(Nspots,1)*max([dCostd(1) max(Ctotald(:))]); % cost for allowing particles in frame t to link to nothing in frame t+1.
+                
+                bMatrixd=diag(bCostd);
+                dMatrixd=diag(dCostd);
+
+                
+                Clinkd{i,t}(Clinkd{i,t}==0)=NaN;
+                
+                Amind{i,t}=LAP(Clinkd{i,t}); %Linear Assignment Problem (LAP)
+        
+                %Reassign x-position correspondingly (and corresp
+                %intensities)
+                %First 'double' the size
+                    
+                VectorxTd{i,t}=[VectorxTd{i,t} VectorxTd{i,t}];
+                VectoryTd{i,t}=[VectoryTd{i,t} VectoryTd{i,t}];
+                VectoriTd{i,t}=[VectoriTd{i,t} VectoriTd{i,t}];
+                
+                %Matrix Product
+                VectorXTd{i,t}=Amind{i,t}*VectorxTd{i,t}';
+                VectorYTd{i,t}=Amind{i,t}*VectoryTd{i,t}';
+                VectorITd{i,t}=Amind{i,t}*VectoriTd{i,t}';
+                             
+                %Correspond results to spots
+                
+                for j=1:Nspots
+                                        
+                    Sd{i}.x{j}(t+1,2)=VectorXTd{i,t}(j);
+                    Sd{i}.x{j}(t+1,4)=VectorYTd{i,t}(j);
+                    Sd{i}.x{j}(t+1,1)=VectorITd{i,t}(j);
+                    
+                end
+                
+    end
+end
+
+for i=1:Ncells
+    for t=1:MeanBacLifeT-1
+        for j=1:Nspots
+            for k=1:Nspots
+                
+                % Cost for linking particle i in fame t to particle j in
+                % frame t+1.       
+
                 
                 ClinkT{i,t}(j,k)=(sqrt(S{i}.x{j}(t,2).^2+S{i}.x{j}(t,4).^2)- ...
                     sqrt(S{i}.x{k}(t+1,2).^2+S{i}.x{k}(t+1,4).^2)).^2;
@@ -143,79 +234,57 @@ for i=1:Ncells
                 % j is the spot number
                
             end
-                    VectorxTd{i,t}=[VectorxTd{i,t} Sd{i}.x{j}(t+1,2)]; %Vectors used for matrix product with the LAP solution
-                    VectoryTd{i,t}=[VectoryTd{i,t} Sd{i}.x{j}(t+1,4)]; %This will transfer the position data to according spots
-                    VectorITd{i,t}=[VectorITd{i,t} Sd{i}.x{j}(t+1,1)];
-                    
+            
                     VectorxTT{i,t}=[VectorxTT{i,t} S{i}.x{j}(t+1,2)]; %Vectors used for matrix product with the LAP solution
                     VectoryTT{i,t}=[VectoryTT{i,t} S{i}.x{j}(t+1,4)]; %This will transfer the position data to according spots
-                    VectorITT{i,t}=[VectorITT{i,t} S{i}.x{j}(t+1,1)];
+                    VectoriTT{i,t}=[VectoriTT{i,t} S{i}.x{j}(t+1,1)];
                     
         end
         
         
-                AuxiliaryMatrixd{i,t}=0.001*Clinkd{i,t}'; % given the lower cost of the matrix so that it doesn't influence final solution
                 AuxiliaryMatrixT{i,t}=0.001*ClinkT{i,t}'; % given the lower cost of the matrix so that it doesn't influence final solution
-
-                Clinkd{i,t}(j+1:j+Nspots,1:k)=bMatrixd; %lower left matrix
-                Clinkd{i,t}(1:j,k+1:k+Nspots)=dMatrixd; %upper right matrix
-                Clinkd{i,t}(j+1:j+Nspots,k+1:k+Nspots)=AuxiliaryMatrixd{i,t};
                 
                 ClinkT{i,t}(j+1:j+Nspots,1:k)=bMatrixT; %lower left matrix
                 ClinkT{i,t}(1:j,k+1:k+Nspots)=dMatrixT; %upper right matrix
                 ClinkT{i,t}(j+1:j+Nspots,k+1:k+Nspots)=AuxiliaryMatrixd{i,t};
                 
-                Ctotald=[Ctotald Clinkd{i,t}];
                 CtotalT=[CtotalT ClinkT{i,t}];
-                
-                bCostd=ones(Nspots,1)*max([bCostd(1) max(Ctotald(:))]); % cost for allowing particles in frame t+1 to get linked by nothing in frame t.
-                dCostd=ones(Nspots,1)*max([dCostd(1) max(Ctotald(:))]); % cost for allowing particles in frame t to link to nothing in frame t+1.
-                
-                bMatrixd=diag(bCostd);
-                dMatrixd=diag(dCostd);
-                
+                               
                 bCostT=ones(Nspots,1)*max([bCostT(1) max(CtotalT(:))]); % cost for allowing particles in frame t+1 to get linked by nothing in frame t.
                 dCostT=ones(Nspots,1)*max([dCostT(1) max(CtotalT(:))]); % cost for allowing particles in frame t to link to nothing in frame t+1.
                 
                 bMatrixT=diag(bCostT);
                 dMatrixT=diag(dCostT);
                 
-                Clinkd{i,t}(Clinkd{i,t}==0)=NaN;
                 ClinkT{i,t}(ClinkT{i,t}==0)=NaN;
                 
-                Amind{i,t}=LAP(Clinkd{i,t}); %Linear Assignment Problem (LAP)
                 AminT{i,t}=LAP(ClinkT{i,t}); %Linear Assignment Problem (LAP)
         
                 %Reassign x-position correspondingly (and corresp
                 %intensities)
                 %First 'double' the size
-                    
-                VectorxTd{i,t}=[VectorxTd{i,t} VectorxTd{i,t}];
-                VectoryTd{i,t}=[VectoryTd{i,t} VectoryTd{i,t}];
-                VectorITd{i,t}=[VectorITd{i,t} VectorITd{i,t}];
-                
+                                   
                 VectorxTT{i,t}=[VectorxTT{i,t} VectorxTT{i,t}];
                 VectoryTT{i,t}=[VectoryTT{i,t} VectoryTT{i,t}];
-                VectorITT{i,t}=[VectorITT{i,t} VectorITT{i,t}];
+                VectoriTT{i,t}=[VectoriTT{i,t} VectoriTT{i,t}];
                 
                 %Matrix Product
-                VectorXTd{i,t}=Amin{i,t}*VectorxTd{i,t}';
-                VectorYTd{i,t}=Amin{i,t}*VectoryTd{i,t}';
-                VectorITd{i,t}=[VectorITd{i,t} VectorITd{i,t}];
+               
+                VectorXTT{i,t}=AminT{i,t}*VectorxTT{i,t}';
+                VectorYTT{i,t}=AminT{i,t}*VectoryTT{i,t}';
+                VectorITT{i,t}=AminT{i,t}*VectoriTT{i,t}';
                 
                 %Correspond results to spots
                 
                 for j=1:Nspots
-                    
-                    Sd{i}.x{j}(t+1,2)=VectorXTd{i,t}(j);
-                    Sd{i}.x{j}(t+1,4)=VectorYTd{i,t}(j);
-                    Sd{i}.x{j}(t+1,1)=VectorITd{i,t}(j);
-                    
+                                        
+                    S{i}.x{j}(t+1,2)=VectorXTT{i,t}(j);
+                    S{i}.x{j}(t+1,4)=VectorYTT{i,t}(j);
+                    S{i}.x{j}(t+1,1)=VectorITT{i,t}(j);
+                                       
                 end
-                
     end
 end
-
 
 % 2. close gaps and capture merging and splitting events. (Using Cost Matrix Gap Closing, merging, splitting.)
 
@@ -235,6 +304,8 @@ for i=1:Ncells
     end
 end
 
+
+
 for i=1:Ncells
     for j=1:Nspots
         
@@ -247,6 +318,22 @@ for i=1:Ncells
     end
 end
 
+%% Spot position and intensity filtering. Combination of Spots. --> Within K.
+% could be combined within the cost function criteria?
+
+for i=1:Ncells
+    for j=1:Nspots
+        
+        DeltaX=Kdx{j}(:,i)
+        
+    end
+end
+
+
+
+
+
+%% 
 M=cell(Nspots,1); Mratio=zeros(Nspots,1); Mratiostd=zeros(Nspots,1);
 Md=cell(Nspots,1); Mdratio=zeros(Nspots,1); Mdratiostd=zeros(Nspots,1);
 

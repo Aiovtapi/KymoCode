@@ -53,50 +53,76 @@ set(gca,'FontSize',20);
 %% Histogram Intensities Tus
 n=Ncells;
 
+HisIntT=[];
+for j=1:Nspots
+    HisIntT=[HisIntT T{n+1}.IntI{j}];
+end
+
 figure(4)
 hold on
-hist(nonzeros(T{n+1}.),20);
+hist(nonzeros(HisIntT),20);
   h = findobj(gca,'Type','patch');
-  h.FaceColor = [0 0.7 0.7];
+  h.FaceColor = [1 0 0];
   h.EdgeColor = 'w';
 hold off
 
 xlabel('Integrated Intensity counts (-)','FontSize',20,'FontWeight','bold');
 ylabel('Frequency (-)','FontSize',20,'FontWeight','bold');
 title('Spot Intensity counts (Tus)','FontSize',20)
-txtbox1={TotCellsStr,sprintf('Mean = %g',HisIntT), ...
-    sprintf('Mean = %g',HisIntT),sprintf('Npoints = %g', NpointsT)};
+txtbox1={TotCellsStr,sprintf('Mean = %g',mean(HisIntT(:))), ...
+    sprintf('Std = %g',std(HisIntT(:))),sprintf('Npoints = %g', NpointsT)};
 annotation('textbox', [0.65,0.8,0.1,0.1],...
            'String', txtbox1,'FontSize',20,'FontWeight','bold')
 set(gca,'FontSize',20);
 
 %% Histogram Intensities dif
-
 n=Ncells;
-j=1;
+
+HisIntd=[];
+for j=1:Nspots
+    HisIntd=[HisIntd d{n+1}.IntI{j}];
+end
+
 figure(4)
 hold on
-hist(nonzeros([d{n+1}.IntI{1} d{n+1}.IntI{2} d{n+1}.IntI{3}]),20);
+hist(nonzeros(HisIntd),20);
   h = findobj(gca,'Type','patch');
-  h.FaceColor = [0 0.7 0.7];
+  h.FaceColor = [0 0 1];
   h.EdgeColor = 'w';
 hold off
 
 xlabel('Integrated Intensity counts (-)','FontSize',20,'FontWeight','bold');
 ylabel('Frequency (-)','FontSize',20,'FontWeight','bold');
 title('Spot Intensity counts (dif)','FontSize',20)
-txtbox1={TotCellsStr,MeanIntStrd{j},StdIntStrd{j},sprintf('Npoints = %g', NpointsT)};
+txtbox1={TotCellsStr,sprintf('Mean = %g',mean(HisIntd(:))), ...
+    sprintf('Std = %g',std(HisIntd(:))),sprintf('Npoints = %g', NpointsT)};
 annotation('textbox', [0.65,0.8,0.1,0.1],...
            'String', txtbox1,'FontSize',20,'FontWeight','bold')
 set(gca,'FontSize',20);
 
 %%
 figure(5)
-%hist(cat(1,D{21}.X,nonzeros(D{21}.XR1),nonzeros(D{21}.XR2),nonzeros(D{21}.XR3)),20);
-hist(d{n+1}.X{j},25);
+
+Weight=cell(Nspots,1);
+
+HisXd=[];
+
+for i=1:Ncells
+    for j=1:Nspots
+        
+        WeightedAverage(i,j)=sum(Sd{i}.x{j}(:,2).*Sd{i}.x{j}(:,1))/sum(Sd{i}.x{j}(:,1));
+        
+        HisXd=[HisXd d{n+1}.X{j}];
+    
+    end
+end
+
+
+hist(WeightedAverage(:),9);
 xlabel('X Position (-)','FontSize',20,'FontWeight','bold');
 ylabel('Frequency (-)','FontSize',20,'FontWeight','bold');
-title('Frequency of spot X Position dif','FontSize',20)
+title('Weighted Spot X Position (dif)','FontSize',20)
+axis([0 1 0 21]);
 set(gca,'FontSize',20);
 
 %% Plot of position w.r.t. cell
@@ -112,7 +138,7 @@ title('Detected localizations within the cell dif','FontSize',20)
 
 %% Plot w.r.t. life cycle
 txtbox7={TotCellsStr};
-xcc=linspace(0,1,MeanBacLifeT+1);
+xcc=linspace(0,1,MeanBacLifeT);
 xccd=linspace(0,1,MeanBacLifed+1);
 
 % figure(7)
@@ -124,22 +150,22 @@ xccd=linspace(0,1,MeanBacLifed+1);
 % title('Mean Integrated Intensity vs Normalised Cell Time','FontSize',20)
 % annotation('textbox', [0.15,0.875,0.1,0.05],...
 %            'String', txtbox7,'FontSize',14,'FontWeight','bold')
-
-figure(8)
+j=1;
+figure(9)
 hold on
-% plot(xcc,M{j}(:,7),'b','LineWidth',4)
+ plot(xcc,M{j}(:,7)/1100,'b','LineWidth',4)
 % plot(xcc,M{j}(:,7)+M{j}(:,8),'--b')
 % plot(xcc,M{j}(:,7)-M{j}(:,8),'--b')
-plot(xcc,M{j}(:,7)+M{j+1}(:,7)+M{j+2}(:,7),'r','LineWidth',4)
-plot(xcc,M{j}(:,7)+M{j+1}(:,7)+M{j+2}(:,7)+sqrt(M{j}(:,6).^2+M{j+1}(:,6).^2+M{j+2}(:,6).^2),'--r')
-plot(xcc,M{j}(:,7)+M{j+1}(:,7)+M{j+2}(:,7)-sqrt(M{j}(:,6).^2+M{j+1}(:,6).^2+M{j+2}(:,6).^2),'--r')
+% plot(xcc,(M{j}(:,1)+M{j+1}(:,1)+M{j+2}(:,1))/1100,'b','LineWidth',4)
+plot(xcc,M{j}(:,1)/1100,'r','LineWidth',4)
+% plot(xcc,(M{j}(:,1)+M{j+1}(:,1)+M{j+2}(:,1))./M{j}(:,7),'r','LineWidth',4)
 hold off
 xlabel('Normalized Cell Time (-)','FontSize',20,'FontWeight','bold');
-ylabel('Integrated Intensity (-)','FontSize',20,'FontWeight','bold');
+ylabel('Number of Tus Protein (-)','FontSize',20,'FontWeight','bold');
 L=legend('Total','Spots');
 set(L,'FontSize',20);
 set(gca,'FontSize',20);
-title('Integrated Intensity vs Normalised Cell Time (dif)','FontSize',24)
+title('Number of Tus Protein vs Normalised Cell Time (dif)','FontSize',24)
 annotation('textbox', [0.25,0.85,0.1,0.05],...
            'String', txtbox7,'FontSize',20,'FontWeight','bold')
        

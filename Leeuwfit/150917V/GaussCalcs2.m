@@ -13,7 +13,7 @@ initval.basepath='/Users/rleeuw/Work/Data/141230_dnaN_dif_tus/dnaN_dif_tus_40msE
 %initval.basepath='/Users/rleeuw/Work/Data/OriZ-Dif_Results/';
 %% Define variables
 
-Ncells=3;
+Ncells=21;
 
 T=cell(Ncells+1,1);
 d=cell(Ncells+1,1);
@@ -23,8 +23,8 @@ framesd=zeros(Ncells,1);
 framesT=zeros(Ncells,1);
 
 BacLife=zeros(Ncells,1); BacLifed=zeros(Ncells,1);
-MainPathTus=strcat(initval.basepath,'StacksLong/Tus/DataMULTI/');
-MainPathdif=strcat(initval.basepath,'StacksLong/dif/DataMULTI/');
+MainPathTus=strcat(initval.basepath,'Stacks/Tus/DataMULTI/');
+MainPathdif=strcat(initval.basepath,'Stacks/dif/DataMULTI/');
 
 
 %% Load data
@@ -304,6 +304,8 @@ for i=1:Ncells
     end
 end
 
+
+
 for i=1:Ncells
     for j=1:Nspots
         
@@ -316,6 +318,22 @@ for i=1:Ncells
     end
 end
 
+%% Spot position and intensity filtering. Combination of Spots. --> Within K.
+% could be combined within the cost function criteria?
+
+for i=1:Ncells
+    for j=1:Nspots
+        
+
+        
+    end
+end
+
+
+
+
+
+%% 
 M=cell(Nspots,1); Mratio=zeros(Nspots,1); Mratiostd=zeros(Nspots,1);
 Md=cell(Nspots,1); Mdratio=zeros(Nspots,1); Mdratiostd=zeros(Nspots,1);
 

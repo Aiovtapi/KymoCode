@@ -52,51 +52,76 @@ set(gca,'FontSize',20);
 
 %% Histogram Intensities Tus
 n=Ncells;
-j=1;
+
+HisIntT=[];
+for j=1:Nspots
+    HisIntT=[HisIntT T{n+1}.IntI{j}];
+end
 
 figure(4)
 hold on
-hist(nonzeros(T{n+1}.IntI{j}),20);
+hist(nonzeros(HisIntT),20);
   h = findobj(gca,'Type','patch');
-  h.FaceColor = [0 0.7 0.7];
+  h.FaceColor = [1 0 0];
   h.EdgeColor = 'w';
 hold off
 
 xlabel('Integrated Intensity counts (-)','FontSize',20,'FontWeight','bold');
 ylabel('Frequency (-)','FontSize',20,'FontWeight','bold');
 title('Spot Intensity counts (Tus)','FontSize',20)
-txtbox1={TotCellsStr,MeanIntStrT{j},StdIntStrT{j},sprintf('Npoints = %g', NpointsT)};
+txtbox1={TotCellsStr,sprintf('Mean = %g',mean(HisIntT(:))), ...
+    sprintf('Std = %g',std(HisIntT(:))),sprintf('Npoints = %g', NpointsT)};
 annotation('textbox', [0.65,0.8,0.1,0.1],...
            'String', txtbox1,'FontSize',20,'FontWeight','bold')
 set(gca,'FontSize',20);
 
 %% Histogram Intensities dif
-
 n=Ncells;
-j=1;
+
+HisIntd=[];
+for j=1:Nspots
+    HisIntd=[HisIntd d{n+1}.IntI{j}];
+end
+
 figure(4)
 hold on
-hist(nonzeros([d{n+1}.IntI{1} d{n+1}.IntI{2} d{n+1}.IntI{3}]),20);
+hist(nonzeros(HisIntd),20);
   h = findobj(gca,'Type','patch');
-  h.FaceColor = [0 0.7 0.7];
+  h.FaceColor = [0 0 1];
   h.EdgeColor = 'w';
 hold off
 
 xlabel('Integrated Intensity counts (-)','FontSize',20,'FontWeight','bold');
 ylabel('Frequency (-)','FontSize',20,'FontWeight','bold');
 title('Spot Intensity counts (dif)','FontSize',20)
-txtbox1={TotCellsStr,MeanIntStrd{j},StdIntStrd{j},sprintf('Npoints = %g', NpointsT)};
+txtbox1={TotCellsStr,sprintf('Mean = %g',mean(HisIntd(:))), ...
+    sprintf('Std = %g',std(HisIntd(:))),sprintf('Npoints = %g', NpointsT)};
 annotation('textbox', [0.65,0.8,0.1,0.1],...
            'String', txtbox1,'FontSize',20,'FontWeight','bold')
 set(gca,'FontSize',20);
 
 %%
 figure(5)
-%hist(cat(1,D{21}.X,nonzeros(D{21}.XR1),nonzeros(D{21}.XR2),nonzeros(D{21}.XR3)),20);
-hist(d{n+1}.X{j},25);
+
+Weight=cell(Nspots,1);
+
+HisXd=[];
+
+for i=1:Ncells
+    for j=1:Nspots
+        
+        WeightedAverage{i,j}=sum(Sd{i}.x{j}(:,2).*Sd{i}.x{j}(:,1))/sum(Sd{i}.x{j}(:,1));
+        
+        HisXd=[HisXd d{n+1}.X{j}];
+    
+    end
+end
+
+
+hist(HisXd(:),25);
 xlabel('X Position (-)','FontSize',20,'FontWeight','bold');
 ylabel('Frequency (-)','FontSize',20,'FontWeight','bold');
-title('Frequency of spot X Position dif','FontSize',20)
+title('Spot X Position (dif)','FontSize',20)
 set(gca,'FontSize',20);
 
 %% Plot of position w.r.t. cell

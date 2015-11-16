@@ -27,12 +27,13 @@ initval=A001_Images_Set_Experiment(expno); %define your paths and files
 
 %% Inputs 
 
-for Cell=1:3
+for Cell=21
 Bac=num2str(Cell);
+BacStr='Fluo0Chan02Bac0049';
 
-Mainfolder=strcat(initval.basepath,'StacksLong/dif/');
-Stackpth=strcat(Mainfolder,Bac);
-d1{1}=readtimeseries(strcat(Stackpth,'/',Bac,'Im'),'tif'); %read zstack
+Mainfolder=strcat(initval.basepath,'Stacks/Tus/');
+Stackpth=strcat(Mainfolder,BacStr);
+d1{1}=readtimeseries(strcat(Stackpth,'/',BacStr,'Im'),'tif'); %read zstack
 data=dip_array(d1{1}); %turn into uint16 array
 
 %% Ze Defs
