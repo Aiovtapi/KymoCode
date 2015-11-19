@@ -114,4 +114,4 @@ end
 
 % Cost of assignment
 assignment(validRow,validCol) = starZ(1:nRows,1:nCols);
-cost = sum(costMat(assignment));
+cost = costMat(assignment);

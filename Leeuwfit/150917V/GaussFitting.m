@@ -29,9 +29,9 @@ initval=A001_Images_Set_Experiment(expno); %define your paths and files
 
 for Cell=21
 Bac=num2str(Cell);
-BacStr='Fluo0Chan02Bac0049';
+BacStr='Fluo0Chan02Bac0007';
 
-Mainfolder=strcat(initval.basepath,'Stacks/Tus/');
+Mainfolder=strcat(initval.basepath,'Stacks/dif/');
 Stackpth=strcat(Mainfolder,BacStr);
 d1{1}=readtimeseries(strcat(Stackpth,'/',BacStr,'Im'),'tif'); %read zstack
 data=dip_array(d1{1}); %turn into uint16 array
@@ -64,7 +64,7 @@ OPTIONS = optimoptions('lsqcurvefit','Algorithm','trust-region-reflective');
 SA=3; % pixel step from maximum amplitude 
 Sx=3; Sy=3; % guess of sigmaX of spots
 Px=3; Py=3; % for optimal fitting add black 'pads' around detected spot
-Bs=2; Bss=2*Bs+1; % this defines size of black sqaure
+Bs=1; Bss=2*Bs+1; % this defines size of black sqaure
 lob=6; upb=14; chanthickness=7; % define the boundaries of the channel
 
 tic 

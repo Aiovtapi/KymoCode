@@ -13,11 +13,13 @@ GaussCalcs2
 
 %% dif Position vs. time
 
+i=10;
+
 figure(1)
 hold on
-plot(0:2/(MeanBacLifed-1):2,Sd{3}.x{1}(:,2),'b','LineWidth',5);
-plot(0:2/(MeanBacLifed-1):2,Sd{3}.x{2}(:,2),'r','LineWidth',5);
-plot(0:2/(MeanBacLifed-1):2,Sd{3}.x{3}(:,2),'k','LineWidth',5);
+plot(0:2/(MeanBacLifed-1):2,Sd{i}.x{1}(:,2),'b','LineWidth',5);
+plot(0:2/(MeanBacLifed-1):2,Sd{i}.x{2}(:,2),'r','LineWidth',5);
+plot(0:2/(MeanBacLifed-1):2,Sd{i}.x{3}(:,2),'k','LineWidth',5);
 hold off
 axis([0 2 0 1])
 xlabel('Normalized Cell Time (-)');
@@ -43,12 +45,13 @@ set(gca,'FontSize',20);
 figure(3)
 hold on
 plot(0:2/(MeanBacLifeT-1):2,S{3}.x{3}(:,2),'b','LineWidth',5);
-plot(0:2/(MeanBacLifed-1):2,Sd{3}.x{3}(:,2),'r','LineWidth',5);
+plot(0:2/(MeanBacLifed-1):2,Sd{3}.x{1}(:,2),'r','LineWidth',5);
 hold off
 axis([0 2 0 1])
 xlabel('Normalized Cell Time (-)');
 ylabel('Normalized Cell Position (-)');
 set(gca,'FontSize',20);
+legend('Tus','dif');
 
 %% Histogram Intensities Tus
 n=Ncells;
@@ -153,11 +156,11 @@ xccd=linspace(0,1,MeanBacLifed+1);
 j=1;
 figure(9)
 hold on
- plot(xcc,M{j}(:,7)/1100,'b','LineWidth',4)
+ plot(xcc,M{j}(:,7)/200,'b','LineWidth',4)
 % plot(xcc,M{j}(:,7)+M{j}(:,8),'--b')
 % plot(xcc,M{j}(:,7)-M{j}(:,8),'--b')
 % plot(xcc,(M{j}(:,1)+M{j+1}(:,1)+M{j+2}(:,1))/1100,'b','LineWidth',4)
-plot(xcc,M{j}(:,1)/1100,'r','LineWidth',4)
+plot(xcc,M{j}(:,1)/200,'r','LineWidth',4)
 % plot(xcc,(M{j}(:,1)+M{j+1}(:,1)+M{j+2}(:,1))./M{j}(:,7),'r','LineWidth',4)
 hold off
 xlabel('Normalized Cell Time (-)','FontSize',20,'FontWeight','bold');

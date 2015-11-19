@@ -186,8 +186,10 @@ for i=1:Ncells
                 
                 Clinkd{i,t}(Clinkd{i,t}==0)=NaN;
                 
-                Amind{i,t}=LAP(Clinkd{i,t}); %Linear Assignment Problem (LAP)
-        
+                [Amind{i,t},Costd{i,t}]=LAP(Clinkd{i,t}); %Linear Assignment Problem (LAP)
+                %Costd is the cost corresponding with the switches. Numbers
+                %correspond with the columns.
+                
                 %Reassign x-position correspondingly (and corresp
                 %intensities)
                 %First 'double' the size
@@ -286,8 +288,7 @@ for i=1:Ncells
     end
 end
 
-% 2. close gaps and capture merging and splitting events. (Using Cost Matrix Gap Closing, merging, splitting.)
-
+% To do 2. close gaps and capture merging and splitting events. (Using Cost Matrix Gap Closing, merging, splitting.)
 
 
 %% Construct K for taking means of elements at same time point
@@ -321,15 +322,56 @@ end
 %% Spot position and intensity filtering. Combination of Spots. --> Within K.
 % could be combined within the cost function criteria?
 
-for i=1:Ncells
-    for j=1:Nspots
+DeltaXcost=0.1^2; % spot cost criterium (10% of image) 
+                    % (As a function of corresponding image size later)
+
+DummyVector=ones(Nspots,1)';
+VectorX=[];
+VectorI=[];
         
-        DeltaX=Kdx{j}(:,i)
+for t=1:MeanBacLifed-1
+    for i=1:Ncells
         
+        for j=1:Nspots; 
+            
+                    VectorX=[VectorX Sd{i}.x{j}(t,2)];
+                    VectorI=[VectorI Sd{i}.x{j}(t,1)]; %These are used to combine later
+                    
+            for k=1:Nspots;  
+                
+                %New combination matrix
+                Ccombd{i,t}(j,k)=(sqrt(Sd{i}.x{j}(t,2).^2+Sd{i}.x{j}(t,4).^2)- ...
+                    sqrt(Sd{i}.x{k}(t,2).^2+Sd{i}.x{k}(t,4).^2)).^2;
+               
+            end
+        end
+        
+    Closed{i,t}=Ccombd{i,t}<DeltaXcost;
+        
+    Closed{i,t}=Closed{i,t}-diag(ones(Nspots,1)); %remove diagonals, they are always one.
+        
+    [I,J]=find(tril(Closed{i,t})==1); 
+    %I and J are indices of the nonzero non-diagonal elements
+    %which indicate a combination.
+    
+    DummyX=VectorX;
+    DummyI=VectorI;
+    
+    for n=I;
+        for k=J;
+            %COM position with intensity weight
+            VectorX(n)=(VectorI(n)*DummyX(n)+VectorI(k)*DummyX(k))/(VectorI(n)+VectorI(k));
+            VectorX(k)=(VectorI(n)*DummyX(n)+VectorI(k)*DummyX(k))/(VectorI(n)+VectorI(k));
+            %Intensities are summed of combined spots
+            VectorI(n)=(DummyI(n)+DummyI(k));
+            VectorI(k)=(DummyI(n)+DummyI(k));
+        end
+    end
+
+    Sd{i}.x{j}(t,2)=VectorX
+
     end
 end
-
-
 
 
 

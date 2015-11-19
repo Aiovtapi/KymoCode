@@ -11,7 +11,7 @@ function [nwx,nwy,Ispot,Ibackground_level,spotim_clipped,bckim]=DoubleMaskedCom(
                     radpos=((XX-x).^2+(YY-y).^2).^0.5;
                     GaussMask=exp(-radpos/(2*(GaussmaskW)).^2);
                     
-                    sel=find(radpos<ClipmaskR); 
+                    sel=find(radpos<ClipmaskR); % evt. ClipmaskR op basis interpolatie
                     unsel=find(radpos>=ClipmaskR); 
                     
                     spotim_clipped=spotim; 
