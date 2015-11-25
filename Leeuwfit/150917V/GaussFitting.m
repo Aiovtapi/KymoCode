@@ -27,18 +27,19 @@ initval=A001_Images_Set_Experiment(expno); %define your paths and files
 
 %% Inputs 
 
-for Cell=21
+for Cell=4
+    
 Bac=num2str(Cell);
-BacStr='Fluo0Chan02Bac0007';
+BacStr='Fluo0Chan01Bac0015';
 
-Mainfolder=strcat(initval.basepath,'Stacks/dif/');
+Mainfolder=strcat(initval.basepath,'Stacks/Tus/');
 Stackpth=strcat(Mainfolder,BacStr);
 d1{1}=readtimeseries(strcat(Stackpth,'/',BacStr,'Im'),'tif'); %read zstack
 data=dip_array(d1{1}); %turn into uint16 array
 
 %% Ze Defs
 
-Nspots=3; % NUMBER OF SPOTS 
+Nspots=10; % NUMBER OF SPOTS 
 
 Zsize=size(data,3); XSize=zeros(size(data,2),1);
 YSize=zeros(size(data,1),1); %Ysize
@@ -88,7 +89,7 @@ for i=1:Zsize
     
     [x0{j}(i,:),Case{j}(i),ydatacrpdR1{i,j+1},Ydata{i,j},Size{i,j},Yg(i,j),Xg(i,j)]= ... 
         ... 
-        Spotter(ydatacrpdR1{i,j},SA,Sx,Sy,Px,Py,Bs,lob,upb);
+        LionSpotter(ydatacrpdR1{i,j},SA,Sx,Sy,Px,Py,Bs,lob,upb);
     
     % preparing framework for gaussian fitting
     [Ydata_X(j),Ydata_Y(j)]=size(Ydata{i,j});
@@ -128,8 +129,8 @@ for i=1:Zsize
         x{j}(i,2)=x{j}(i,2)-Px-1+(Size{i,j}(2)-2*SA);
         x{j}(i,4)=x{j}(i,4)+(Yg(i,j)-SA)-1;
     elseif Case{j}(i)==2
-        x{j}(i,1:6)=-1;
-        XNorm{j}(i,1:6)=-1;
+        x{j}(i,1:6)=NaN;
+        XNorm{j}(i,1:6)=NaN;
     end
     
 %Size{i,j}(1) is the height of the image.

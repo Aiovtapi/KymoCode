@@ -1,4 +1,4 @@
-function [assignment,cost] = LAP(costMat)
+function [assignment,cost] = LionLAP(costMat)
 
 assignment = false(size(costMat));
 cost = 0;

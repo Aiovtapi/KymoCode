@@ -9,32 +9,34 @@
 % M = Mean value at time points 
 % M = [IntSpot Xpos stdX Ypos stdY stdIntSpot IntCell stdIntCell]
 
-GaussCalcs2
+% GaussCalcs2
 
 %% dif Position vs. time
 
-i=10;
+i=4;
 
-figure(1)
+figure(2)
 hold on
-plot(0:2/(MeanBacLifed-1):2,Sd{i}.x{1}(:,2),'b','LineWidth',5);
-plot(0:2/(MeanBacLifed-1):2,Sd{i}.x{2}(:,2),'r','LineWidth',5);
-plot(0:2/(MeanBacLifed-1):2,Sd{i}.x{3}(:,2),'k','LineWidth',5);
+for j=1:10
+scatter(0:1/(MeanBacLifed-1):1,Sd2{i}.x{j}(:,2),Sd2{i}.x{j}(:,1)/50,'ob','LineWidth',3);
+end
 hold off
-axis([0 2 0 1])
+axis([0 1 0 1])
 xlabel('Normalized Cell Time (-)');
 ylabel('Normalized Cell Position (-)');
 set(gca,'FontSize',20);
 
 %% Tus Position vs. time
 
+i=4;
+
 figure(2)
 hold on
-plot(0:2/(MeanBacLifeT-1):2,S{3}.x{1}(:,2),'b','LineWidth',5);
-plot(0:2/(MeanBacLifeT-1):2,S{3}.x{2}(:,2),'r','LineWidth',5);
-plot(0:2/(MeanBacLifeT-1):2,S{3}.x{3}(:,2),'k','LineWidth',5);
+for j=1:10
+scatter(0:1/(MeanBacLifeT-1):1,S{i}.x{j}(:,2),S{i}.x{j}(:,1)/20,'or','LineWidth',3);
+end
 hold off
-axis([0 2 0 1])
+axis([0 1 0 1])
 xlabel('Normalized Cell Time (-)');
 ylabel('Normalized Cell Position (-)');
 set(gca,'FontSize',20);
@@ -57,8 +59,11 @@ legend('Tus','dif');
 n=Ncells;
 
 HisIntT=[];
+
+for i=1:n
 for j=1:Nspots
-    HisIntT=[HisIntT T{n+1}.IntI{j}];
+    HisIntT=[HisIntT S2{i}.x{j}(:,1)];
+end
 end
 
 figure(4)
@@ -72,8 +77,8 @@ hold off
 xlabel('Integrated Intensity counts (-)','FontSize',20,'FontWeight','bold');
 ylabel('Frequency (-)','FontSize',20,'FontWeight','bold');
 title('Spot Intensity counts (Tus)','FontSize',20)
-txtbox1={TotCellsStr,sprintf('Mean = %g',mean(HisIntT(:))), ...
-    sprintf('Std = %g',std(HisIntT(:))),sprintf('Npoints = %g', NpointsT)};
+txtbox1={TotCellsStr,sprintf('Mean = %g',nanmean(HisIntT(:))), ...
+    sprintf('Std = %g',nanstd(HisIntT(:))),sprintf('Npoints = %g', NpointsT)};
 annotation('textbox', [0.65,0.8,0.1,0.1],...
            'String', txtbox1,'FontSize',20,'FontWeight','bold')
 set(gca,'FontSize',20);
@@ -82,11 +87,13 @@ set(gca,'FontSize',20);
 n=Ncells;
 
 HisIntd=[];
+for i=1:n
 for j=1:Nspots
-    HisIntd=[HisIntd d{n+1}.IntI{j}];
+    HisIntd=[HisIntd Sd2{i}.x{j}(:,1)];
+end
 end
 
-figure(4)
+figure(3)
 hold on
 hist(nonzeros(HisIntd),20);
   h = findobj(gca,'Type','patch');
@@ -97,8 +104,8 @@ hold off
 xlabel('Integrated Intensity counts (-)','FontSize',20,'FontWeight','bold');
 ylabel('Frequency (-)','FontSize',20,'FontWeight','bold');
 title('Spot Intensity counts (dif)','FontSize',20)
-txtbox1={TotCellsStr,sprintf('Mean = %g',mean(HisIntd(:))), ...
-    sprintf('Std = %g',std(HisIntd(:))),sprintf('Npoints = %g', NpointsT)};
+txtbox1={TotCellsStr,sprintf('Mean = %g',nanmean(HisIntd(:))), ...
+    sprintf('Std = %g',nanstd(HisIntd(:))),sprintf('Npoints = %g', NpointsT)};
 annotation('textbox', [0.65,0.8,0.1,0.1],...
            'String', txtbox1,'FontSize',20,'FontWeight','bold')
 set(gca,'FontSize',20);
@@ -129,6 +136,7 @@ axis([0 1 0 21]);
 set(gca,'FontSize',20);
 
 %% Plot of position w.r.t. cell
+j=10;
 figure(4)
 hold on
 plot(d{n+1}.X{j},d{n+1}.Y{j},'oc');
@@ -153,14 +161,15 @@ xccd=linspace(0,1,MeanBacLifed+1);
 % title('Mean Integrated Intensity vs Normalised Cell Time','FontSize',20)
 % annotation('textbox', [0.15,0.875,0.1,0.05],...
 %            'String', txtbox7,'FontSize',14,'FontWeight','bold')
-j=1;
+j=2;
 figure(9)
 hold on
- plot(xcc,M{j}(:,7)/200,'b','LineWidth',4)
+scatter(1:length(Md{j}(:,1)),Md{j}(:,1),'b','LineWidth',4)
 % plot(xcc,M{j}(:,7)+M{j}(:,8),'--b')
 % plot(xcc,M{j}(:,7)-M{j}(:,8),'--b')
-% plot(xcc,(M{j}(:,1)+M{j+1}(:,1)+M{j+2}(:,1))/1100,'b','LineWidth',4)
-plot(xcc,M{j}(:,1)/200,'r','LineWidth',4)
+% scatter(xcc,(M{j}(:,1)+M{j+1}(:,1)+M{j+2}(:,1)+M{j+3}(:,1)+M{j+4}(:,1)+M{j+5}(:,1)...
+%     +M{j+6}(:,1)+M{j+7}(:,1)+M{j+8}(:,1)+M{j+9}(:,1))/1100,'r','LineWidth',4)
+% plot(xcc,M{j}(:,1)/200,'r','LineWidth',4)
 % plot(xcc,(M{j}(:,1)+M{j+1}(:,1)+M{j+2}(:,1))./M{j}(:,7),'r','LineWidth',4)
 hold off
 xlabel('Normalized Cell Time (-)','FontSize',20,'FontWeight','bold');
@@ -173,8 +182,17 @@ annotation('textbox', [0.25,0.85,0.1,0.05],...
            'String', txtbox7,'FontSize',20,'FontWeight','bold')
        
 %% Tus w.r.t. dif
+txtbox7={TotCellsStr};
+xcc=linspace(0,1,MeanBacLifeT);
+xccd=linspace(0,1,MeanBacLifed);
 
 Fac=1/(length(xccd)/(MeanCellLifed+10));
+
+SPOTTESTER=[];
+for j=1:Nspots
+SPOTTESTER=[SPOTTESTER Md{j}(:,1)];
+end
+
 
 figure(8)
 hold on
@@ -182,7 +200,9 @@ hold on
 %    plot(MR1(:,2),xcc/Fac,'b','LineWidth',4)
 %   plot(MR2(:,2),xcc/Fac,'b','LineWidth',4)
 %   plot(MR3(:,2),xcc/Fac,'b','LineWidth',4)
- plot(M{1}(:,2),'r','LineWidth',4)%,Md(:,2)-Md(:,3),xccd,'r',Md(:,2)+Md(:,3),xccd,'r')
+
+ plot(xccd,nanmean(SPOTTESTER,2),'b','LineWidth',4)
+
 %  plot(MdR1(:,2),xccd/Fac,'r','LineWidth',4)
 %   plot(MdR2(:,2),xccd/Fac,'r','LineWidth',4)
 %     plot(MdR3(:,2),xccd/Fac,'r','LineWidth',4)
@@ -193,10 +213,10 @@ hold on
 % axis([0 1 0 2])
 hold off
 
-ylabel('Normalized Cell Time (-)','FontSize',20);
-xlabel('X Position (-)','FontSize',20);
-title('Mean Normalised X position vs Normalised Cell Time','FontSize',20)
-legend('Tus','dif','Div time')
+ylabel('Integrated Intensity (-)','FontSize',20);
+xlabel('Normalized Cell Time (-)','FontSize',20);
+title('Mean Spot Intensity vs Normalised Cell Time','FontSize',20)
+legend('dif','dif','Div time')
 set(legend,'FontSize',18)
 
 %% Ratio of activity
