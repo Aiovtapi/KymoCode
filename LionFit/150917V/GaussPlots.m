@@ -13,12 +13,13 @@
 
 %% dif Position vs. time
 
-i=4;
+i=15;
 
-figure(2)
+figure(1)
 hold on
 for j=1:10
-scatter(0:1/(MeanBacLifed-1):1,Sd2{i}.x{j}(:,2),Sd2{i}.x{j}(:,1)/50,'ob','LineWidth',3);
+scatter(0:1/(MeanBacLifed+7):1,d{i}.XNorm{j}(:,2),d{i}.x{j}(:,8)/100,'or','LineWidth',3);
+scatter(0:1/(MeanBacLifed-1):1,Sd2{i}.x{j}(:,2),Sd2{i}.x{j}(:,1)/100,'ob','LineWidth',3);
 end
 hold off
 axis([0 1 0 1])
@@ -28,12 +29,13 @@ set(gca,'FontSize',20);
 
 %% Tus Position vs. time
 
-i=4;
+i=15;
 
-figure(2)
+figure(1)
 hold on
 for j=1:10
-scatter(0:1/(MeanBacLifeT-1):1,S{i}.x{j}(:,2),S{i}.x{j}(:,1)/20,'or','LineWidth',3);
+scatter(0:1/(MeanBacLifeT+2):1,T{i}.XNorm{j}(:,2),T{i}.x{j}(:,1)/10,'or','LineWidth',3);
+scatter(0:1/(MeanBacLifeT-1):1,S{i}.x{j}(:,2),S{i}.x{j}(:,1)/40,'ob','LineWidth',3);
 end
 hold off
 axis([0 1 0 1])
@@ -41,6 +43,27 @@ xlabel('Normalized Cell Time (-)');
 ylabel('Normalized Cell Position (-)');
 set(gca,'FontSize',20);
 
+%% Distance between tus and dif vs. time
+
+i=1;
+
+for n=1:Ncells
+    DistanceMeanMatrixAvgpFrame=nanmean(ddweighted,2);
+    DistanceStdMatrix=nanstd(ddweighted,1,2);
+end
+
+figure(3)
+hold on
+for j=1:10
+plot(0:1/(length(DistanceMeanMatrixAvgpFrame)-1):1,DistanceMeanMatrixAvgpFrame,'-k','LineWidth',2);
+plot(0:1/(length(DistanceMeanMatrixAvgpFrame)-1):1,DistanceMeanMatrixAvgpFrame+DistanceStdMatrix,'--b','LineWidth',2);
+plot(0:1/(length(DistanceMeanMatrixAvgpFrame)-1):1,DistanceMeanMatrixAvgpFrame-DistanceStdMatrix,'--b','LineWidth',2);
+end
+hold off
+% axis([0 1 0 1])
+xlabel('Normalized Cell Time (-)');
+ylabel('Normalized Cell Position (-)');
+set(gca,'FontSize',20);
 
 %% Tus VS dif
 
@@ -62,7 +85,7 @@ HisIntT=[];
 
 for i=1:n
 for j=1:Nspots
-    HisIntT=[HisIntT S2{i}.x{j}(:,1)];
+    HisIntT=[HisIntT S{i}.x{j}(:,1)];
 end
 end
 
@@ -161,11 +184,11 @@ xccd=linspace(0,1,MeanBacLifed+1);
 % title('Mean Integrated Intensity vs Normalised Cell Time','FontSize',20)
 % annotation('textbox', [0.15,0.875,0.1,0.05],...
 %            'String', txtbox7,'FontSize',14,'FontWeight','bold')
-j=2;
+j=1;
 figure(9)
 hold on
-scatter(1:length(Md{j}(:,1)),Md{j}(:,1),'b','LineWidth',4)
-% plot(xcc,M{j}(:,7)+M{j}(:,8),'--b')
+plot(0:(1/(length(M{j}(:,1))-1)):1,(M{j}(:,1))/1100,'b','LineWidth',4)
+plot(0:(1/(length(M{j}(:,1))-1)):1,M{j}(:,7)/1100,'r','LineWidth',4)
 % plot(xcc,M{j}(:,7)-M{j}(:,8),'--b')
 % scatter(xcc,(M{j}(:,1)+M{j+1}(:,1)+M{j+2}(:,1)+M{j+3}(:,1)+M{j+4}(:,1)+M{j+5}(:,1)...
 %     +M{j+6}(:,1)+M{j+7}(:,1)+M{j+8}(:,1)+M{j+9}(:,1))/1100,'r','LineWidth',4)
@@ -174,7 +197,7 @@ scatter(1:length(Md{j}(:,1)),Md{j}(:,1),'b','LineWidth',4)
 hold off
 xlabel('Normalized Cell Time (-)','FontSize',20,'FontWeight','bold');
 ylabel('Number of Tus Protein (-)','FontSize',20,'FontWeight','bold');
-L=legend('Total','Spots');
+L=legend('Spots','Total');
 set(L,'FontSize',20);
 set(gca,'FontSize',20);
 title('Number of Tus Protein vs Normalised Cell Time (dif)','FontSize',24)

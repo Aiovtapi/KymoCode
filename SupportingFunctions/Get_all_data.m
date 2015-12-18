@@ -6,8 +6,8 @@ function [aa,ff,drift]=Get_all_data(initval)
     lbl3=strcat(initval.basepath,initval.driftfile);
     drift=dlmread(lbl3);
     lbl1=strcat(initval.basepath,initval.BFdatapath,initval.BFfiletemplate);
-    aa = readtimeseries(lbl1,'tif',[1 initval.maxfile]);              %Brightfielddata stack
+    aa = readtimeseries(lbl1,'tiff',[1 initval.maxfile]);              %Brightfielddata stack
     lbl2=strcat(initval.basepath,initval.FLdatapath,initval.FLfiletemplate);
-    ff = readtimeseries(lbl2,'tif',[1 initval.maxfile]);              %Fluorescencedata stack
+    ff = readtimeseries(lbl2,'tiff',[1 initval.maxfile]);              %Fluorescencedata stack
     
 

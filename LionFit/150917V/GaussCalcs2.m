@@ -96,7 +96,7 @@ end
 %1. Linking
 
 Sd=LionLink(Sd,MeanBacLifed);
-% S=LionLink(S,MeanBacLifeT);
+ S=LionLink(S,MeanBacLifeT);
 
 % To do 2. close gaps and capture merging and splitting events. (Using Cost Matrix Gap Closing, merging, splitting.)
 
@@ -105,11 +105,11 @@ Sd=LionLink(Sd,MeanBacLifed);
 
 DeltaXcost=0.5;
 
-Ilowerboundd=9000;
-IlowerboundT=3500;
+Ilowerboundd=8000;
+IlowerboundT=3000;
 
 Sd2=LionComBI(Sd,DeltaXcost,MeanBacLifed,Ilowerboundd);
-[Sd,dIntReduced]=LionCOMbee(Sd,DeltaXcost,MeanBacLifed,Ilowerboundd);
+% [Sd,dIntReduced]=LionCOMbee(Sd,DeltaXcost,MeanBacLifed,Ilowerboundd);
 
 % dIntReduced is the COM method of spot combining, but accounting for one
 % spot with that intensity compared to multiple spots with the same
@@ -118,9 +118,9 @@ Sd2=LionComBI(Sd,DeltaXcost,MeanBacLifed,Ilowerboundd);
 S=LionComBI(S,DeltaXcost,MeanBacLifeT,IlowerboundT);
 
 
-%% Cross-correlation between two channels (AFTER COMB and FILTERING)
+%% mean distance between spots of two channels (AFTER COMB and FILTERING)
 
-
+[dd,ddweighted]=LionDistance(S,Sd2,MeanBacLifeT,MeanBacLifed);
 
 %% Construct K for taking means of elements at same time point
 
@@ -154,14 +154,14 @@ Md=cell(Nspots,1); Mdratio=zeros(Nspots,1); Mdratiostd=zeros(Nspots,1);
 
 for j=1:Nspots
         
-        M{j}(:,1)=mean(Ki{j},2); % mean integrated intensity
-        M{j}(:,2)=mean(Kx{j},2); % mean x position
-        M{j}(:,3)=std(Kx{j},1,2); % std x position
-        M{j}(:,4)=mean(Ky{j},2); % mean y position
-        M{j}(:,5)=std(Ky{j},1,2); % std y position
-        M{j}(:,6)=std(Ki{j},1,2); % std intensities
-        M{j}(:,7)=mean(KiFC{j},2); % mean full cell integrated intensity
-        M{j}(:,8)=std(KiFC{j},1,2); % std full cell integrated intensity
+        M{j}(:,1)=nanmean(Ki{j},2); % mean integrated intensity
+        M{j}(:,2)=nanmean(Kx{j},2); % mean x position
+        M{j}(:,3)=nanstd(Kx{j},1,2); % std x position
+        M{j}(:,4)=nanmean(Ky{j},2); % mean y position
+        M{j}(:,5)=nanstd(Ky{j},1,2); % std y position
+        M{j}(:,6)=nanstd(Ki{j},1,2); % std intensities
+        M{j}(:,7)=nanmean(KiFC{j},2); % mean full cell integrated intensity
+        M{j}(:,8)=nanstd(KiFC{j},1,2); % std full cell integrated intensity
         
         Md{j}(:,1)=nanmean(Kdi{j},2);
         Md{j}(:,2)=nanmean(Kdx{j},2);

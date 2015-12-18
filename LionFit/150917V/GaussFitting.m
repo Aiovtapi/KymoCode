@@ -22,24 +22,25 @@ clear all
 close all
 clc
 
-expno='001_DnaN_TUS_dif_30122014_difsignal';
-initval=A001_Images_Set_Experiment(expno); %define your paths and files
+  expno='001_DnaN_TUS_dif_30122014_difsignal';
+  initval=A001_Images_Set_Experiment(expno); %define your paths and files
+
 
 %% Inputs 
 
-for Cell=4
+for Cell=1
     
-Bac=num2str(Cell);
+ Bac=num2str(Cell);
 BacStr='Fluo0Chan01Bac0015';
+ Mainfolder=strcat(initval.basepath,'Stacks/dif/');
+ Stackpth=strcat(Mainfolder,BacStr);
+ d1{1}=readtimeseries(strcat(Stackpth,'/',BacStr,'Im'),'tif'); %read zstack
 
-Mainfolder=strcat(initval.basepath,'Stacks/Tus/');
-Stackpth=strcat(Mainfolder,BacStr);
-d1{1}=readtimeseries(strcat(Stackpth,'/',BacStr,'Im'),'tif'); %read zstack
 data=dip_array(d1{1}); %turn into uint16 array
 
 %% Ze Defs
 
-Nspots=10; % NUMBER OF SPOTS 
+Nspots=5; % NUMBER OF SPOTS 
 
 Zsize=size(data,3); XSize=zeros(size(data,2),1);
 YSize=zeros(size(data,1),1); %Ysize
@@ -66,7 +67,7 @@ SA=3; % pixel step from maximum amplitude
 Sx=3; Sy=3; % guess of sigmaX of spots
 Px=3; Py=3; % for optimal fitting add black 'pads' around detected spot
 Bs=1; Bss=2*Bs+1; % this defines size of black sqaure
-lob=6; upb=14; chanthickness=7; % define the boundaries of the channel
+lob=1; upb=size(data(:,:,1),1); chanthickness=size(data(:,:,1),1); % define the boundaries of the channel
 
 tic 
 
@@ -106,28 +107,25 @@ for i=1:Zsize
     
     [x{j}(i,:),resnorm,residual,exitflag] = lsqcurvefit(@GaussPlosFunc, ...
        x0{j}(i,:),xdata(:,j),Ydata{i,j},lb,ub,OPTIONS);
+
     
-    end
-end
-
-%% Translate back to original coords
-
-% use XNorm for normalization to position w.r.t. cell
-
-XNorm=x;
-
-for i=1:Zsize
-    for j=1:Nspots
-        
+   XNorm=x;
+   
     if Case{j}(i)==-1
         x{j}(i,2)=x{j}(i,2)-Px-1;
-        x{j}(i,4)=x{j}(i,4)+(Yg(i,j)-SA)-1;
+        x{j}(i,4)=x{j}(i,4)-Py+(Yg(i,j)-SA)-1;
     elseif Case{j}(i)==0
         x{j}(i,2)=x{j}(i,2)-Px+(Xg(i,j)-SA)-1;
-        x{j}(i,4)=x{j}(i,4)+(Yg(i,j)-SA)-1;
+        x{j}(i,4)=x{j}(i,4)-Py+(Yg(i,j)-SA)-1;
     elseif Case{j}(i)==1
         x{j}(i,2)=x{j}(i,2)-Px-1+(Size{i,j}(2)-2*SA);
-        x{j}(i,4)=x{j}(i,4)+(Yg(i,j)-SA)-1;
+        x{j}(i,4)=x{j}(i,4)-Py+(Yg(i,j)-SA)-1;
+    elseif Case{j}(i)==-11
+        x{j}(i,2)=x{j}(i,2)-Px+(Xg(i,j)-SA)-1; 
+        x{j}(i,4)=x{j}(i,4)-Py-1;
+    elseif Case{j}(i)==11
+        x{j}(i,2)=x{j}(i,2)-Px+(Xg(i,j)-SA)-1;
+        x{j}(i,4)=x{j}(i,4)-Py-1+(Size{i,j}(1)-2*SA);
     elseif Case{j}(i)==2
         x{j}(i,1:6)=NaN;
         XNorm{j}(i,1:6)=NaN;
@@ -139,10 +137,17 @@ for i=1:Zsize
     XNorm{j}(i,2)=x{j}(i,2)/Size{i,j}(2);
     
     XNorm{j}(i,4)=(x{j}(i,4)-lob)/chanthickness; 
-    % 1- in above, to make sure that 0.9 is upper! part of channel in image
     
-    end 
+    % 1- in above, to make sure that 0.9 is upper! part of channel in image
+       
+%    [~,~,Ispot,Iback,spotim_clipped,bckim]=LionMasker(ydatacrpdR1{i,j},x{j}(i,2),x{j}(i,4),x{j}(i,3)*2,x{j}(i,3));
+   
+    end
 end
+
+%% Translate back to original coords
+
+% use XNorm for normalization to position w.r.t. cell
 
 %% Integrated Intensity V2.0
 
@@ -381,6 +386,6 @@ end
 % end
 
 %% Save results
- save(strcat(Mainfolder,'DataMULTI/',num2str(Cell)),'x','XNorm','Nspots');
+  save(strcat(Mainfolder,'DataMULTI/',num2str(Cell)),'x','XNorm','Nspots');
 end
 toc

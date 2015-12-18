@@ -3,7 +3,7 @@ function initval=A001_Images_Set_Experiment(exp)
 
 %common settings---------------------------------------------
 if nargin<1, exp='006_oriZ_dif_110515_DnaNsignal';end
-user='Peter';
+user='Roy';
 switch user
       case 'Jacob', 
           projectpath='D:\jkerssemakers\My Documents\BN_ND_ActiveProjects\BN_ND11_CharlBacterialReplication\';
@@ -17,11 +17,11 @@ switch user
           initval.skippicturesavingbecauseCharlislogginghislive=0;
       case 'Roy' ,
           projectpath='/Users/rleeuw/Work/DataAnalysis/';
-          versionpath='201505_TUSdifDnaN_Montage/';
+          versionpath='201511_TUSdifDnaN_Montage/';
           toolspath='SupportingFunctions';    
       case 'RoyPC' ,
           projectpath='D:\rleeuw\DataAnalysis\';
-          versionpath='201503_TUSdifDnaN_Montage\';
+          versionpath='201511_TUSdifDnaN_Montage\';
           toolspath='SupportingFunctions';
       case 'Peter' ,
           projectpath='D:\peterbrazda\ImageAnalysis\';

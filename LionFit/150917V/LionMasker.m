@@ -1,4 +1,4 @@
-function [nwx,nwy,Ispot,Ibackground_level,spotim_clipped,bckim]=DoubleMaskedCom(spotim,x,y,ClipmaskR,GaussmaskW)
+function [nwx,nwy,Ispot,Ibackground_level,spotim_clipped,bckim]=LionMasker(spotim,x,y,ClipmaskR,GaussmaskW)
   %This function follows LL-G et al to get a masked spot.
                     %note that we do not resample with the clipping mask
                     %(which is bad!)
@@ -9,10 +9,13 @@ function [nwx,nwy,Ispot,Ibackground_level,spotim_clipped,bckim]=DoubleMaskedCom(
                     [XX,YY]=meshgrid(1:cc,1:rr);
                     II=0*XX+1;  %no weights
                     radpos=((XX-x).^2+(YY-y).^2).^0.5;
-                    GaussMask=exp(-radpos/(2*(GaussmaskW)).^2);
+                    GaussMask=abs(1-exp(-radpos/(2*(GaussmaskW)).^2));
                     
                     sel=find(radpos<ClipmaskR); % evt. ClipmaskR op basis interpolatie
                     unsel=find(radpos>=ClipmaskR); 
+                   
+                    clippedGauss=GaussMask;
+                    clippedGauss(unsel)=1;
                     
                     spotim_clipped=spotim; 
                     spotim_clipped(unsel)=0; 
@@ -22,7 +25,7 @@ function [nwx,nwy,Ispot,Ibackground_level,spotim_clipped,bckim]=DoubleMaskedCom(
                     
                     Ibackground_level=mean(outsideim(unsel));
                     spotim_bc=spotim_clipped;
-                    %spotim_bc(sel)=spotim_bc(sel)-Ibackground_level;
+                    spotim_bc(sel)=spotim_bc(sel)-Ibackground_level;
                     spotim_bc(spotim_bc<0)=0;
 
                     Ispot=sum(spotim_bc(:));
@@ -34,7 +37,7 @@ function [nwx,nwy,Ispot,Ibackground_level,spotim_clipped,bckim]=DoubleMaskedCom(
                     spotim_masked=spotim_clipped.*GaussMask;
                     bckim=spotim-spotim_bc;
                     
-                               
+                        
                     clippedpoints=[XX(sel) YY(sel) spotim_masked(sel)];       
                     [nwx,nwy,~,~]=JKD2_XY_calculate2Dmomentpoints(clippedpoints,1);
                     

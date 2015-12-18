@@ -17,11 +17,11 @@ switch user
           initval.skippicturesavingbecauseCharlislogginghislive=0;
       case 'Roy' ,
           projectpath='/Users/rleeuw/Work/DataAnalysis/';
-          versionpath='201505_TUSdifDnaN_Montage/';
+          versionpath='201511_TUSdifDnaN_Montage/';
           toolspath='SupportingFunctions';    
       case 'RoyPC' ,
           projectpath='D:\rleeuw\DataAnalysis\';
-          versionpath='201505_TUSdifDnaN_Montage\';
+          versionpath='201511_TUSdifDnaN_Montage\';
           toolspath='SupportingFunctions';
 end
 addpath(strcat(projectpath,versionpath));

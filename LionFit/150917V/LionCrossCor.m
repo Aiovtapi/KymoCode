@@ -2,10 +2,6 @@ function [r] = LionCrossCor(S,Sd,MeanBacLifed,MeanBacLifeT)
 %LIONCROSSCOR Summary of this function goes here
 %   Detailed explanation goes here
 
-if nargin<4;
-    
-end
-
 Ncells=size(Sd,1);
 Nspots=size(Sd{1}.x,2);
 
