@@ -24,7 +24,7 @@ function [nwx,nwy,Ispot,Ibackground_level,spotim_masked,bckim]=DoubleMaskedCom(s
                     
                     Ibackground_level=mean(outsideim(unsel));
                     spotim_bc=spotim_clipped;
-%                     spotim_bc(sel)=spotim_bc(sel)-Ibackground_level;
+                    spotim_bc(sel)=spotim_bc(sel)-Ibackground_level;
                     spotim_bc(spotim_bc<0)=0;
                     
                     spotim_masked=spotim_bc.*GaussMask;

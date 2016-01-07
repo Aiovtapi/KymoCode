@@ -1,30 +1,35 @@
 close all
-clear Sim RadDiff
+clear Sim RadDiff SpotWriter
 
 %% load data
-TestFolder='GaussNoiseTest';
+TestFolder='GaussNoiseTest2';
+ImageFolder='images160nmPS/';
 
-LionFitFile='0-0';
+for N=2
+    
+clear DistanceNM MatIndex Distance
+LionFitFile=num2str(N);
+SaveFile=LionFitFile;
 
 NoiseData=load(strcat('/Users/rleeuw/Work/DataAnalysis/BlurLab/',TestFolder,'/',TestFolder,'.txt'));
 
-load(strcat('/Users/rleeuw/Work/DataAnalysis/BlurLab/',TestFolder,'/',LionFitFile,'/',LionFitFile));
+load(strcat('/Users/rleeuw/Work/DataAnalysis/BlurLab/',TestFolder,'/',ImageFolder,LionFitFile,'/',LionFitFile));
 
 Sim=NoiseData;
 
 % Blur parameters 
 
-Border=240;
-nmperpixel=80;
+Border=500;
+nmperpixel=160;
 
-OffsetX=80;
-OffsetY=80;
+OffsetX=367;
+OffsetY=436;
 
 % Blur Box Dimensions (?m)
 [YSize,XSize]=size(ydatacrpd{1,1});
 
-Lx=XSize*0.08;
-Ly=YSize*0.08;
+Lx=XSize*nmperpixel/1000;
+Ly=YSize*nmperpixel/1000;
 Lz=0.05;
 
 ShiftX=OffsetX/nmperpixel;
@@ -43,36 +48,31 @@ Sim(:,2)=Sim(:,2)*YSize+ShiftY;
 %calculate distances between spots and simulation points
 
 for j=1:NSpots
-RadX(j,1)=sqrt(x{j}(1,2)^2+x{j}(1,2)^2);
+RadX(j,1)=sqrt(x{j}(1,2)^2+x{j}(1,4)^2);
 end
 RadSim(:,1)=sqrt(Sim(:,1).^2+Sim(:,2).^2);
 
 for i=1:NSpots
-    for j=1:length(Sim(:,1))
-        
+    for j=1:length(Sim(:,1))   
         RadDiff(i,j)=abs(RadX(i,1)-RadSim(j,1));
+    end    
 
-    end
-    [Distance(i),ColVal(i)]=min(RadDiff(i,:));
 end
+    [MatIndex,Distance]=LionLAP(RadDiff);
 
-DistanceNM=Distance*80;
+    DistanceNM=Distance*80;
 
 %The PSF is 80x80 nm. I will use criterium that if detection is more 120 nm
 %away, it is a FALSE positive.
 
-DistanceNM(DistanceNM>80)=NaN;
-ColVal(isnan(DistanceNM))=NaN;
+DistanceNM(DistanceNM>160)=NaN;
+%DistanceNM now contains True positives.
+%Number of True negatives 
 
-[C,IA,IC]=unique(ColVal);
-rep=diff(find(diff([-Inf sort(IC') Inf])));
-rep=rep-1;
-repsum=sum(nonzeros(rep));
-%Now ColVal will contain column values of true matches, and NaN for false
-%positives.
+Sensitivity=(sum(~isnan(DistanceNM)))/(length(Sim(:,1)));
+PPV=sum(~isnan(DistanceNM))/(NSpots);
 
-Sensitivity=(sum(~isnan(DistanceNM))-repsum)/(length(Sim(:,1)));
-Specificity=sum(~isnan(DistanceNM))/(NSpots);
+SNR_Sens_PPV=[mean(SNR) Sensitivity PPV];
 
 % figure(1)
 % hold on
@@ -100,12 +100,15 @@ Specificity=sum(~isnan(DistanceNM))/(NSpots);
 % ylabel('SNR (-)','FontSize',16)
 % legend('SNR','FontSize',16)
 % title('SNR theoretical during the simulation','FontSize',20)
-
+% 
 figure(3)
 hold on
 imagesc(ydatacrpd{1});
-plot(Sim(:,1),Sim(:,2),'+r')
+plot(Sim(:,1),Sim(:,2),'+r','MarkerSize',10)
 for j=1:NSpots
-plot(x{j}(1,2),x{j}(1,4),'+w')
+plot(x{j}(1,2),x{j}(1,4),'+w','MarkerSize',10)
 end
 hold off
+
+save(strcat('SimulationResults/',SaveFile),'SNR_Sens_PPV');
+end

@@ -22,29 +22,27 @@ clear all
 close all
 clc
 
-% expno='001_DnaN_TUS_dif_30122014_difsignal';
-% initval=A001_Images_Set_Experiment(expno); %define your paths and files
+ expno='001_DnaN_TUS_dif_30122014_difsignal';
+ initval=A001_Images_Set_Experiment(expno); %define your paths and files
 
 
 %% Inputs 
 
-for Cell=0:26;
+for Cell=4;
 
-TestFolder='GaussNoiseTest2';
-
-NoiseFolder='images160nmPS';
-
-TestFile=num2str(Cell);
-
-d1{1}=readtimeseries(strcat('/Users/rleeuw/Work/DataAnalysis/BlurLab/',TestFolder,'/',NoiseFolder,'/',TestFile,'/',TestFile),'tif');
-
+Bac=num2str(Cell);
+BacStr='Fluo0Chan01Bac0015';
+Mainfolder=strcat(initval.basepath,'Stacks/dif/');
+Stackpth=strcat(Mainfolder,BacStr);
+d1{1}=readtimeseries(strcat(Stackpth,'/',BacStr,'Im'),'tif'); %read zstack
+ 
 data=dip_array(d1{1}); %turn into uint16 array
 
 %% Ze Defs
 
 Nspots=1; %ignore this name
 
-Tsize=1;
+Tsize=size(data,3);
 
 XSize=zeros(size(data,2),1);
 YSize=zeros(size(data,1),1); %Ysize
@@ -89,20 +87,14 @@ i=1;
 
 %Determine outliers for determining intensity threshold.
 
+lowerboundchannel=8;
+higherboundchannel=16;
+
 Tolerance=2;
-Data=ydatacrpd{1};
 sigmachange=0.7;
 how='positive';
 show=0;
 
-[flag,~]=DetermineOutliers(Data,Tolerance,sigmachange,how,show);
-
-Outliersdata=~flag.*ydatacrpd{i};
-
-IntensityPeakThreshold = mean(nonzeros(Outliersdata(:)))+std(nonzeros(Outliersdata(:)));
-
-
-clc
 
 for i=1:Tsize
     
@@ -110,17 +102,24 @@ for i=1:Tsize
     ydata{i}=double(data(:,:,i));
     
 %   Noticed that cropping causes shift in simulations!!
-%   [ydatacrpd{i},~]=Crop_Image(ydata{i});
+  [ydatacrpd{i},~]=Crop_Image(ydata{i});
 
-    ydatacrpd{i}=ydata{i};
+%     ydatacrpd{i}=ydata{i};
     ydatacrpdR1{i,1}=ydatacrpd{i};
     
+    % Intensity thresholding for outliers
+    Data=ydatacrpd{i}(lowerboundchannel:higherboundchannel,:);
+    [flag,~]=DetermineOutliers(Data,Tolerance,sigmachange,how,show);
+    Outliersdata=~flag.*ydatacrpd{i}(lowerboundchannel:higherboundchannel,:);
+    IntensityPeakThreshold = mean(nonzeros(Outliersdata(:)))+std(nonzeros(Outliersdata(:)));
+
     j=1;
+   
     
     [x0{j}(i,:),Case{j}(i),ydatacrpdR1{i,j+1},Ydata{i,j},Size{i,j},Yg(i,j),Xg(i,j)]= ... 
         LionSpotter(ydatacrpdR1{i,j},SA,Sx,Sy,Px,Py,Bs,lob,upb);
-    
-    while x0{j}(i,1)>IntensityPeakThreshold && j<500
+   %still needs background level to be mediated from within the channel.   
+    while x0{j}(i,1)>IntensityPeakThreshold && j<50 && Size{i,j}(1)>0
     
     % make guesses for spot position
     
@@ -146,7 +145,7 @@ for i=1:Tsize
     [x{j}(i,:),resnorm,residual,exitflag] = lsqcurvefit(@GaussPlosFunc, ...
        x0{j}(i,:),xdata(:,j),Ydata{i,j},lb,ub,OPTIONS);
    
-   
+
    % X-SA-1 is the length in X to the point X-SA on the image.
    
     if Case{j}(i)==2
@@ -188,13 +187,17 @@ for i=1:Tsize
     
     XNorm{j}(i,4)=(x{j}(i,4))/Size{i,j}(1); 
            
-%    [~,~,Ispot,Iback,spotim_clipped,bckim]=LionMasker(ydatacrpdR1{i,j},x{j}(i,2),x{j}(i,4),x{j}(i,3)*2,x{j}(i,3));
-% Test this method later after simulations work.
+   [~,~,ISPOT,Ibacklevel,spotim_clipped,bckim,ydatacrpdR1{i,j+1}]=LionMasker(ydatacrpdR1{i,j},x{j}(i,2),x{j}(i,4),x{j}(i,3)*1.2,x{j}(i,3));
+
+   if size(nonzeros(spotim_clipped(:)),1)<9
+       break
+   else
     j=j+1;
     
-        [x0{j}(i,:),Case{j}(i),ydatacrpdR1{i,j+1},Ydata{i,j},Size{i,j},Yg(i,j),Xg(i,j)]= ... 
-        LionSpotter(ydatacrpdR1{i,j},SA,Sx,Sy,Px,Py,Bs,lob,upb);    
-    
+        [x0{j}(i,:),Case{j}(i),~,Ydata{i,j},Size{i,j},Yg(i,j),Xg(i,j)]= ... 
+        LionSpotter(ydatacrpdR1{i,j},SA,Sx,Sy,Px,Py,Bs,lob,upb);  
+   end
+   
     end
 end
 
@@ -209,7 +212,7 @@ NSpots=size(x,2);
 II=cell(5,5,Tsize);
 FCII=cell(1,Tsize);
 ROI=cell(Tsize,Nspots);
-Ispot=cell(Tsize,Nspots);
+Ispot=zeros(Tsize,Nspots);
 
 %SNR vars
 SNR=zeros(Tsize,Nspots);
@@ -226,14 +229,14 @@ Gain=1;
 for i=1:Tsize
     
      % Full Cell Integrated Intensity
-     FCII{i}=ydatacrpd{i}(lob:Size{i,j}(1),1:Size{i,j}(2));
+     FCII{i}=ydatacrpd{i}(lowerboundchannel:higherboundchannel,:);
      
     for j=1:NSpots
         
         %This is the full cell integrated intensity
         x{j}(i,7)=sum(sum(FCII{i}));
-        % to do: compare spot positions 
-        if Size{i,j}(2)>1 % there still has to be an image.
+        % to do: compare spot positions
+        if ~isempty(Size{i,j}) % there still has to be an image.
             
         padx=5;
         pady=5;
@@ -270,29 +273,29 @@ for i=1:Tsize
         xROI=cROI/2;
         yROI=rROI/2;
 
-        [~,~,Ispot{i,j},Ibackground_level,spotim_masked,bckim]=DoubleMaskedCom(ROI{i,j},xROI...
+        [~,~,Ispot(i,j),Ibackground_level(i,j),spotim_masked,bckim]=DoubleMaskedCom(ROI{i,j},xROI...
             ,yROI,ClipmaskR,GaussmaskW);       
         
         nn=size(spotim_masked(spotim_masked>0));
         
         SNR(i,j)=mean(spotim_masked(spotim_masked>0))/std(bckim(:));
         
-        SNRSimonetti(i,j)=(sum(spotim_masked(spotim_masked>0))-nn(1)*Ibackground_level)...
-            /sqrt((mean(spotim_masked(spotim_masked>0))-nn(1)*Ibackground_level)/Gain)+nn(1)*std(bckim(:))^2+(nn(1)*std(bckim(:))^2)/size(bckim(:),1);
+        %SNRSimonetti(i,j)=(sum(spotim_masked(spotim_masked>0))-nn(1)*Ibackground_level)...
+        %    /sqrt((mean(spotim_masked(spotim_masked>0))-nn(1)*Ibackground_level)/Gain)+nn(1)*std(bckim(:))^2+(nn(1)*std(bckim(:))^2)/size(bckim(:),1);
         
-        SNRBlur(i,j)=(sum(spotim_masked(spotim_masked>0))-nn(1)*MeanNoise)...
-            /sqrt((mean(spotim_masked(spotim_masked>0))--nn(1)*MeanNoise)/Gain)+nn(1)*STDNoise^2+(nn(1)*STDNoise^2)/size(bckim(:),1);
+        %SNRBlur(i,j)=(sum(spotim_masked(spotim_masked>0))-nn(1)*MeanNoise)...
+        %    /sqrt((mean(spotim_masked(spotim_masked>0))--nn(1)*MeanNoise)/Gain)+nn(1)*STDNoise^2+(nn(1)*STDNoise^2)/size(bckim(:),1);
         
         else 
             
-        ROI{i,j}=0; SNR{i,j}=0;
-        nwx{i,j}=0; nwy{i,j}=0; Ispot{i,j}=0; Ibackground_level{i,j}=0;
-        spotim_masked{i,j}=0;
-        bckim{i,j}=0;
+        ROI{i,j}=0; SNR(i,j)=0;
+        nwx{i,j}=0; nwy{i,j}=0; Ispot(i,j)=0; Ibackground_level(i,j)=0;
+        spotim_masked=0;
+        bckim=0;
         
         end
         
-        x{j}(i,8)=Ispot{i,j};
+        x{j}(i,8)=Ispot(i,j);
         
     end
 end
@@ -462,6 +465,6 @@ end
 % end
 
 %% Save results
-  save(strcat('/Users/rleeuw/Work/DataAnalysis/BlurLab/',TestFolder,'/',NoiseFolder,'/',TestFile,'/',TestFile),'x','XNorm','NSpots','SNR','ydatacrpd');
+  save(strcat(Mainfolder,'DataMULTI/',num2str(Cell)),'x','XNorm','NSpots','SNR','ydatacrpd');
 end
 toc

@@ -12,7 +12,7 @@ clc
 %initval.basepath='/Users/rleeuw/Work/Data/OriZ-Dif_Results/';
 %% Define variables
 
-Ncells=21;
+Ncells=1;
 
 T=cell(Ncells+1,1);
 d=cell(Ncells+1,1);
@@ -36,7 +36,7 @@ for i=1:Ncells;
     framesd(i)=length(d{i}.x{1}(:,1));
 end
 
-Nspots=d{i}.NSpots;
+Nspots=T{i}.Nspots;
 Npointsd=sum(framesd); 
 NpointsT=sum(framesT); 
 %% Calculations and Filtering

@@ -48,7 +48,7 @@ for i=1:Ncells
         for j=1:Nspots
             for k=1:Nspots
                 
-                % Cost for linking particle i in fame t to particle j in
+                % Cost for linking particle i in frame t to particle j in
                 % frame t+1.       
                 
                 Clinkd{i,t}(j,k)=(sqrt(Sd{i}.x{j}(t,2).^2+Sd{i}.x{j}(t,4).^2)- ...
