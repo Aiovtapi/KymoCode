@@ -3,7 +3,6 @@ function [Sd] = LionComBI(Sd,DeltaXcost,MeanBacLifed,Ilb)
 %   Detailed explanation goes here
 
 Ncells=size(Sd,1);
-Nspots=size(Sd{1}.x,2);
 
 VectorXd2=[];
 VectorId2=[];
@@ -12,7 +11,7 @@ VectorXstdd=[];
         
 for t=1:MeanBacLifed
     for i=1:Ncells
-        
+        Nspots=size(Sd{i}.x,2);
         for j=1:Nspots; 
             
                     VectorXstdd=[VectorXstdd Sd{i}.x{j}(t,3)];
@@ -27,12 +26,13 @@ for t=1:MeanBacLifed
 
             end
         end
-                        
+                 
     Closed{i,t}=Ccombd{i,t}<DeltaXcost;
         
     Closed{i,t}=Closed{i,t}-diag(ones(Nspots,1)); %remove diagonals, they are always one.
         
     [I,J]=find(tril(Closed{i,t})==1); 
+    
     %I and J are indices of the nonzero non-diagonal elements
     %which indicate a combination.
     

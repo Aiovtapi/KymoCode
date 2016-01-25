@@ -28,11 +28,11 @@ clc
 
 %% Inputs 
 
-for Cell=4;
+for Cell=21;
 
 Bac=num2str(Cell);
-BacStr='Fluo0Chan01Bac0015';
-Mainfolder=strcat(initval.basepath,'Stacks/dif/');
+BacStr='Fluo0Chan02Bac0049';
+Mainfolder=strcat(initval.basepath,'Stacks/Tus/');
 Stackpth=strcat(Mainfolder,BacStr);
 d1{1}=readtimeseries(strcat(Stackpth,'/',BacStr,'Im'),'tif'); %read zstack
  
@@ -186,8 +186,11 @@ for i=1:Tsize
     XNorm{j}(i,2)=x{j}(i,2)/Size{i,j}(2);
     
     XNorm{j}(i,4)=(x{j}(i,4))/Size{i,j}(1); 
+    
+    GaussmaskW=1*(x{j}(i,3).^2+x{j}(i,5).^2)^(1/2);
+    ClipmaskR=1.2*(x{j}(i,3).^2+x{j}(i,5).^2)^(1/2);
            
-   [~,~,ISPOT,Ibacklevel,spotim_clipped,bckim,ydatacrpdR1{i,j+1}]=LionMasker(ydatacrpdR1{i,j},x{j}(i,2),x{j}(i,4),x{j}(i,3)*1.2,x{j}(i,3));
+   [~,~,ISPOT,Ibacklevel,spotim_clipped,bckim,ydatacrpdR1{i,j+1}]=LionMasker(ydatacrpdR1{i,j},x{j}(i,2),x{j}(i,4),ClipmaskR,GaussmaskW);
 
    if size(nonzeros(spotim_clipped(:)),1)<9
        break
@@ -240,9 +243,6 @@ for i=1:Tsize
             
         padx=5;
         pady=5;
-        
-        GaussmaskW=1*(x{j}(i,3).^2+x{j}(i,5).^2)^(1/2);
-        ClipmaskR=1.2*(x{j}(i,3).^2+x{j}(i,5).^2)^(1/2);
         
         [r,c]=size(ydatacrpdR1{i,j});
         [xx_ori,yy_ori]=meshgrid(-5:5,-5:5);

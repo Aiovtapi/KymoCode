@@ -3,20 +3,13 @@ function [Sd] = LionLink(Sd,MeanBacLifed)
 
 Ncells=size(Sd,1);
 Nspots=size(Sd{1}.x,2);
-
 % 0. Detect particles. Done
 
 % 1. Link particles between consecutive frames. (Using Cost Matrix Linking)
 
 %Cutoffs:
 
-% Should be estimated as 1.05 x maximal cost of all previous links.
 
-bCostd=ones(Nspots,1)*20; % This is still to be implemented (hence 20).
-dCostd=ones(Nspots,1)*20;
-
-bMatrixd=diag(bCostd);
-dMatrixd=diag(dCostd);
 
 Ctotald=[];
 
@@ -45,9 +38,10 @@ AuxiliaryMatrixd=cell(Ncells,MeanBacLifed);
 
 for i=1:Ncells
     for t=1:MeanBacLifed-1
-        for j=1:Nspots
-            for k=1:Nspots
+        for j=1:size(Sd{i}.x,2)
+            for k=1:size(Sd{i}.x,2)
                 
+                Nspots=size(Sd{i}.x,2);
                 % Cost for linking particle i in frame t to particle j in
                 % frame t+1.       
                 
@@ -67,14 +61,21 @@ for i=1:Ncells
                   
         end
         
-        
+        % Should be estimated as 1.05 x maximal cost of all previous links.
+
+                bCostd=ones(Nspots,1)*20; % This is still to be implemented (hence 20).
+                dCostd=ones(Nspots,1)*20;
+
+                bMatrixd=diag(bCostd);
+                dMatrixd=diag(dCostd);
+                
                 AuxiliaryMatrixd{i,t}=0.001*Clinkd{i,t}'; % given the lower cost of the matrix so that it doesn't influence final solution
 
                 Clinkd{i,t}(j+1:j+Nspots,1:k)=bMatrixd; %lower left matrix
                 Clinkd{i,t}(1:j,k+1:k+Nspots)=dMatrixd; %upper right matrix
                 Clinkd{i,t}(j+1:j+Nspots,k+1:k+Nspots)=AuxiliaryMatrixd{i,t};
                 
-                Ctotald=[Ctotald Clinkd{i,t}];
+                Ctotald=[Ctotald;Clinkd{i,t}(:)];
                 
                 bCostd=ones(Nspots,1)*max([bCostd(1) max(Ctotald(:))]); % cost for allowing particles in frame t+1 to get linked by nothing in frame t.
                 dCostd=ones(Nspots,1)*max([dCostd(1) max(Ctotald(:))]); % cost for allowing particles in frame t to link to nothing in frame t+1.

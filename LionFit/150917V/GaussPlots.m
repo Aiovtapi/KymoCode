@@ -12,14 +12,31 @@
 % GaussCalcs2
 
 %% dif Position vs. time
+IntensitySumSd=0;
 
-i=15;
+i=2;
+nanlessSd=cell(size(Sd{i}.x,2),1);
+
+for j=1:size(Sd{i}.x,2)
+    nanlessSd{j}=Sd{i}.x{j};
+    nanlessSd{j}(isnan(nanlessSd{j}))=0;
+    IntensitySumSd=IntensitySumSd+nanlessSd{j}(:,1);
+end
 
 figure(1)
 hold on
-for j=1:10
-scatter(0:1/(MeanBacLifed+7):1,d{i}.XNorm{j}(:,2),d{i}.x{j}(:,8)/100,'or','LineWidth',3);
-scatter(0:1/(MeanBacLifed-1):1,Sd2{i}.x{j}(:,2),Sd2{i}.x{j}(:,1)/100,'ob','LineWidth',3);
+for i=1:length(Sd{i}.x{1}(:,1))
+for j=1:size(Sd{i}.x,2)
+% scatter(0:1/(MeanBacLifed+7):1,d{i}.XNorm{j}(:,2),d{i}.x{j}(:,8)/100,'or','LineWidth',3);
+if nanlessSd{j}(i,2)==0
+continue
+else
+hold on
+plot(
+% scatter(0:1/(MeanBacLifed-1):1,nanlessSd{j}(i,2),IntensitySumSd/50,'ob','LineWidth',3);
+hold off
+end
+end
 end
 hold off
 axis([0 1 0 1])

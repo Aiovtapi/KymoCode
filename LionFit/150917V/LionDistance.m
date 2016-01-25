@@ -3,19 +3,19 @@ function [d,dweighted] = LionDistance(S,Sd,LifeT,Lifed)
 %   Detailed explanation goes here
 
 Ncells=size(Sd,1);
-Nspots=size(Sd{1}.x,2);
 
 for i=1:Ncells
-        
-        for j=1:Nspots;
-            
+        NspotsD=size(Sd{i}.x,2);
+        NspotsT=size(S{i}.x,2);
+        for j=1:NspotsD;        
             %rows: spot position in row number frame.
-            Tx{i}(:,j)=S{i}.x{j}(:,2);
             Dx{i}(:,j)=Sd{i}.x{j}(:,2);
-            
-            TI{i}(:,j)=S{i}.x{j}(:,1);
-            DI{i}(:,j)=Sd{i}.x{j}(:,1);
-            
+            DI{i}(:,j)=Sd{i}.x{j}(:,1);  
+        end
+        
+        for j=1:NspotsT
+        Tx{i}(:,j)=S{i}.x{j}(:,2);
+        TI{i}(:,j)=S{i}.x{j}(:,1);
         end
 
         %Mean of x of spot in per frame
