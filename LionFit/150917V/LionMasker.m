@@ -1,4 +1,4 @@
-function [nwx,nwy,Ispot,Ibackground_level,spotim_clipped,bckim,totim]=LionMasker(spotim,x,y,ClipmaskR,GaussmaskW)
+function [nwx,nwy,Ispot,Ibackground_level,spotim_clipped,bckim,totim,Pixels]=LionMasker(spotim,x,y,ClipmaskR,GaussmaskW)
   %This function follows LL-G et al to get a masked spot.
                     %note that we do not resample with the clipping mask
                     %(which is bad!)
@@ -37,7 +37,7 @@ function [nwx,nwy,Ispot,Ibackground_level,spotim_clipped,bckim,totim]=LionMasker
                     spotim_bc(spotim_bc<0)=0;
 
                     Ispot=sum(spotim_bc(:));
-                    
+                    Pixels=size(nonzeros(spotim_bc),1);
                     if isnan(Ispot)
                         Ispot=0;
                     end
@@ -47,8 +47,9 @@ function [nwx,nwy,Ispot,Ibackground_level,spotim_clipped,bckim,totim]=LionMasker
                     totim=spotim_masked+bckim;
                         
                     clippedpoints=[XX(sel) YY(sel) spotim_masked(sel)];       
-                    [nwx,nwy,~,~]=JKD2_XY_calculate2Dmomentpoints(clippedpoints,1);
-                    
+                    %[nwx,nwy,~,~]=JKD2_XY_calculate2Dmomentpoints(clippedpoints,1);
+                    nwx=0; nwy=0;
+                   
                     if 0
                     hold on
                     imagesc(spotim_bc); 

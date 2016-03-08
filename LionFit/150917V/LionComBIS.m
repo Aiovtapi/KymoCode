@@ -1,17 +1,17 @@
-function [Sd] = LionComBI(Sd,DeltaXcost,MeanBacLifed,Ilb)
+function [Sd] = LionComBIS(Sd,DeltaXcost,MeanBacLifed,Ilb)
 %LIONCOMBI Summary of this function goes here
 %   Detailed explanation goes here
 
-Ncells=size(Sd,1);
+Ncells=size(Sd,2);
 
 VectorXd2=[];
 VectorId2=[];
 VectorXstdd=[];
 
-        
 for i=1:Ncells
+    for t=1:MeanBacLifed;  
         Nspots=size(Sd{i}.x,2);
-    for t=1:size(Sd{i}.x{1},1);
+
             for j=1:Nspots; 
 
                     VectorXstdd=[VectorXstdd Sd{i}.x{j}(t,3)];
@@ -68,9 +68,10 @@ for i=1:Ncells
        
     Sd{i}.x{j}(t,2)=VectorXd2(j); 
     Sd{i}.x{j}(t,1)=VectorId2(j);
-    
+                
         if Sd{i}.x{j}(t,1)<Ilb
-            Sd{i}.x{j}(t,1:6)=0;
+
+            Sd{i}.x{j}(t,1:7)=0;
         end
 
     end

@@ -5,6 +5,8 @@ function [d,dweighted] = LionDistance(S,Sd,LifeT,Lifed)
 Ncells=size(Sd,1);
 
 for i=1:Ncells
+        LifeT=size(S{i}.x{1},1);
+        Lifed=size(Sd{i}.x{1},1);
         NspotsD=size(Sd{i}.x,2);
         NspotsT=size(S{i}.x,2);
         for j=1:NspotsD;        
@@ -70,8 +72,8 @@ for i=1:Ncells
                 
             end
             
-            d(:,i)=abs(TxMeanSpotsShortened{i}-DxMeanSpots{i});
-            dweighted(:,i)=abs(TxMeanSpotsWShortened{i}-DxMeanSpotsW{i});
+            d{i}=abs(TxMeanSpotsShortened{i}-DxMeanSpots{i});
+            dweighted{i}=abs(TxMeanSpotsWShortened{i}-DxMeanSpotsW{i});
         end
         
 end

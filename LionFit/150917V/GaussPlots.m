@@ -12,31 +12,135 @@
 % GaussCalcs2
 
 %% dif Position vs. time
-IntensitySumSd=0;
+% IntensitySumSd=0;
 
-i=2;
-nanlessSd=cell(size(Sd{i}.x,2),1);
+i=1;
 
-for j=1:size(Sd{i}.x,2)
-    nanlessSd{j}=Sd{i}.x{j};
-    nanlessSd{j}(isnan(nanlessSd{j}))=0;
-    IntensitySumSd=IntensitySumSd+nanlessSd{j}(:,1);
+Resd=cell(length(dXmat{1}(:,1)),1);
+ResT=cell(length(TXmat{1}(:,1)),1);
+TotalLengthResd=0;
+TotalLengthResT=0;
+
+for k=1:length(dXmat{1}(:,1))
+Resd{k}=dXmat{i}(k,IdXmat{k,i});
+TotalLengthResd=TotalLengthResd+size(Resd{k},2);
 end
+
+for k=1:length(TXmat{1}(:,1))
+ResT{k}=TXmat{i}(k,ITXmat{k,i});
+TotalLengthResT=TotalLengthResT+size(ResT{k},2);
+end
+
+
+Time_Resd=(1:size(Resd,1));
+StretchedResd=cell(max(SpotNumbersd),1);
+delta=0;
+Time_Resd=Time_Resd';
+skip=0;
+
+Time_ResT=(1:size(ResT,1));
+StretchedResT=cell(max(SpotNumbersT),1);
+deltaT=0;
+Time_ResT=Time_ResT';
+skipT=0;
+
+% for k=1:size(Resd,1)
+%    
+%     L=size(Resd{k},2);
+%     
+%     if L>1
+%         for p=1:L   
+%         StretchedResd{k+delta+p-1)=Resd{k}(p);
+%         end
+%         for n=1:p-1
+%         Time_Resd=[Time_Resd(1:k+delta);Time_Resd(k+delta);Time_Resd(k+1+delta:end)];
+%         end
+%         delta=delta+L-1; %by chance this is the occurances of multiple spots. This is how many times we shift the index for an occurance of multiple spots.
+%     else
+%         StretchedResd(k+delta)=Resd{k};
+%     end
+% end
+
+for k=1:size(Resd,1)
+   
+    L=size(Resd{k},2);
+    
+    if L>1
+        for p=1:L
+        StretchedResd{p}(k,2)=Resd{k}(p);
+        StretchedResd{p}(k,1)=Time_Resd(k);
+        end
+    else
+        StretchedResd{1}(k,1)=Time_Resd(k);
+        StretchedResd{1}(k,2)=Resd{k}(1);
+    end
+end
+
+for k=1:size(ResT,1)
+   
+    L=size(ResT{k},2);
+    
+    if L>1
+        for p=1:L
+        StretchedResT{p}(k,2)=ResT{k}(p);
+        StretchedResT{p}(k,1)=Time_ResT(k);
+        end
+    else
+        StretchedResT{1}(k,1)=Time_ResT(k);
+        StretchedResT{1}(k,2)=ResT{k}(1);
+    end
+end
+
+
+ for n=1:max(SpotNumbersd)
+
+     [i,j,v]=find(StretchedResd{n});
+      
+     LNZ=length(nonzeros(StretchedResd{n}))/2;
+     
+     StretchedResd{n}=[];
+     
+     I=linspace(1,LNZ,LNZ)';
+     I=[I;I];
+
+     J=ones(LNZ,1);
+     J=[J;ones(LNZ,1)*2];
+     
+     for m=1:length(i)
+     StretchedResd{n}(I(m),J(m))=v(m);
+     end
+
+     
+ end
+
+ for n=1:max(SpotNumbersT)
+
+     [i,j,v]=find(StretchedResT{n});
+      
+     LNZ=length(nonzeros(StretchedResT{n}))/2;
+     
+     StretchedResT{n}=[];
+     
+     I=linspace(1,LNZ,LNZ)';
+     I=[I;I];
+
+     J=ones(LNZ,1);
+     J=[J;ones(LNZ,1)*2];
+     
+     for m=1:length(i)
+     StretchedResT{n}(I(m),J(m))=v(m);
+     end
+
+     
+ end
 
 figure(1)
 hold on
-for i=1:length(Sd{i}.x{1}(:,1))
-for j=1:size(Sd{i}.x,2)
-% scatter(0:1/(MeanBacLifed+7):1,d{i}.XNorm{j}(:,2),d{i}.x{j}(:,8)/100,'or','LineWidth',3);
-if nanlessSd{j}(i,2)==0
-continue
-else
-hold on
-plot(
-% scatter(0:1/(MeanBacLifed-1):1,nanlessSd{j}(i,2),IntensitySumSd/50,'ob','LineWidth',3);
-hold off
+for K=1
+scatter(StretchedResd{K}(:,1)/(length(StretchedResd{K}(:,1))),StretchedResd{K}(:,2),[],'filled')
 end
-end
+for K=1:3
+scatter(StretchedResT{K}(:,1)/(length(StretchedResT{K}(:,1))),StretchedResT{K}(:,2),[],'filled')
 end
 hold off
 axis([0 1 0 1])

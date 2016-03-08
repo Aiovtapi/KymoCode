@@ -1,6 +1,6 @@
 close all
 
-Npoints=27;
+Npoints=30;
 Method=1;
 
 DatafileName='Data';
@@ -12,9 +12,9 @@ switch Method
         Restot=zeros(Npoints,3);
         for i=1:Npoints
             n=num2str(i-1);
-            Restot(i,:)=importdata(strcat('SimulationResults/',n,'.mat'));
+            Restot(i,:)=importdata(strcat('SimulationResults/KAKTEST/',n,'.mat'));
         end
-        save(strcat('SimulationResults/',DatafileName),'Restot');
+        save(strcat('SimulationResults/KAKTEST/',DatafileName),'Restot');
         
     case 2 %takes two combined files and combines them to a 'Data' file.
         

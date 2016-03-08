@@ -22,20 +22,30 @@ clear all
 close all
 clc
 
- expno='001_DnaN_TUS_dif_30122014_difsignal';
- initval=A001_Images_Set_Experiment(expno); %define your paths and files
+%  expno='001_DnaN_TUS_dif_30122014_difsignal';
+%  initval=A001_Images_Set_Experiment(expno); %define your paths and files
 
 
 %% Inputs 
 
-for Cell=21;
+for Cell=1:20;
 
-Bac=num2str(Cell);
-BacStr='Fluo0Chan02Bac0049';
-Mainfolder=strcat(initval.basepath,'Stacks/Tus/');
-Stackpth=strcat(Mainfolder,BacStr);
-d1{1}=readtimeseries(strcat(Stackpth,'/',BacStr,'Im'),'tif'); %read zstack
+clear XNorm x NSpots SNR ydatacrpd pixels
+
+% Bac=num2str(Cell);
+% BacStr='Fluo0Chan01Bac0003';
+% Mainfolder=strcat(initval.basepath,'Stacks/Tus/');
+% Stackpth=strcat(Mainfolder,BacStr);
+% d1{1}=readtimeseries(strcat(Stackpth,'/',BacStr,'Im'),'tif'); %read zstack
  
+Mainfolder='/Users/rleeuw/Desktop/Working_Stacks_diftus/channel7/';
+Stackpth=strcat('/cell',num2str(Cell),'/');
+Channel='YFP';
+d1{1}=readtimeseries(strcat(Mainfolder,Stackpth,Channel,'.tif'),'tif');
+
+ClipFactor=1;
+GaussFactor=1;
+
 data=dip_array(d1{1}); %turn into uint16 array
 
 %% Ze Defs
@@ -53,7 +63,7 @@ Ampguess=zeros(Tsize,1); Case=cell(Nspots,1);
 x0=cell(Nspots,1); x=cell(Nspots,1); X=cell(Nspots,1); 
 Y=cell(Nspots,1); Yg=zeros(Tsize,Nspots); Xg=zeros(Tsize,Nspots); 
 xdata=cell(2,Nspots);
-Size=cell(Tsize,1); 
+Size=cell(Tsize,1); pixels=cell(5,1);
 
 lb = [0,0,0,0,0]; %lower bounds for fit
 
@@ -80,8 +90,8 @@ i=1;
     %Remove the x,y-Pads
     ydata{i}=double(data(:,:,i));
     
-    %Noticed that cropping causes shift in simulations!!
-%     [ydatacrpd{i},~]=Crop_Image(ydata{i});
+    %(Notice that cropping causes shift in simulations!!)
+    [ydatacrpd{i},~]=Crop_Image(ydata{i});
     ydatacrpd{i}=ydata{i};
     ydatacrpdR1{i,1}=ydatacrpd{i};
 
@@ -176,21 +186,25 @@ for i=1:Tsize
         x{j}(i,2)=x{j}(i,2)-Px+(Size{i,j}(2)-2*SA)-1;
         x{j}(i,4)=x{j}(i,4)-Py-1+(Size{i,j}(1)-2*SA);        
     elseif Case{j}(i)==10
-        x{j}(i,1:6)=NaN;
-        XNorm{j}(i,1:6)=NaN;
+        x{j}(i,1:8)=0;
+        XNorm{j}(i,1:8)=0;
     end
     
+
+
 %   Size{i,j}(1) is the height of the image.
 %   Size{i,j}(2) is the width of the image.
 
     XNorm{j}(i,2)=x{j}(i,2)/Size{i,j}(2);
     
-    XNorm{j}(i,4)=(x{j}(i,4))/Size{i,j}(1); 
+    XNorm{j}(i,4)=(x{j}(i,4))/Size{i,j}(1);
     
-    GaussmaskW=1*(x{j}(i,3).^2+x{j}(i,5).^2)^(1/2);
-    ClipmaskR=1.2*(x{j}(i,3).^2+x{j}(i,5).^2)^(1/2);
+
+    
+    GaussmaskW=GaussFactor*(x{j}(i,3).^2+x{j}(i,5).^2)^(1/2);
+    ClipmaskR=ClipFactor*(x{j}(i,3).^2+x{j}(i,5).^2)^(1/2);
            
-   [~,~,ISPOT,Ibacklevel,spotim_clipped,bckim,ydatacrpdR1{i,j+1}]=LionMasker(ydatacrpdR1{i,j},x{j}(i,2),x{j}(i,4),ClipmaskR,GaussmaskW);
+   [~,~,ISPOT,Ibacklevel,spotim_clipped,bckim,ydatacrpdR1{i,j+1},pixels{j}(i)]=LionMasker(ydatacrpdR1{i,j},x{j}(i,2),x{j}(i,4),ClipmaskR,GaussmaskW);
 
    if size(nonzeros(spotim_clipped(:)),1)<9
        break
@@ -205,13 +219,24 @@ for i=1:Tsize
 end
 
 NSpots=size(x,2);
+LXNormOne=size(XNorm{1},1);
+LxOne=size(x{1},1);
+
+% make sure that each spot data is same length
+% because some spots will be there for just a few frames
+% and their last will be the length of the array.
+
+for j=2:NSpots;
+    x{j}=[x{j};zeros(LxOne-size(x{j},1),5)];
+    XNorm{j}=[XNorm{j};zeros(LXNormOne-size(XNorm{j},1),4)];
+end
+
 
 %% Translate back to original coords
 
 % use XNorm for normalization to position w.r.t. cell
 
 %% Integrated Intensity V2.0
-
 II=cell(5,5,Tsize);
 FCII=cell(1,Tsize);
 ROI=cell(Tsize,Nspots);
@@ -247,7 +272,10 @@ for i=1:Tsize
         [r,c]=size(ydatacrpdR1{i,j});
         [xx_ori,yy_ori]=meshgrid(-5:5,-5:5);
         
-
+ 
+    
+        GaussmaskW=1*(x{j}(i,3).^2+x{j}(i,5).^2)^(1/2);
+        ClipmaskR=1.2*(x{j}(i,3).^2+x{j}(i,5).^2)^(1/2);
         
         ydatacrpdR1{i,j}=[zeros(r,padx) ydatacrpdR1{i,j} zeros(r,padx)]; %make pads because spots can be on the edge of the image
         ydatacrpdR1{i,j}=[zeros(pady,size(ydatacrpdR1{i,j},2)); ...
@@ -274,11 +302,15 @@ for i=1:Tsize
         yROI=rROI/2;
 
         [~,~,Ispot(i,j),Ibackground_level(i,j),spotim_masked,bckim]=DoubleMaskedCom(ROI{i,j},xROI...
-            ,yROI,ClipmaskR,GaussmaskW);       
+            ,yROI,ClipmaskR,GaussmaskW);
+        
+        RadiusSpot(i,j)=GaussmaskW;
         
         nn=size(spotim_masked(spotim_masked>0));
         
-        SNR(i,j)=mean(spotim_masked(spotim_masked>0))/std(bckim(:));
+        BCKIM=bckim(1:5,:);
+        
+        SNR(i,j)=mean(spotim_masked(spotim_masked>0))/std(BCKIM(:));
         
         %SNRSimonetti(i,j)=(sum(spotim_masked(spotim_masked>0))-nn(1)*Ibackground_level)...
         %    /sqrt((mean(spotim_masked(spotim_masked>0))-nn(1)*Ibackground_level)/Gain)+nn(1)*std(bckim(:))^2+(nn(1)*std(bckim(:))^2)/size(bckim(:),1);
@@ -465,6 +497,14 @@ end
 % end
 
 %% Save results
-  save(strcat(Mainfolder,'DataMULTI/',num2str(Cell)),'x','XNorm','NSpots','SNR','ydatacrpd');
+%   save(strcat(Mainfolder,'DataMULTI/',num2str(Cell)),'x','XNorm','NSpots','SNR','ydatacrpd');
+if exist(strcat(Mainfolder,'/Results/',Channel),'dir')
+save(strcat(Mainfolder,'/Results/',Channel,'/',num2str(Cell)),'x','XNorm','NSpots','SNR','ydatacrpd','pixels')
+else
+    mkdir(strcat(Mainfolder),'Results');
+    mkdir(strcat(Mainfolder,'/Results/',Channel));
+save(strcat(Mainfolder,'Results/',Channel,'/',num2str(Cell)),'x','XNorm','NSpots','SNR','ydatacrpd','pixels')
 end
+end
+
 toc

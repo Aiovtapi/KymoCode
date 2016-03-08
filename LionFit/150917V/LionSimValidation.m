@@ -2,28 +2,28 @@ close all
 clear Sim RadDiff SpotWriter
 
 %% load data
-TestFolder='GaussNoiseTest2';
-ImageFolder='images160nmPS/';
+TestFolder='GaussNoiseTest4';
+ImageFolder='images220nmPS/';
 
-for N=2
+for N=13:29
     
-clear DistanceNM MatIndex Distance
+clear DistanceNM MatIndex Distance SNR_Sens_PPV RadX RadSim RadDiff
 LionFitFile=num2str(N);
 SaveFile=LionFitFile;
 
-NoiseData=load(strcat('/Users/rleeuw/Work/DataAnalysis/BlurLab/',TestFolder,'/',TestFolder,'.txt'));
+NoiseData=load(strcat('/Users/rleeuw/Work/DataAnalysis/BlurLab/',TestFolder,'/',TestFolder,'-2.txt'));
 
-load(strcat('/Users/rleeuw/Work/DataAnalysis/BlurLab/',TestFolder,'/',ImageFolder,LionFitFile,'/',LionFitFile));
+load(strcat('/Users/rleeuw/Work/DataAnalysis/BlurLab/',TestFolder,'/',ImageFolder,'/Results/',LionFitFile));
 
 Sim=NoiseData;
 
 % Blur parameters 
 
 Border=500;
-nmperpixel=160;
+nmperpixel=220;
 
-OffsetX=367;
-OffsetY=436;
+OffsetX=149;
+OffsetY=501.5;
 
 % Blur Box Dimensions (?m)
 [YSize,XSize]=size(ydatacrpd{1,1});
@@ -109,6 +109,5 @@ for j=1:NSpots
 plot(x{j}(1,2),x{j}(1,4),'+w','MarkerSize',10)
 end
 hold off
-
-save(strcat('SimulationResults/',SaveFile),'SNR_Sens_PPV');
+save(strcat('SimulationResults/KAKTEST/',SaveFile),'SNR_Sens_PPV');
 end
