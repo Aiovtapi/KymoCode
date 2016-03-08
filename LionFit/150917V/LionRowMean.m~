@@ -1,0 +1,20 @@
+function [M] = LionRowMean(K,m)
+%LIONROWMEAN takes the nonzero mean of rows, but equates to zero if row
+%only consists of zero.
+% K is a cell with multiple elements (depending on spot number)
+% M is the mean cell containing mean values per spot
+% m indicates the column in M 
+
+Nspots=size(K,1);
+BacLife=size(K{1},1);
+
+for i=1:Nspots
+    for j=1:BacLife
+    if isempty(nonzeros(K{i}(j,:)))
+        M{i}(j,1)=0;
+    end
+    end
+end
+
+end
+

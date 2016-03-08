@@ -2,7 +2,7 @@
 
 close all;
 
-expno='001_DnaN_TUS_dif_30122014_DnaNsignal_P';
+expno='001_DnaN_TUS_dif_30122014_DnaNsignal';
 
 initval=A001_Images_Set_Experiment(expno); %define your paths and files
 

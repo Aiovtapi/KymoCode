@@ -1,4 +1,4 @@
-function [im,borders] =Crop_Image(im0);
+function [im,borders] =Crop_Image(im0)
         %Crop to nonzero area
             [r,c]=size(im0);
             [X,Y]=meshgrid(1:c,1:r);
