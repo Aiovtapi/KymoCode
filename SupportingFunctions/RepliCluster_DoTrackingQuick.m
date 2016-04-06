@@ -43,6 +43,7 @@
     r=kymoprops.width;
     LL=kymoprops.duration;
      [~,lp]=size(ReplicationCluster);  
+     
      for i=1:lp   % %for each cluster
          lp-i
          ThisCluster=ReplicationCluster(i);
@@ -88,9 +89,9 @@
            
              %Do Center of mass on normalized line; masked by Gaussian----
              SpotSoi=GaussMask(SpotSoi,0.5);
-            [~,comc,~]=Get_1DCOM(SpotSoi); 
-            composses(fr)=estpos+comc;   
-            lastpos=estpos+comc;       %update last known position
+             [~,comc,~]=Get_1DCOM(SpotSoi); 
+             composses(fr)=estpos+comc;   
+             lastpos=estpos+comc;       %update last known position
          end
               ReplicationCluster(i).PosKyTracCom.trackpos=composses;
      end

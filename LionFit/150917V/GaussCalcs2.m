@@ -3,8 +3,6 @@
 clear all
 close all
 clc
-
-
  
 % oriZ - Dif project
 %initval.basepath='/Users/rleeuw/Work/Data/OriZ-Dif_Results/';
@@ -127,16 +125,6 @@ for i=1:Ncells
 end
 
 
-%% Spot tracking + linking algorithms
-
-%1. Linking
-
-% Sd=LionLink(Sd,MeanBacLifed);
-%  S=LionLink(S,MeanBacLifeT);
-
-% To do 2. close gaps and capture merging and splitting events. (Using Cost Matrix Gap Closing, merging, splitting.)
-
-
 %% Combining + filtering spots
 
 DeltaXcost=0.5;
@@ -155,6 +143,14 @@ IlowerboundT=1200;
 S=LionComBI(S,DeltaXcost,MeanBacLifeT,IlowerboundT);
 SS=LionComBIS(SS,DeltaXcost,MeanBacLifeT,IlowerboundT);
 
+%% Spot tracking + linking algorithms
+
+%1. Linking
+
+% Sd=LionLink(Sd,MeanBacLifed);
+%  S=LionLink(S,MeanBacLifeT);
+
+% To do 2. close gaps and capture merging and splitting events. (Using Cost Matrix Gap Closing, merging, splitting.)
 
 %% mean distance between spots of two channels (AFTER COMB and FILTERING)
 

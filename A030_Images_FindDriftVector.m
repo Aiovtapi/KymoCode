@@ -19,9 +19,10 @@ initval.hROI=15;
 initval.updateROI=1;
 
 
-%I) First, collect an image series. 
+% I) First, collect an image series. 
 ImagesWorkspaceName=strcat(initval.basepath,initval.outname,'_Images',num2str(initval.maxfile),'.mat');
 load(ImagesWorkspaceName,'aa');
+
 
 imx=max(max(aa(:,:,1))); imn=min(min(aa(:,:,1)));
 dipshow(aa(:,:,1),[imn imx]);   %show first im
@@ -41,7 +42,6 @@ dipshow(kernel,[imn imx]);   %show first im
 [r00,c00,ls]=size(aa);
 
 driftvector=zeros(ls,2);
-
 
 %Here we first verify whether we need to create the folder
 FolderExistence = exist(strcat(initval.basepath,initval.FiguresFolder,'DriftVector_ROI'));

@@ -21,7 +21,7 @@ dMat(1:nRows,1:nCols) = costMat(validRow,validCol);
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %   STEP 1: Subtract the row minimum from each row.
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
- dMat = bsxfun(@minus, dMat, min(dMat,[],2));
+dMat = bsxfun(@minus, dMat, min(dMat,[],2));
 
 %**************************************************************************  
 %   STEP 2: Find a zero of dMat. If there are no starred zeros in its
