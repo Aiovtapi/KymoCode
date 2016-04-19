@@ -4,7 +4,7 @@
 % input are the Bacpic images, as a result of the KymoCode, of seperate 
 % cells over time. 
 %
-% written by Roy de Leeuw - 2015
+% by Roy de Leeuw - 2015
 %
 % output : x{j}(i,:) = [A,x,sx,y,sy,0]
 %
