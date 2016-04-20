@@ -27,6 +27,10 @@ switch user
           projectpath='D:\peterbrazda\ImageAnalysis\';
           versionpath='KymoCode\';
           toolspath='SupportingFunctions';
+        case 'Mark'
+          projectpath='';
+          versionpath='';
+          toolspath='SupportingFunctions';
 end
 addpath(strcat(projectpath,versionpath));
 addpath(strcat(projectpath,versionpath,toolspath));
