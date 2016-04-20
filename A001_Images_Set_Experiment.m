@@ -27,9 +27,13 @@ switch user
           projectpath='D:\peterbrazda\ImageAnalysis\';
           versionpath='KymoCode\';
           toolspath='SupportingFunctions';
-        case 'Mark'
-          projectpath='';
-          versionpath='';
+      case 'MarkPC'
+          projectpath='D:\Users\water_000\Documents\GitHub\';
+          versionpath='KymoCode\';
+          toolspath='SupportingFunctions';
+      case 'Mark'
+          projectpath='D:\Users\water\Documents\GitHub\';
+          versionpath='KymoCode\';
           toolspath='SupportingFunctions';
 end
 addpath(strcat(projectpath,versionpath));

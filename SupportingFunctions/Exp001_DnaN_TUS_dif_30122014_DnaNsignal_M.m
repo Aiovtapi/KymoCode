@@ -25,11 +25,17 @@ switch user
 %         initval.FiguresFolder='Figures\';
 %         initval.FLdatapath='Fluorescence\RFP\';
 
+    case 'MarkPC'
+        initval.basepath='D:\Users\water_000\OneDrive\Documents\BEP\Data\141230_dnaN_dif_tus\';
+        initval.BFdatapath='Brightfield\';
+        initval.FiguresFolder='Figures\';
+        initval.FLdatapath='Fluorescence\RFP\';
+        
     case 'Mark'
-        initval.basepath='';
-        initval.BFdatapath='Brightfield/';
-        initval.FiguresFolder='Figures/';
-        initval.FLdatapath='Fluorescence/RFP/';
+        initval.basepath='D:\Users\water\OneDrive\Documents\BEP\Data\141230_dnaN_dif_tus\';
+        initval.BFdatapath='Brightfield\';
+        initval.FiguresFolder='Figures\';
+        initval.FLdatapath='Fluorescence\RFP\';
 end
 
 initval.BFfiletemplate='BF1.tif';
