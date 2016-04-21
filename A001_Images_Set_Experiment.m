@@ -54,7 +54,9 @@ switch exp
    case   '105_oriZ_dTus_230615_DnaNsignal',                 initval=Exp105_oriZ_dTus_23062015_DnaNsignal(initval, user); 
      
    case   '001_DnaN_TUS_dif_30122014_DnaNsignal_P',          initval=Exp001_DnaN_TUS_dif_30122014_DnaNsignal_P(initval, user);
-
-
+   
+       % Mark's poging
+    case '001_DnaN_Tus_dif_30122014_DnaN_M'                 initval=Exp001_DnaN_TUS_dif_30122014_DnaNsignal_M(initval,user);
+    
 end
 
