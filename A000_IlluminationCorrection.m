@@ -56,3 +56,5 @@ for k = 1:num_images
     imwrite(uint16(65535*mat2gray(fr,[AMIN AMAX])),fNameToWriteIllumCorrected,'WriteMode','append','Compression','none');
 
 end
+
+disp('done')
