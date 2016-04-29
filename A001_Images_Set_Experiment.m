@@ -2,8 +2,8 @@ function initval=A001_Images_Set_Experiment(exp)
 %This function stores paths etc. of various bacteria experiments. Kers2012
 
 %common settings---------------------------------------------
-if nargin<1, exp='006_oriZ_dif_110515_DnaNsignal';end
-user='Roy';
+if nargin<1, exp='001_DnaN_TUS_dif_30122014_DnaNsignal_M';end
+user='Mark';
 switch user
       case 'Jacob', 
           projectpath='D:\jkerssemakers\My Documents\BN_ND_ActiveProjects\BN_ND11_CharlBacterialReplication\';
@@ -58,7 +58,7 @@ switch exp
    case   '105_oriZ_dTus_230615_DnaNsignal',                 initval=Exp105_oriZ_dTus_23062015_DnaNsignal(initval, user); 
      
    case   '001_DnaN_TUS_dif_30122014_DnaNsignal_P',          initval=Exp001_DnaN_TUS_dif_30122014_DnaNsignal_P(initval, user);
-
+   case   '001_DnaN_TUS_dif_30122014_DnaNsignal_M',          initval=Exp001_DnaN_TUS_dif_30122014_DnaNsignal_M(initval, user);
 
 end
 

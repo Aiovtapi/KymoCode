@@ -13,7 +13,7 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %Below, you can define your own paths and files-------------------------
 
-exp='001_DnaN_TUS_dif_30122014_DnaNsignal_P';
+exp='001_DnaN_TUS_dif_30122014_DnaNsignal_M';
 
 
 actions.getdatabase=1;          % default=1 
