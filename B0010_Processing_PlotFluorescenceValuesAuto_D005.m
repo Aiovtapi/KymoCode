@@ -9,7 +9,7 @@ clear all
 %exp='CM_DnaN_37Deg_Series1002';
 %exp='CM_DnaN-Dif-Gamma-ve-Position1_Series1';
 %exp='D005_CM_DnaN_Dif_37_deg_Rep_Check_002_C2'; %Dit is een D005 Experiment
-exp='B_DnaN_TUS_dif_21112014_DnaNSignal';
+exp='Exp001_DnaN_TUS_dif_21112014_DnaNSignal_test';
 
 actions.savedata=1;             %default=1 (new analysis)
 actions.loaddatabase=1;         %default=1 (new analysis)

@@ -5,7 +5,7 @@ close all
 %select the experiment database-----------------------------
 %select the experiment database-----------------------------
 
-exp='001_DnaN_TUS_dif_30122014_DnaNsignal';
+exp='001_DnaN_TUS_dif_30122014_DnaNsignal_test';
 
 actions.savedata=1;             %default=1 (new analysis)
 actions.loaddatabase=1;         %default=1 (new analysis)
@@ -14,7 +14,7 @@ variants={'_all'};  %'_mother' 'M1D1' see line 96, allows different selections
 remark='__HFR_Exp1';  %This allows you to add comments to the filenames
 titlelabel='First Higher Frame Rate experiment';
 
-minsperframe=5;
+minsperframe=2.5;
 maxbins=50;
 
 
@@ -25,7 +25,9 @@ FileName_FociCyto = 'Total_and_Foci_Increase_Initiation_Termination';
 
 scatwidth=0.8;
 %countsperlabel=1;
-countsperlabel=1800/2;
+
+countsperlabel=1800/2; %calibration value of integrated intensity of label
+
 maxax=1E4/countsperlabel;  %Sets scale axis graphs
 %spotsanalysistype='medianexcess' %'area summing';
 %spotsanalysistype='1DGauss' %'area summing';
@@ -236,7 +238,7 @@ plot(axscat2D,all_spots, 'ro', 'MarkerSize', 1.5); hold on;
 title(strcat('Binned Fluorescence intensities-'));
 xlabel('rel.time, minutes');
 ylabel('label counts');
-axis([minbintime max(binax) 0 7E5/countsperlabel]);
+axis([minbintime max(binax) 0 50]);
 %1b totals peaks av-lo-hi
 plot(binax,avall,'--ks','LineWidth',2,...
                 'MarkerEdgeColor','k',...
@@ -305,7 +307,7 @@ xlabel('Normalized Time (-)', 'fontsize', 16, 'fontweight', 'bold');
 ylabel('Integrated intensity (-)', 'fontsize', 16, 'fontweight', 'bold');
 %ylabel('Number of \beta_2 clamps (-)', 'fontsize', 16, 'fontweight', 'bold');
 set(gca, 'fontsize', 16, 'linewidth', 2, 'fontweight', 'bold');
-axis([minbintime max(binax) 0 maxax]);
+axis([minbintime max(binax) 0 40]);
 %1b totals peaks av-lo-hi
 h3 = plot(binax,avall,'--bo','LineWidth',2,...
                 'MarkerEdgeColor','b',...

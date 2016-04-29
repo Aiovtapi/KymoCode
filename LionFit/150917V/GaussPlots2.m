@@ -36,7 +36,8 @@ title('Cellular position of Tus proteins and the dif loci')
 %% Intensities
 
 %calibration value Tus (by Sriram - see Tus chapter)
-Pv=200;
+Pv=978.7;
+SigmaPv=295.5;
 
 figure(2)
 hold on
@@ -51,21 +52,19 @@ set(gca,'FontSize',16,'FontWeight','bold')
 title('Tus proteins in the cell vs. time')
 
 %% Tus proteins in a spot:
-Pv=200;
 figure(3)
 hold on
 plot(0:1/(MeanBacLifed-1):1,(Tus.I{1}/Pv),'r','LineWidth',5)
 plot(0:1/(MeanBacLifed-1):1,(Tus.I{1}-Tus.Istd{1})/Pv,'r','LineWidth',1)
 plot(0:1/(MeanBacLifed-1):1,(Tus.I{1}+Tus.Istd{1})/Pv,'r','LineWidth',1)
 hold off
-axis([0 1 0 25])
+axis([0 1 0 5])
 xlabel('Normalised cell time (-)','FontSize',16)
 ylabel('Tus proteins in spot (-)','FontSize',16)
 set(gca,'FontSize',16,'FontWeight','bold')
 title('Tus proteins in a spot vs. time')
 
 %% Total active Tus spots:
-Pv=200;
 figure(4)
 hold on
 scatter(0:1/(MeanBacLifed-1):1,(Tus.activespots),100,'b','filled')
@@ -81,7 +80,6 @@ title('Number of spots vs. time')
 Tus.IoverFCstd=(1/sqrt(3).*(Tus.I{1}./Tus.FC{1})).*sqrt((Tus.Istd{1}./(Tus.I{1})).^2+ ...
     (Tus.FCstd{1}./(Tus.FC{1})).^2);
 
-Pv=200;
 figure(5)
 hold on
 plot(0:1/(MeanBacLifed-1):1,(Tus.I{1}./Tus.FC{1})*100,'b','LineWidth',3)
@@ -99,14 +97,13 @@ title('Active fraction in single spot vs. time')
 Tus.IoverFCstd=(1/sqrt(3).*(Tus.I{1}./Tus.FC{1})).*sqrt((Tus.Istd{1}./(Tus.I{1})).^2+ ...
     (Tus.FCstd{1}./(Tus.FC{1})).^2);
 
-Pv=200;
 figure(6)
 hold on
 plot(0:1/(MeanBacLifed-1):1,(Tus.I{1}+Tus.I{2}+Tus.I{3}+Tus.I{4}./Tus.FC{1}),'b','LineWidth',3)
 plot(0:1/(MeanBacLifed-1):1,((Tus.I{1}+Tus.I{2}+Tus.I{3}+Tus.I{4}./Tus.FC{1})+Tus.IoverFCstd)*100,'b','LineWidth',1)
 plot(0:1/(MeanBacLifed-1):1,((Tus.I{1}+Tus.I{2}+Tus.I{3}+Tus.I{4}./Tus.FC{1})-Tus.IoverFCstd)*100,'b','LineWidth',1)
 hold off
-axis([0 1 0.01 3000])
+axis([0 1 0.01 8000])
 xlabel('Normalised cell time (-)','FontSize',16)
 ylabel('Active fraction (%)','FontSize',16)
 set(gca,'FontSize',16,'FontWeight','bold')

@@ -10,7 +10,7 @@ clear all
 %select the experiment database-----------------------------
 
 %exp='TEST';
-exp='001_DnaN_TUS_dif_30122014_DnaNsignal';
+exp='001_DnaN_TUS_dif_30122014_DnaNsignal_test';
 %exp='CM_DnaN-Dif-Gamma-ve-Position1_Series1';
 titlelabel=exp;
 actions.savedata=1;             %default=1 (new analysis)

@@ -3,7 +3,7 @@
 %JacobKers 2012----------------------------------
 close all
 %exp='TEST'; %See 'Images_Set_Experiment(exp)';
-exp='001_DnaN_TUS_dif_30122014_DnaNsignal';
+exp='001_DnaN_TUS_dif_30122014_DnaNsignal_test';
 minsperframe=2.5;
 
 initval=A001_Images_Set_Experiment(exp);
@@ -22,7 +22,7 @@ for ch=1:chan_no  %for each channel
 chan_no-ch   
 Div=S(ch).channels.AutoDivision;
 Fluo1=S(ch).channels.ReplicationCluster;
-Fluo2=S(ch).channels.SecondFluoCluster;
+% Fluo2=S(ch).channels.SecondFluoCluster;
 [~,bacno]=size(Div);
 for bc=1:bacno  %for each bacterium 
  ok=S(ch).channels.AutoDivision(bc).accepted  %manual accept/reject

@@ -4,12 +4,12 @@ clear all;
 warning on;
 
 
-exp='001_DnaN_TUS_dif_30122014_DnaNsignal';
+exp='001_DnaN_TUS_dif_30122014_DnaNsignal_test';
 initval=A001_Images_Set_Experiment(exp);
 
 %KymoNr = 1;
 
-SelectedKymoGraphName = strcat('Kymograph_FLExp001_DnaN_TUS_dif_30122014_DnaNsignalChan_x245')%,num2str(KymoNr));
+SelectedKymoGraphName = strcat('Kymograph_FLExp001_DnaN_TUS_dif_30122014_DnaNsignal_testChan_x248')%,num2str(KymoNr));
 
 
 Kymo=double((imread(strcat(initval.basepath,'Kymographs/',SelectedKymoGraphName,'.tif')))); %kymograph

@@ -6,7 +6,7 @@ tic
 % exp='001_DnaN_TUS_dif_30122014_DnaNsignal';
 % exp2='001_DnaN_TUS_dif_30122014_TUSsignal';
 % exp3='001_DnaN_TUS_dif_30122014_difsigqnal';
-exp='001_DnaN_TUS_dif_30122014_DnaNsignal_P';
+exp='001_DnaN_TUS_dif_30122014_DnaNsignal_test';
 
 %%-------------------------------------
 %First, perform Center-off mass tracking on clusters starting at time
@@ -45,9 +45,9 @@ if 1, Processing_InitTer_analysisAuto(exp); end
 %Now, a detailed (and time consuming) analysis on the individual foci, based on first 1D-double
 %Gaussian fitting, then a full double 2D Gaussian fit.
 
-if 1, 
+if 0, 
     disp('adding spot fluorescence info');
-    Processing00_TwoDSpot_ImageAnalyzerAuto(exp,1); 
+    Processing00_TwoDSpot_ImageAnalyzerAuto(exp,2); 
 end
 
 toc

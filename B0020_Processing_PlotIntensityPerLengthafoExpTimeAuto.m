@@ -27,10 +27,10 @@ binax=[0:1:300];
 %exp='CM_DnaN-Dif-Gamma-ve-Position1_Series1';
 %exp='D005_TIFFs_DnaN_Dif_004';
 %exp='CM_DnaN_20140103_D003_DnaN_DelTus';
-exp='001_DnaN_TUS_dif_30122014_DnaNsignal';
+exp='001_DnaN_TUS_dif_30122014_DnaNsignal_test';
 
 initval=A001_Images_Set_Experiment(exp);
-initval.expno='001_DnaN_TUS_dif_30122014_DnaNsignal';
+initval.expno='001_DnaN_TUS_dif_30122014_DnaNsignal_test';
 
 outnameS=strcat(initval.basepath,initval.outname);
 outnameM=strcat(initval.basepath,initval.outname_usr);
