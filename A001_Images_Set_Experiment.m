@@ -3,7 +3,7 @@ function initval=A001_Images_Set_Experiment(exp)
 
 %common settings---------------------------------------------
 
-if nargin<1, exp='001_DnaN_TUS_dif_30122014_DnaNsignal_M';end
+if nargin<1, exp='001_DnaN_TUS_dif_30122014_M';end
 
 user='MarkPC';
 switch user
@@ -62,6 +62,6 @@ switch exp
    case   '001_DnaN_TUS_dif_30122014_DnaNsignal_P',          initval=Exp001_DnaN_TUS_dif_30122014_DnaNsignal_P(initval, user);
 
    case   '001_DnaN_TUS_dif_30122014_DnaNsignal_M',          initval=Exp001_DnaN_TUS_dif_30122014_DnaNsignal_M(initval, user);
-
+   case   '001_DnaN_TUS_dif_30122014_M',                     initval=Exp001_DnaN_TUS_dif_30122014_M(initval, user);
 end
 

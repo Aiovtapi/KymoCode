@@ -11,7 +11,7 @@ function dum=A030_Images_FindDriftVector
 close all; 
 %dipstart;
 % expno='001_DnaN_TUS_dif_30122014?_DnaNsignal';
-expno='001_DnaN_TUS_dif_30122014_DnaNsignal_M';
+expno='001_DnaN_TUS_dif_30122014_M';
 
 initval=A001_Images_Set_Experiment(expno); %define your paths and files
 initval.domovieload=1;  %default=1 (new analysis) %if not saved workspace before
@@ -20,7 +20,7 @@ initval.updateROI=1;
 
 
 % I) First, collect an image series. 
-ImagesWorkspaceName=strcat(initval.basepath,initval.outname,'_Images',num2str(initval.maxfile),'.mat');
+ImagesWorkspaceName=strcat(initval.basepath,initval.outname,'_Images',num2str(initval.maxfile),'_',initval.viewchannel,'.mat');
 load(ImagesWorkspaceName,'aa');
 
 
@@ -116,8 +116,9 @@ drift=driftvector;
 lbl=strcat(initval.basepath,initval.driftfile);
 
 dlmwrite(lbl,driftvector);
-initval.ImagesWorkspaceName=strcat(initval.basepath,initval.outname,'_Images',num2str(initval.maxfile),'.mat');
+initval.ImagesWorkspaceName=strcat(initval.basepath,initval.outname,'_Images',num2str(initval.maxfile),'_',initval.viewchannel,'.mat');
 save(initval.ImagesWorkspaceName, 'drift');%, '/append');
+
 disp('done');
 end
 

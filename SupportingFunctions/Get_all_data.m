@@ -1,4 +1,4 @@
-function [aa,ff,drift]=Get_all_data(initval)
+  function [aa,ff,drift]=Get_all_data(initval)
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%5
 %I) First, collect an image series. TIP: run this once, then save the
 %workspace including 'a3' and then comment out this section; saves lots of
