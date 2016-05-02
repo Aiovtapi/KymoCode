@@ -69,6 +69,7 @@ initval.skip2Danalysis=1;
 
 initval.nms={'Exp001_DnaN_TUS_dif_30122014_DnaNsignal_MChan_x217'};
 
+
 initval.outname='DnaN_TUS_dif';
 initval.outname_usr='DnaN_TUS_dif_UserInputs';
 %Used for first analysis of fluorescence---------
