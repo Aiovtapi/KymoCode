@@ -14,18 +14,29 @@
 %Below, you can define your own paths and files-------------------------
 
 exp='001_DnaN_TUS_dif_30122014_M';
-
+initval=A001_Images_Set_Experiment(exp);
 
 actions.getdatabase=1;          % default=1 
-actions.reloadclicks=0;         %default=0 (new analysis)
+
+% If Userinputs.mat exists, reload click
+if exist(strcat(initval.basepath,initval.outname_usr,'.mat'))
+    actions.reloadclicks=1;
+else
+    actions.reloadclicks=0;
+end
+
 actions.firsttime=1;
-initval=A001_Images_Set_Experiment(exp);
+
 
 %Get raw data--------------------------
 if actions.getdatabase
 ImagesWorkspaceName=strcat(initval.basepath,initval.outname,'_Images',num2str(initval.maxfile),'_',initval.viewchannel,'.mat');
-load(ImagesWorkspaceName,'aa', 'ff','drift');
+load(ImagesWorkspaceName,'aa', 'ff');
 end
+
+% get drift from txt file
+driftpath=strcat(initval.basepath,initval.driftfile);
+drift=dlmread(driftpath);
 %--------------------------------------
  
 [~,~,le]=size(aa); 

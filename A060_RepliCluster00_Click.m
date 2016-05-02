@@ -5,7 +5,7 @@ tic
 close all;
 
 % exp='001_DnaN_TUS_dif_30122014_difsignal';
-exp='001_DnaN_TUS_dif_30122014_DnaNsignal_M';
+exp='001_DnaN_TUS_dif_30122014_M';
 
 actions.init=1;        %default=1 (new analysis)
 actions.clickcycles=1; %default=1 (new analysis) else load

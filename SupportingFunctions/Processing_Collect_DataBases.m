@@ -1,4 +1,4 @@
-function Processing_Collect_DataBases(exp,secondexp)
+function Processing_Collect_DataBases(exp,Doneclick)
 %Load databases and save them in  common databases 'S' (for automatic
 %processing results) and 'M'(anual) for user inputs (clicked positions
 %etc.)
@@ -46,7 +46,14 @@ end
 %Saving. Note that the 'M' Database is NOT standard rewritten. This is
 %because it contains manual input from various analysis stages (clicking
 %bacterial cycles, accept-reject runs)
-outnameS=strcat(initval.basepath,initval.outname);
+
+if Doneclick;
+    outnameS=strcat(initval.basepath,initval.outname,'2');
+else
+    outnameS=strcat(initval.basepath,initval.outname);
+end
+
+
 save(outnameS, 'M','S');
 
 outnameM=strcat(initval.basepath,initval.outname_usr);
