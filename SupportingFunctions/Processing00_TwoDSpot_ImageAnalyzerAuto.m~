@@ -22,8 +22,6 @@ actions.loaddatabase=1; %default=1 (new analysis)
 
 initval=A001_Images_Set_Experiment(exp);
 
-DnaNIdx=find(ismember(initval.viewchan,initval.DnaNchan));
-
 %load the databases--------------------------------------------------
 outname=strcat(initval.basepath,initval.outname{DnaNIdx}); %processed inputs
 outname_usr=strcat(initval.basepath,initval.outname_usr);%manual inputs
@@ -42,9 +40,11 @@ for i=1:chan_no  %for each channel
 Rep=S(i).channels.ReplicationCluster;
 Div=S(i).channels.AutoDivision;
 
-S2=load(outname2,'S');
-S(i).channels.kymo_FL=S2.S(i).channels.kymo_FL;
-S(i).channels.chanstk_FL=S2.S(i).channels.chanstk_FL; 
+if whichChan==2;
+ S2=load(outname2,'S');
+ S(i).channels.kymo_FL=S2.S(i).channels.kymo_FL;
+ S(i).channels.chanstk_FL=S2.S(i).channels.chanstk_FL; 
+end
 
 ManRep=M(i).channels.RepClicks;
 chanstk_FL=S(i).channels.chanstk_FL;
