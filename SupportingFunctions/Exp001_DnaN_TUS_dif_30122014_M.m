@@ -29,17 +29,18 @@ switch user
 %         initval.FLdatapath='Fluorescence\RFP\';
 
     case 'MarkPC'
-        initval.basepath='D:\Users\water_000\OneDrive\Documents\BEP\Data\141230_dnaN_dif_tus\';
+        initval.basepath='D:\Users\water_000\Documents\GitHub\Data\141230_dnaN_dif_tus\';
         initval.BFdatapath='Brightfield\';
         initval.FiguresFolder='Figures\';
         initval.FLpath='Fluorescence\';
+        initval.FLdatapath=strcat(initval.FLpath,initval.viewchan,'\');
         
     case 'Mark'
         initval.basepath='D:\Users\water\Documents\GitHub\Data\141230_dnaN_dif_tus\';
         initval.BFdatapath='Brightfield\';
         initval.FiguresFolder='Figures\';
         initval.FLpath='Fluorescence\';
-        initval.FLdatapath=[initval.FLpath,initval.viewchannel,'\'];
+        initval.FLdatapath=strcat(initval.FLpath,initval.viewchan,'\');
         
 end
 

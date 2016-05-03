@@ -119,7 +119,7 @@ dlmwrite(lbl,driftvector);
 initval.ImagesWorkspaceName=strcat(initval.basepath,initval.outname{1},'_Images',num2str(initval.maxfile),'.mat');
 save(initval.ImagesWorkspaceName, 'drift');%, '/append');
 
-disp('done');
+disp('Drift vector found');
 end
 
 function [x0,y0,x,y,prfx,prfy]=Track_Kernel(im,fkernel,Nr,DirNameROI,DirNameCR); 

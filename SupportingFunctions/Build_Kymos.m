@@ -7,8 +7,8 @@ kymo_BF=zeros(initval.maxfile,initval.kymolength);
 chanstk_BF=zeros(2*initval.kymohwidth+1,initval.kymolength,initval.maxfile);  %in pixels
 chanstk_FL=zeros(2*initval.kymohwidth+1,initval.kymolength,initval.maxfile);  %in pixels
 
-for j=0:initval.maxfile-2
-initval.maxfile-j
+for j=0:initval.maxfile-2;
+initval.maxfile-j;
 fr_drift=drift(j+1,:);
 
 %obtain re-sampled values from raw images BRIGHTFIELD---------------------
