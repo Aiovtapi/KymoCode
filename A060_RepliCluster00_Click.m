@@ -60,9 +60,7 @@ load(outname_usr,'M');
 end
 
 outname=strcat(initval.basepath,kymoprops.WorkspaceOutName);
-outname_usr=strcat(initval.basepath,initval.outname_usr);
 save(outname, 'initval', 'RepClicks', 'ReplicationCluster',  '-append');
-save(outname_usr, 'RepClicks', 'ReplicationCluster',  '-append');
 end
 toc
 

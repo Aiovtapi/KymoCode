@@ -23,9 +23,9 @@ actions.loaddatabase=1; %default=1 (new analysis)
 initval=A001_Images_Set_Experiment(exp);
 
 %load the databases--------------------------------------------------
-outname=strcat(initval.basepath,initval.outname,DnaNchan); %processed inputs
+outname=strcat(initval.basepath,initval.outname,initval.DnaNChan); %processed inputs
 outname2=strcat(initval.basepath,initval.outname,initval.viewchannel); %Second Chan Input 
-%outname3=strcat(initval.basepath,initval.outname,'3'); %Third Chan Input 
+outname3=strcat(initval.basepath,initval.outname,initval.viewchannelY); %Third Chan Input 
 
 outname_usr=strcat(initval.basepath,initval.outname_usr);%manual inputs
 if actions.loaddatabase
@@ -44,10 +44,14 @@ Rep=S(i).channels.ReplicationCluster;
 Div=S(i).channels.AutoDivision;
 
 % THESE LINES ARE FOR MAKING BACPICS FOR OTHER CHANNELS THAN DNAN
-if whichChan==2;
+if whichChan == 2;
  S2=load(outname2,'S');
  S(i).channels.kymo_FL=S2.S(i).channels.kymo_FL;
  S(i).channels.chanstk_FL=S2.S(i).channels.chanstk_FL; 
+elseif whichChan == 3;
+ S3=load(outname3,'S');
+ S(i).channels.kymo_FL=S3.S(i).channels.kymo_FL;
+ S(i).channels.chanstk_FL=S3.S(i).channels.chanstk_FL;   
 end
 
 ManRep=M(i).channels.RepClicks;

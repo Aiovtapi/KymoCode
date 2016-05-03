@@ -1,7 +1,8 @@
 function initval=Exp001_DnaN_TUS_dif_30122014_M(initval, user) 
 
-initval.viewchannel = 'RFP';
-initval.DnaNchan = 'RFP';
+initval.channelCFP = 'CFP';
+initval.channelYFP ='YFP';
+initval.channelRFP = 'RFP'; % DnaN
 
 switch user
       case 'Jacob', 
@@ -20,7 +21,8 @@ switch user
         initval.basepath='/Users/rleeuw/Work/Data/141230_dnaN_dif_tus/dnaN_dif_tus/';
         initval.BFdatapath='Brightfield/';
         initval.FiguresFolder='Figures/';
-        initval.FLpath='Figures/';
+        initval.FLpath='Fluorescence/';
+        initval.FLdatapath=[initval.FLpath,initval.viewchannel,'/'];
     case 'RoyPC'
 %         initval.basepath='D:\rleeuw\Data\141230_dnaN_dif_tus\dnaN_dif_tus_40msExpTime_5minAcqTimeYFP_30msExpCFP_002_C1\';
 %         initval.BFdatapath='Brightfield\';
@@ -38,10 +40,9 @@ switch user
         initval.BFdatapath='Brightfield\';
         initval.FiguresFolder='Figures\';
         initval.FLpath='Fluorescence\';
+        initval.FLdatapath=[initval.FLpath,initval.viewchannel,'\'];
         
 end
-
-initval.FLdatapath=[initval.FLpath,initval.viewchannel,'\'];
 
 initval.BFfiletemplate='BF1.tif';
 initval.FLfiletemplate=[initval.viewchannel,'_R_I_Corrected.tif'];
@@ -72,7 +73,7 @@ initval.skip2Danalysis=1;
 %initval.nms={'ExpCM_DnaXDnaN_DualColour_Col002_DnaXSignalChan_x209' ;'ExpCM_DnaXDnaN_DualColour_Col002_DnaXSignalChan_x231'; 'ExpCM_DnaXDnaN_DualColour_Col002_DnaXSignalChan_x273'; 'ExpCM_DnaXDnaN_DualColour_Col002_DnaXSignalChan_x295'; 'ExpCM_DnaXDnaN_DualColour_Col002_DnaXSignalChan_x317'; 'ExpCM_DnaXDnaN_DualColour_Col002_DnaXSignalChan_x339'} ; 
 %initval.nms={'ExpCM_Dn0aN-Dif-Gamma-ve-Position1_Series1Chan_x126' ;'ExpCM_DnaN-Dif-Gamma-ve-Position1_Series1Chan_x146'; 'ExpCM_DnaN-Dif-Gamma-ve-Position1_Series1Chan_x173'; 'ExpCM_DnaN-Dif-Gamma-ve-Position1_Series1Chan_x219'; 'ExpCM_DnaN-Dif-Gamma-ve-Position1_Series1Chan_x245'; 'ExpCM_DnaN-Dif-Gamma-ve-Position1_Series1Chan_x291'; 'ExpCM_DnaN-Dif-Gamma-ve-Position1_Series1Chan_x314'; 'ExpCM_DnaN-Dif-Gamma-ve-Position1_Series1Chan_x382'; 'ExpCM_DnaN-Dif-Gamma-ve-Position1_Series1Chan_x405'} ; 
 
-nmspath = 'Exp001_DnaN_TUS_dif_30122014_MChan_x227';
+nmspath = 'Exp001_DnaN_TUS_dif_30122014_MChan_x228';
 
 % if initval.viewchannel == initval.DnaNchan;
 %     initval.nms={strcat(nmspath,initval.DnaNchan)};

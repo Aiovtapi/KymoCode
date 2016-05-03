@@ -19,7 +19,7 @@ end
 %First, perform Center-off mass tracking on clusters starting at time
 %points indicated by users 
 disp('cleaning, quick tracking...');
-if ~samechan, RepliCluster00_TrackandcleanQuick(exp); end
+if samechan, RepliCluster00_TrackandcleanQuick(exp); end
 
 %%-----------------------------------------------------------
 %Next, Collect all channel data in one big database (just an administrative
@@ -33,20 +33,20 @@ if 1, Processing_Collect_DataBases(exp); end
 %these points are cleaned from erroneous detections and used for
 %(time-position) fits on the positions of this bacterium's edges 
 disp('find division times...');
-if ~samechan, Processing_Find_Division_Times(exp); end %NB:still need to put off ginput for BW traces
+if samechan, Processing_Find_Division_Times(exp); end %NB:still need to put off ginput for BW traces
 
 %--------------------------------------------------------------------------
 %Next, Get various fluorescence props like total fluorescence count, median excess
 %count (a robust spots count estimate )
 disp('adding general fluorescence info');
-if ~samechan, Processing_AnalyzeDivReptimingAuto(exp); end  
+if samechan, Processing_AnalyzeDivReptimingAuto(exp); end  
 
 %--------------------------------------------------------------------------
 %Next, a more detailed analysis on tthe precise times of initiation and
 %termination (as opposed to the manual clicks) based on step fittng the
 %spot focii signal
 disp('finding init and ter......');
-if ~samechan, Processing_InitTer_analysisAuto(exp); end
+if samechan, Processing_InitTer_analysisAuto(exp); end
 
 %--------------------------------------------------------------------------
 %Now, a detailed (and time consuming) analysis on the individual foci, based on first 1D-double
@@ -54,7 +54,7 @@ if ~samechan, Processing_InitTer_analysisAuto(exp); end
 
 if 1, 
     disp('adding spot fluorescence info');
-    Processing00_TwoDSpot_ImageAnalyzerAuto(exp,Whichchan); 
+    Processing00_TwoDSpot_ImageAnalyzerAuto(exp,1); 
 end
 
 

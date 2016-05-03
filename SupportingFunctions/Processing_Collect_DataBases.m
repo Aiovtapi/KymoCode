@@ -18,24 +18,22 @@ chans
 
 for i=1:chans
 infi=strcat(initval.basepath,initval.nms{i});
-Userinput=strcat(initval.basepath,initval.outname_usr);
 buf=load(infi);
-baf=load(Userinput);
 initval=A001_Images_Set_Experiment(exp);  %just to be sure
 S(i).channels.initval=buf.initval;
-S(i).channels.RepClicks=baf.RepClicks;
+S(i).channels.RepClicks=buf.RepClicks;
 
 S(i).channels.kymo_FL=buf.kymo_FL;
 S(i).channels.kymo_BF=buf.kymo_BF;
 S(i).channels.chanstk_BF=buf.chanstk_BF;
 S(i).channels.chanstk_FL=buf.chanstk_FL;
-S(i).channels.ReplicationCluster=baf.ReplicationCluster;
+S(i).channels.ReplicationCluster=buf.ReplicationCluster;
 
 
 M(i).channels.initval=buf.initval;
 M(i).channels.endpoints=buf.endpoints;
 M(i).channels.presets=buf.presets;
-M(i).channels.RepClicks=baf.RepClicks;
+M(i).channels.RepClicks=buf.RepClicks;
 
 [~,Nrep]=size(S);
 for j=1:Nrep
