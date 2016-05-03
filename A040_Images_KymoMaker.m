@@ -13,12 +13,12 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %Below, you can define your own paths and files-------------------------
 
-exp='001_DnaN_TUS_dif_30122014_difsignal_test';
+exp='001_DnaN_TUS_dif_30122014_DnaNsignal_test';
 
 
-actions.getdatabase=1;          % default=1 
-actions.reloadclicks=1;         %default=0 (new analysis)
-actions.firsttime=0;
+actions.getdatabase=0;          % default=1 
+actions.reloadclicks=0;         %default=0 (new analysis)
+actions.firsttime=1;
 initval=A001_Images_Set_Experiment(exp);
 
 %Get raw data--------------------------

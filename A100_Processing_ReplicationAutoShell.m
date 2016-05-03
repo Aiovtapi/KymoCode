@@ -47,7 +47,7 @@ if 1, Processing_InitTer_analysisAuto(exp); end
 
 if 0, 
     disp('adding spot fluorescence info');
-    Processing00_TwoDSpot_ImageAnalyzerAuto(exp,2); 
+    Processing00_TwoDSpot_ImageAnalyzerAuto(exp,1); 
 end
 
 toc
