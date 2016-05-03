@@ -15,10 +15,11 @@ if nargin<1,
 end
 initval=A001_Images_Set_Experiment(exp);
 rnge=2*initval.extension;
-outname=strcat(initval.basepath,initval.outname);
+
+DnaNIdx=find(ismember(initval.viewchan,initval.DnaNchan));
 
 %load the databases--------------------------------------------------
-outname=strcat(initval.basepath,initval.outname); %processed inputs
+outname=strcat(initval.basepath,initval.outname{DnaNIdx}); %processed inputs
 outname_usr=strcat(initval.basepath,initval.outname_usr);%manual inputs
 if actions.loaddatabase
 load(outname,'S');

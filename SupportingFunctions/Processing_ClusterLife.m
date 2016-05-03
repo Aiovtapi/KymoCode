@@ -1,4 +1,4 @@
-function [fluopropcurves,areasums,prefits,finalfits]=Processing_ClusterLife(ChNo,BacNo,ThisRep,ThisDiv,initval,chanstk_FL,chantype,chanstk_BF);
+function [fluopropcurves,areasums,prefits,finalfits]=Processing_ClusterLife(ChNo,BacNo,ThisRep,ThisDiv,initval,chanstk_FL,chantype,chanstk_BF,ColourIdx);
 %pre-fit, final fit, [X0,X1,Y0,Y1, Background amplitude,Peak0, Peak1]
 
 %-------demo settings-----
@@ -175,7 +175,7 @@ if border_ok==1  %if this is a reasonable ROI to fit
         end
         
        if savebacpics
-           SavePaddedImage(FL_full,maxbaclength,ChNo,BacNo,k,initval,chantype,thischan_FL,BF_full);
+           SavePaddedImage(FL_full,maxbaclength,ChNo,BacNo,k,initval,chantype,thischan_FL,BF_full,ColourIdx);
        end       
         %Get some general pattern properties from the image; we use 
         %a restricted area around the replication cluster
@@ -527,7 +527,7 @@ fluo.peakx=NaN;
 end
 
 
-function SavePaddedImage(FL_full,maxbaclength,ChNo,BacNo,k,initval,chantype,ChanFL,BF_full)
+function SavePaddedImage(FL_full,maxbaclength,ChNo,BacNo,k,initval,chantype,ChanFL,BF_full,ColourIdx)
        
        % FLUORESCENCE IMAGE       
        %padd to equal lengths
@@ -592,7 +592,7 @@ function SavePaddedImage(FL_full,maxbaclength,ChNo,BacNo,k,initval,chantype,Chan
 %             'Chan', num2str(Chl),...
 %             'Bac', num2str(Baxx));
        bacpth=strcat(initval.basepath,initval.FiguresFolder,...
-            'BacPics/',initval.viewchannel,'/',...
+            'BacPics/',initval.viewchan{ColourIdx},'/',...
             baclabel,...
             '/');
         

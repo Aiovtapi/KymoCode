@@ -1,4 +1,4 @@
-function dum=Processing00_TwoDSpot_ImageAnalyzerAuto(exp,whichChan)
+function dum=Processing00_TwoDSpot_ImageAnalyzerAuto(exp,ColourIdx)
 %Two-dim analysis of EcoliData for bacterial analysis; Jacob Kerssemakers,
 %TNW-BN-ND lab 2012; developed for Charl Moolman
 
@@ -23,10 +23,7 @@ actions.loaddatabase=1; %default=1 (new analysis)
 initval=A001_Images_Set_Experiment(exp);
 
 %load the databases--------------------------------------------------
-outname=strcat(initval.basepath,initval.outname,initval.DnaNChan); %processed inputs
-outname2=strcat(initval.basepath,initval.outname,initval.viewchannel); %Second Chan Input 
-outname3=strcat(initval.basepath,initval.outname,initval.viewchannelY); %Third Chan Input 
-
+outname=strcat(initval.basepath,initval.outname{ColourIdx}); %processed inputs
 outname_usr=strcat(initval.basepath,initval.outname_usr);%manual inputs
 if actions.loaddatabase
 load(outname,'S');
@@ -36,23 +33,12 @@ end
 
 
 %work through all replication cycles------------------------
-[~,chan_no]=size(S);
+chan_no=initval.channelno
 difs=[]; count=0;
 %for i=1:chan_no  %for each channel
 for i=1:chan_no  %for each channel
 Rep=S(i).channels.ReplicationCluster;
 Div=S(i).channels.AutoDivision;
-
-% THESE LINES ARE FOR MAKING BACPICS FOR OTHER CHANNELS THAN DNAN
-if whichChan == 2;
- S2=load(outname2,'S');
- S(i).channels.kymo_FL=S2.S(i).channels.kymo_FL;
- S(i).channels.chanstk_FL=S2.S(i).channels.chanstk_FL; 
-elseif whichChan == 3;
- S3=load(outname3,'S');
- S(i).channels.kymo_FL=S3.S(i).channels.kymo_FL;
- S(i).channels.chanstk_FL=S3.S(i).channels.chanstk_FL;   
-end
 
 ManRep=M(i).channels.RepClicks;
 chanstk_FL=S(i).channels.chanstk_FL;
@@ -84,7 +70,7 @@ if ok2&ok3&ok4&ok6&ok9
 %Do extensive 1D and 2D spot analysis. result: %pre-fit, final fit: 
 %[X0,X1,Y0,Y1, Background amplitude,Peak0, Peak1, spotno]
 
-[fluopropcurves,areasums,prefits,finalfits]=Processing_ClusterLife(i,j,ThisRep,ThisDiv,initval,chanstk_FL,0,chanstk_BF); 
+[fluopropcurves,areasums,prefits,finalfits]=Processing_ClusterLife(i,j,ThisRep,ThisDiv,initval,chanstk_FL,0,chanstk_BF,ColourIdx); 
 %--------------------------------------------------------------------------
 
 %Update the database with analysis result

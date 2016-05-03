@@ -20,7 +20,7 @@ initval.updateROI=1;
 
 
 % I) First, collect an image series. 
-ImagesWorkspaceName=strcat(initval.basepath,initval.outname,'_Images',num2str(initval.maxfile),'_',initval.viewchannel,'.mat');
+ImagesWorkspaceName=strcat(initval.basepath,initval.outname{1},'_Images',num2str(initval.maxfile),'.mat');
 load(ImagesWorkspaceName,'aa');
 
 
@@ -116,7 +116,7 @@ drift=driftvector;
 lbl=strcat(initval.basepath,initval.driftfile);
 
 dlmwrite(lbl,driftvector);
-initval.ImagesWorkspaceName=strcat(initval.basepath,initval.outname,'_Images',num2str(initval.maxfile),'_',initval.viewchannel,'.mat');
+initval.ImagesWorkspaceName=strcat(initval.basepath,initval.outname{1},'_Images',num2str(initval.maxfile),'.mat');
 save(initval.ImagesWorkspaceName, 'drift');%, '/append');
 
 disp('done');

@@ -1,4 +1,4 @@
-function Processing_Collect_DataBases(exp)
+function Processing_Collect_DataBases(exp,ColourIdx)
 %Load databases and save them in  common databases 'S' (for automatic
 %processing results) and 'M'(anual) for user inputs (clicked positions
 %etc.)
@@ -11,33 +11,30 @@ resaveclickdata=1;  %default=1 (new analysis)
 
 initval=A001_Images_Set_Experiment(exp);
 
+chans=initval.channelno;
 
-%[chans,~]=size(initval.nms) %think this was a mistake
-[~,chans]=size(initval.nms)
-chans
-
-for i=1:chans
-infi=strcat(initval.basepath,initval.nms{i});
+for ch=1:chans
+infi=strcat(initval.basepath,initval.nms{ch}{ColourIdx});
 buf=load(infi);
 initval=A001_Images_Set_Experiment(exp);  %just to be sure
-S(i).channels.initval=buf.initval;
-S(i).channels.RepClicks=buf.RepClicks;
+S(ch).channels.initval=buf.initval;
+S(ch).channels.RepClicks=buf.RepClicks;
 
-S(i).channels.kymo_FL=buf.kymo_FL;
-S(i).channels.kymo_BF=buf.kymo_BF;
-S(i).channels.chanstk_BF=buf.chanstk_BF;
-S(i).channels.chanstk_FL=buf.chanstk_FL;
-S(i).channels.ReplicationCluster=buf.ReplicationCluster;
+S(ch).channels.kymo_FL=buf.kymo_FL;
+S(ch).channels.kymo_BF=buf.kymo_BF;
+S(ch).channels.chanstk_BF=buf.chanstk_BF;
+S(ch).channels.chanstk_FL=buf.chanstk_FL;
+S(ch).channels.ReplicationCluster=buf.ReplicationCluster;
 
 
-M(i).channels.initval=buf.initval;
-M(i).channels.endpoints=buf.endpoints;
-M(i).channels.presets=buf.presets;
-M(i).channels.RepClicks=buf.RepClicks;
+M(ch).channels.initval=buf.initval;
+M(ch).channels.endpoints=buf.endpoints;
+M(ch).channels.presets=buf.presets;
+M(ch).channels.RepClicks=buf.RepClicks;
 
 [~,Nrep]=size(S);
 for j=1:Nrep
- M(i).channels.RepClicks(j).accepted=1;
+ M(ch).channels.RepClicks(j).accepted=1;
 end
 
 end
@@ -52,7 +49,7 @@ end
 % else
 %     outnameS=strcat(initval.basepath,initval.outname);
 % end
-outnameS=strcat(initval.basepath,initval.outname);
+outnameS=strcat(initval.basepath,initval.outname{ColourIdx});
 
 save(outnameS, 'M','S');
 

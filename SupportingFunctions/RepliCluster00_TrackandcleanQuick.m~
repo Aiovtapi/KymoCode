@@ -13,7 +13,8 @@ DnaNIdx=find(ismember(initval.viewchan,initval.DnaNchan));
 Channelpath=char(strcat(initval.basepath,initval.nms{ch}(DnaNIdx),'.mat'));
 load(Channelpath);
 
-WorkspaceOutName=char(initval.nms{ch}(DnaNIdx)); % ugly way to update entries
+WorkspaceOutName=char(initval.nms(ch)); % ugly way to update entries
+initval=initval; %to ensure overrulling settings
     
 [r,c]=size(kymo_FL);
 kymoprops.width=c;

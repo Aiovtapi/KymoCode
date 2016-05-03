@@ -14,14 +14,15 @@ end
 
 initval=A001_Images_Set_Experiment(exp);
 
+DnaNIdx=find(ismember(initval.viewchan,initval.DnaNchan));
+
 actions.savedata=1;         %default=1 (new analysis)
 actions.loaddatabase=1;     %default=1 (new analysis)
 actions.plot=initval.plotintermediateresults;             %default=0 (quick run)
 
-outname=strcat(initval.basepath,initval.outname);
 
 %load the databases--------------------------------------------------
-outname=strcat(initval.basepath,initval.outname); %processed inputs
+outname=strcat(initval.basepath,initval.outname{DnaNIdx});
 outname_usr=strcat(initval.basepath,initval.outname_usr);%manual inputs
 if actions.loaddatabase
 load(outname,'S');

@@ -16,15 +16,14 @@ peak_tol=0;   %sensitivity for detecting peaks
 
 initval=A001_Images_Set_Experiment(exp);
 
-chans=length(initval.nms);
+chans=initval.channelno;
 for ch=1:chans
 close all
 display('chans to go');
 chans-ch
-Channelpath=char(strcat(initval.basepath,initval.nms(ch),'.mat'));
+DnaNIdx=find(ismember(initval.viewchan,initval.DnaNchan));
+Channelpath=char(strcat(initval.basepath,initval.nms{ch}{DnaNIdx},'.mat'));
 load(Channelpath, 'chanstk_BF','chanstk_FL','endpoints', 'kymo_BF','kymo_FL','presets');
-kymoprops.WorkspaceOutName=char(initval.nms(ch)); 
-
 [r,c]=size(kymo_BF); 
 
 if actions.divisionoverlay
@@ -59,8 +58,13 @@ load(outname_usr,'M');
 [RepClicks,ReplicationCluster]=LoadCyclePoints(M,ch,initval);
 end
 
+ChanNum=size(initval.viewchan,2);
+
+for i=1:ChanNum
+kymoprops.WorkspaceOutName=char(initval.nms{ch}{i}); 
 outname=strcat(initval.basepath,kymoprops.WorkspaceOutName);
 save(outname, 'initval', 'RepClicks', 'ReplicationCluster',  '-append');
+end
 end
 toc
 
