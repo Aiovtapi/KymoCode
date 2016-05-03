@@ -2,7 +2,7 @@
 %This script collects a series of automatic analysis steps
 %JacobKers 2013----------------------------------------------------
 
-Doneclick = 1; % new analysis = 0, true if clicking has already been done; analysis on other channel
+Doneclick=false; % new analysis = 0, true if clicking has already been done; analysis on other channel
 
 if Doneclick;
     Whichchan = 2;
