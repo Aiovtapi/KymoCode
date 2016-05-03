@@ -1,4 +1,4 @@
-function Processing_Collect_DataBases(exp,Doneclick)
+function Processing_Collect_DataBases(exp)
 %Load databases and save them in  common databases 'S' (for automatic
 %processing results) and 'M'(anual) for user inputs (clicked positions
 %etc.)
@@ -18,22 +18,24 @@ chans
 
 for i=1:chans
 infi=strcat(initval.basepath,initval.nms{i});
+Userinput=strcat(initval.basepath,initval.outname_usr);
 buf=load(infi);
+baf=load(Userinput);
 initval=A001_Images_Set_Experiment(exp);  %just to be sure
 S(i).channels.initval=buf.initval;
-S(i).channels.RepClicks=buf.RepClicks;
+S(i).channels.RepClicks=baf.RepClicks;
 
 S(i).channels.kymo_FL=buf.kymo_FL;
 S(i).channels.kymo_BF=buf.kymo_BF;
 S(i).channels.chanstk_BF=buf.chanstk_BF;
 S(i).channels.chanstk_FL=buf.chanstk_FL;
-S(i).channels.ReplicationCluster=buf.ReplicationCluster;
+S(i).channels.ReplicationCluster=baf.ReplicationCluster;
 
 
 M(i).channels.initval=buf.initval;
 M(i).channels.endpoints=buf.endpoints;
 M(i).channels.presets=buf.presets;
-M(i).channels.RepClicks=buf.RepClicks;
+M(i).channels.RepClicks=baf.RepClicks;
 
 [~,Nrep]=size(S);
 for j=1:Nrep
@@ -46,13 +48,13 @@ end
 %Saving. Note that the 'M' Database is NOT standard rewritten. This is
 %because it contains manual input from various analysis stages (clicking
 %bacterial cycles, accept-reject runs)
-
-if Doneclick;
-    outnameS=strcat(initval.basepath,initval.outname,'2');
-else
-    outnameS=strcat(initval.basepath,initval.outname);
-end
-
+% 
+% if Doneclick;
+%     outnameS=strcat(initval.basepath,initval.outname,'2');
+% else
+%     outnameS=strcat(initval.basepath,initval.outname);
+% end
+outnameS=strcat(initval.basepath,initval.outname);
 
 save(outnameS, 'M','S');
 

@@ -1,6 +1,7 @@
 function initval=Exp001_DnaN_TUS_dif_30122014_M(initval, user) 
 
-initval.viewchannel = 'CFP';
+initval.viewchannel = 'RFP';
+initval.DnaNchan = 'RFP';
 
 switch user
       case 'Jacob', 
@@ -33,7 +34,7 @@ switch user
         initval.FLpath='Fluorescence\';
         
     case 'Mark'
-        initval.basepath='D:\Users\water\OneDrive\Documents\BEP\Data\141230_dnaN_dif_tus\';
+        initval.basepath='D:\Users\water\Documents\GitHub\Data\141230_dnaN_dif_tus\';
         initval.BFdatapath='Brightfield\';
         initval.FiguresFolder='Figures\';
         initval.FLpath='Fluorescence\';
@@ -71,10 +72,17 @@ initval.skip2Danalysis=1;
 %initval.nms={'ExpCM_DnaXDnaN_DualColour_Col002_DnaXSignalChan_x209' ;'ExpCM_DnaXDnaN_DualColour_Col002_DnaXSignalChan_x231'; 'ExpCM_DnaXDnaN_DualColour_Col002_DnaXSignalChan_x273'; 'ExpCM_DnaXDnaN_DualColour_Col002_DnaXSignalChan_x295'; 'ExpCM_DnaXDnaN_DualColour_Col002_DnaXSignalChan_x317'; 'ExpCM_DnaXDnaN_DualColour_Col002_DnaXSignalChan_x339'} ; 
 %initval.nms={'ExpCM_Dn0aN-Dif-Gamma-ve-Position1_Series1Chan_x126' ;'ExpCM_DnaN-Dif-Gamma-ve-Position1_Series1Chan_x146'; 'ExpCM_DnaN-Dif-Gamma-ve-Position1_Series1Chan_x173'; 'ExpCM_DnaN-Dif-Gamma-ve-Position1_Series1Chan_x219'; 'ExpCM_DnaN-Dif-Gamma-ve-Position1_Series1Chan_x245'; 'ExpCM_DnaN-Dif-Gamma-ve-Position1_Series1Chan_x291'; 'ExpCM_DnaN-Dif-Gamma-ve-Position1_Series1Chan_x314'; 'ExpCM_DnaN-Dif-Gamma-ve-Position1_Series1Chan_x382'; 'ExpCM_DnaN-Dif-Gamma-ve-Position1_Series1Chan_x405'} ; 
 
-initval.nms={strcat('Exp001_DnaN_TUS_dif_30122014_MChan_x228',initval.viewchannel)};
+nmspath = 'Exp001_DnaN_TUS_dif_30122014_MChan_x227';
 
+% if initval.viewchannel == initval.DnaNchan;
+%     initval.nms={strcat(nmspath,initval.DnaNchan)};
+% else
+%     initval.nms={strcat(nmspath,initval.DnaNchan),strcat(nmspath,initval.viewchannel)};
+% end
 
-initval.outname='DnaN_TUS_dif';
+initval.nms={strcat(nmspath,initval.viewchannel)};
+
+initval.outname=strcat('DnaN_TUS_dif_',initval.viewchannel);
 initval.outname_usr='DnaN_TUS_dif_UserInputs';
 %Used for first analysis of fluorescence---------
 initval.extension=7;

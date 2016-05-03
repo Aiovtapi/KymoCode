@@ -23,8 +23,8 @@ actions.loaddatabase=1; %default=1 (new analysis)
 initval=A001_Images_Set_Experiment(exp);
 
 %load the databases--------------------------------------------------
-outname=strcat(initval.basepath,initval.outname); %processed inputs
-outname2=strcat(initval.basepath,initval.outname,'2'); %Second Chan Input 
+outname=strcat(initval.basepath,initval.outname,DnaNchan); %processed inputs
+outname2=strcat(initval.basepath,initval.outname,initval.viewchannel); %Second Chan Input 
 %outname3=strcat(initval.basepath,initval.outname,'3'); %Third Chan Input 
 
 outname_usr=strcat(initval.basepath,initval.outname_usr);%manual inputs
