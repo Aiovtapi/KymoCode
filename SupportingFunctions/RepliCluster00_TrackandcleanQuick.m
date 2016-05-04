@@ -1,4 +1,4 @@
-function RepliCluster00_TrackandcleanQuick(exp)
+function RepliCluster00_TrackandcleanQuick(exp,ColourIdx)
 %ReplicationCluster
 %-------------------------------------------------------------------------
 if nargin<1, exp='001_DnaN_TUS_dif_30122014_TUSsignal';end 
@@ -8,11 +8,10 @@ chans=initval.channelno;
 for ch=1:chans
 close all
 display(strcat('chans to go = ',num2str(chans-ch)));
-DnaNIdx=find(ismember(initval.viewchan,initval.DnaNchan));
-Channelpath=char(strcat(initval.basepath,initval.nms{ch}(DnaNIdx),'.mat'));
+Channelpath=char(strcat(initval.basepath,initval.nms{ch}(ColourIdx),'.mat'));
 load(Channelpath);
 
-WorkspaceOutName=char(initval.nms{ch}(DnaNIdx)); % ugly way to update entries
+WorkspaceOutName=char(initval.nms{ch}(ColourIdx)); % ugly way to update entries
     
 [r,c]=size(kymo_FL);
 kymoprops.width=c;

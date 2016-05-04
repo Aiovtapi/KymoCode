@@ -1,4 +1,4 @@
-function Processing_AnalyzeDivReptimingAuto(exp)
+function Processing_AnalyzeDivReptimingAuto(exp,ColourIdx)
 %Get some generalfluorescent properties of the fluorescence signal
 %JacobKers 2012
 
@@ -14,7 +14,6 @@ end
 
 initval=A001_Images_Set_Experiment(exp);
 
-DnaNIdx=find(ismember(initval.viewchan,initval.DnaNchan));
 
 actions.savedata=1;         %default=1 (new analysis)
 actions.loaddatabase=1;     %default=1 (new analysis)
@@ -22,7 +21,7 @@ actions.plot=initval.plotintermediateresults;             %default=0 (quick run)
 
 
 %load the databases--------------------------------------------------
-outname=strcat(initval.basepath,initval.outname{DnaNIdx});
+outname=strcat(initval.basepath,initval.outname{ColourIdx});
 outname_usr=strcat(initval.basepath,initval.outname_usr);%manual inputs
 if actions.loaddatabase
 load(outname,'S');

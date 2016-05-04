@@ -1,5 +1,5 @@
 %function A102_Processing_Find_Division_Times(exp)
-function Processing_Find_Division_Times(exp)
+function Processing_Find_Division_Times(exp,ColourIdx)
 %Load database, 
 %1) For every replicationcluster....
     %find the two daugthers
@@ -24,10 +24,8 @@ end
 
 initval=A001_Images_Set_Experiment(exp);
 
-DnaNIdx=find(ismember(initval.viewchan,initval.DnaNchan));
-
 %load the databases--------------------------------------------------
-outname=strcat(initval.basepath,initval.outname{DnaNIdx}); %processed inputs
+outname=strcat(initval.basepath,initval.outname{ColourIdx}); %processed inputs
 outname_usr=strcat(initval.basepath,initval.outname_usr);%manual inputs
 if actions.loaddatabase
 load(outname,'S');

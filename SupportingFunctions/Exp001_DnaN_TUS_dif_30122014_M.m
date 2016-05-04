@@ -21,7 +21,7 @@ switch user
         initval.BFdatapath='Brightfield/';
         initval.FiguresFolder='Figures/';
         initval.FLpath='Fluorescence/';
-        initval.FLdatapath=strcat(initval.FLpath,initval.viewchan,'/');
+        initval.OSslash='/';
     case 'RoyPC'
 %         initval.basepath='D:\rleeuw\Data\141230_dnaN_dif_tus\dnaN_dif_tus_40msExpTime_5minAcqTimeYFP_30msExpCFP_002_C1\';
 %         initval.BFdatapath='Brightfield\';
@@ -33,17 +33,17 @@ switch user
         initval.BFdatapath='Brightfield\';
         initval.FiguresFolder='Figures\';
         initval.FLpath='Fluorescence\';
-        initval.FLdatapath=strcat(initval.FLpath,initval.viewchan,'\');
+        initval.OSslash='\';
         
     case 'Mark'
         initval.basepath='C:\Users\water\Documents\GitHub\Data\141230_dnaN_dif_tus\';
         initval.BFdatapath='Brightfield\';
         initval.FiguresFolder='Figures\';
         initval.FLpath='Fluorescence\';
-        initval.FLdatapath=strcat(initval.FLpath,initval.viewchan,'\');
+        initval.OSslash='\';
         
 end
-
+initval.FLdatapath=strcat(initval.FLpath,initval.viewchan,initval.OSslash);
 initval.BFfiletemplate='BF1.tif';
 initval.FLfiletemplate=strcat(initval.viewchan,'_R_I_Corrected.tif');
 initval.maxfile=421;

@@ -1,4 +1,4 @@
-function Processing_InitTer_analysisAuto(exp)
+function Processing_InitTer_analysisAuto(exp,ColourIdx)
 %Load database, analyze start and stop
 %JacobKers 2012
 
@@ -16,10 +16,9 @@ end
 initval=A001_Images_Set_Experiment(exp);
 rnge=2*initval.extension;
 
-DnaNIdx=find(ismember(initval.viewchan,initval.DnaNchan));
 
 %load the databases--------------------------------------------------
-outname=strcat(initval.basepath,initval.outname{DnaNIdx}); %processed inputs
+outname=strcat(initval.basepath,initval.outname{ColourIdx}); %processed inputs
 outname_usr=strcat(initval.basepath,initval.outname_usr);%manual inputs
 if actions.loaddatabase
 load(outname,'S');
