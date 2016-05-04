@@ -35,7 +35,7 @@ end
 outname2=strcat(initval.basepath,initval.outname{ColourIdx});
 
 %work through all replication cycles------------------------
-chan_no=initval.channelno
+chan_no=initval.channelno;
 difs=[]; count=0;
 %for i=1:chan_no  %for each channel
 for i=1:chan_no  %for each channel
@@ -55,12 +55,11 @@ kymo_FL=S(i).channels.kymo_FL;
 
 for j=1:repno; %for each bacterium
 close all
-'chan_no to go',  chan_no-i
-'repno to go' ,repno-j
+disp(strcat('chan_no to go: ',num2str(chan_no-i),', repno to go: ' ,num2str(repno-j)))
 ThisRep=Rep(j);         %Current replication
 ThisManRep=ManRep(j);
 ThisDiv=Div(j);
-frs=       ThisDiv.edges.frs2; 
+frs=       ThisDiv.edges.frs; 
 %check number of conditions
  ok1=strcmp(ThisDiv.birthtype, 'OK');    %birth ok
  ok2= strcmp(ThisDiv.divtype, 'OK');    ;%division ok

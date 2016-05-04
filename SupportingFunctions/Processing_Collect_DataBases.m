@@ -29,9 +29,9 @@ S(ch).channels.chanstk_FL=buf.chanstk_FL;
 S(ch).channels.ReplicationCluster=bof.ReplicationCluster;
 
 
-M(ch).channels.initval=buf.initval;
-M(ch).channels.endpoints=buf.endpoints;
-M(ch).channels.presets=buf.presets;
+M(ch).channels.initval=bof.initval;
+M(ch).channels.endpoints=bof.endpoints;
+M(ch).channels.presets=bof.presets;
 M(ch).channels.RepClicks=bof.RepClicks;
 
 [~,Nrep]=size(S);
