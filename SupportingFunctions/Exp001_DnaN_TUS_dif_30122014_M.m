@@ -36,7 +36,7 @@ switch user
         initval.FLdatapath=strcat(initval.FLpath,initval.viewchan,'\');
         
     case 'Mark'
-        initval.basepath='D:\Users\water\Documents\GitHub\Data\141230_dnaN_dif_tus\';
+        initval.basepath='C:\Users\water\Documents\GitHub\Data\141230_dnaN_dif_tus\';
         initval.BFdatapath='Brightfield\';
         initval.FiguresFolder='Figures\';
         initval.FLpath='Fluorescence\';

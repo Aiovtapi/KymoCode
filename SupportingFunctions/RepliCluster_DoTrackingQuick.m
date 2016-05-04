@@ -44,8 +44,10 @@
     LL=kymoprops.duration;
      [~,lp]=size(ReplicationCluster);  
      
-     for i=1:lp   % %for each cluster
-         lp-i
+     disp('Clusters left = ')
+     for i=1:lp;   % %for each cluster
+         fprintf(num2str(lp-i,'%03.0f'))
+         
          ThisCluster=ReplicationCluster(i);
          startfr=ceil(ThisCluster.PosKyTracCom.frames(1)); %go to start point
          stopfr=ceil(ThisCluster(1,end).PosKyTracCom.frames(end));
@@ -94,5 +96,6 @@
              lastpos=estpos+comc;       %update last known position
          end
               ReplicationCluster(i).PosKyTracCom.trackpos=composses;
+              fprintf('\b\b\b')
      end
      

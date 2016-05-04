@@ -1,4 +1,4 @@
-function Processing_Collect_DataBases(exp,ColourIdx)
+function Processing_Collect_DataBases(exp,ColourIdx,DnaNIdx)
 %Load databases and save them in  common databases 'S' (for automatic
 %processing results) and 'M'(anual) for user inputs (clicked positions
 %etc.)
@@ -14,23 +14,25 @@ initval=A001_Images_Set_Experiment(exp);
 chans=initval.channelno;
 
 for ch=1:chans
+    DnaNpath=strcat(initval.basepath,initval.nms{ch}{DnaNIdx});
+    bof=load(DnaNpath);
 infi=strcat(initval.basepath,initval.nms{ch}{ColourIdx});
 buf=load(infi);
 initval=A001_Images_Set_Experiment(exp);  %just to be sure
 S(ch).channels.initval=buf.initval;
-S(ch).channels.RepClicks=buf.RepClicks;
+S(ch).channels.RepClicks=bof.RepClicks;
 
 S(ch).channels.kymo_FL=buf.kymo_FL;
 S(ch).channels.kymo_BF=buf.kymo_BF;
 S(ch).channels.chanstk_BF=buf.chanstk_BF;
 S(ch).channels.chanstk_FL=buf.chanstk_FL;
-S(ch).channels.ReplicationCluster=buf.ReplicationCluster;
+S(ch).channels.ReplicationCluster=bof.ReplicationCluster;
 
 
 M(ch).channels.initval=buf.initval;
 M(ch).channels.endpoints=buf.endpoints;
 M(ch).channels.presets=buf.presets;
-M(ch).channels.RepClicks=buf.RepClicks;
+M(ch).channels.RepClicks=bof.RepClicks;
 
 [~,Nrep]=size(S);
 for j=1:Nrep

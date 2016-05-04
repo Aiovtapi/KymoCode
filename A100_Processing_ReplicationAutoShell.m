@@ -26,7 +26,7 @@ if 1, RepliCluster00_TrackandcleanQuick(exp); end
 %Next, Collect all channel data in one big database (just an administrative
 %step)
 disp('collecting...');
-if 1, Processing_Collect_DataBases(exp,DnaNIdx); end
+if 1, Processing_Collect_DataBases(exp,DnaNIdx,DnaNIdx); end
 
 %%------------------------------------------------------------
 %In this step, the moments of birth and division are detected (from the brightfield data)  associated 
@@ -59,8 +59,8 @@ if 1,
 end
 
 
-for N=Dummy
-    Processing_Collect_DataBases(exp,N)
+for N=Dummy;
+    Processing_Collect_DataBases(exp,N,DnaNIdx);
     Processing00_TwoDSpot_ImageAnalyzerAuto(exp,N);
 end
 

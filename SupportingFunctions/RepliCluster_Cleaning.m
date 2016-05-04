@@ -1,4 +1,4 @@
-function [ReplicationCluster,RepClicks]=RepliCluster_Cleaning(ReplicationCluster,RepClicks);
+function [ReplicationCluster,RepClicks]=RepliCluster_Cleaning(ReplicationCluster,RepClicks)
     %Re-check the database inputs
     %label all bad results as fate='badMeas'
     %cluster should live more than 3 frames

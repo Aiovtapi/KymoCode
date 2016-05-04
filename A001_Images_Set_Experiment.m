@@ -5,7 +5,7 @@ function initval=A001_Images_Set_Experiment(exp)
 
 if nargin<1, exp='001_DnaN_TUS_dif_30122014_M';end
 
-user='MarkPC';
+user='Mark';
 switch user
       case 'Jacob', 
           projectpath='D:\jkerssemakers\My Documents\BN_ND_ActiveProjects\BN_ND11_CharlBacterialReplication\';
@@ -34,7 +34,7 @@ switch user
           versionpath='KymoCode\';
           toolspath='SupportingFunctions';
       case 'Mark'
-          projectpath='D:\Users\water\Documents\GitHub\';
+          projectpath='C:\Users\water\Documents\GitHub\';
           versionpath='KymoCode\';
           toolspath='SupportingFunctions';
 end

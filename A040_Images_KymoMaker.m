@@ -29,7 +29,7 @@ end
 
 %Get raw data--------------------------
 if actions.getdatabase
-ImagesWorkspaceName=strcat(initval.basepath,initval.outname{I},'_Images',num2str(initval.maxfile),'.mat');
+ImagesWorkspaceName=strcat(initval.basepath,'Images',num2str(initval.maxfile),'_',initval.outname{I},'.mat');
 load(ImagesWorkspaceName,'aa', 'ff');
 end
 
@@ -63,7 +63,7 @@ else %explicit other click-file!
 end
 
 else
-manypoints=Processing_PickManyChannels(im1,initval,'Pick lower left channel')
+manypoints=Processing_PickManyChannels(im1,initval,'Pick lower left channel');
 if actions.reloadclicks
 save(inname, 'manypoints', '-append');
 else
@@ -145,6 +145,5 @@ imwrite(kymim1,lbl3_Fig,'tif');
 imwrite(kymim1,lbl4_Fig,'tif');
 end
 
-
-
+disp(strcat('Kymos done for ',initval.viewchan{I}));
 end

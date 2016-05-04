@@ -7,8 +7,7 @@ initval=A001_Images_Set_Experiment(exp);
 chans=initval.channelno;
 for ch=1:chans
 close all
-display('chans to go');
-chans-ch
+display(strcat('chans to go = ',num2str(chans-ch)));
 DnaNIdx=find(ismember(initval.viewchan,initval.DnaNchan));
 Channelpath=char(strcat(initval.basepath,initval.nms{ch}(DnaNIdx),'.mat'));
 load(Channelpath);

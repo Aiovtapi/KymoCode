@@ -20,7 +20,7 @@ initval.updateROI=1;
 
 
 % I) First, collect an image series. 
-ImagesWorkspaceName=strcat(initval.basepath,initval.outname{1},'_Images',num2str(initval.maxfile),'.mat');
+ImagesWorkspaceName=strcat(initval.basepath,'Images',num2str(initval.maxfile),'_',initval.outname{1},'.mat');
 load(ImagesWorkspaceName,'aa');
 
 
@@ -116,8 +116,8 @@ drift=driftvector;
 lbl=strcat(initval.basepath,initval.driftfile);
 
 dlmwrite(lbl,driftvector);
-initval.ImagesWorkspaceName=strcat(initval.basepath,initval.outname{1},'_Images',num2str(initval.maxfile),'.mat');
-save(initval.ImagesWorkspaceName, 'drift');%, '/append');
+initval.ImagesWorkspaceName=strcat(initval.basepath,'Images',num2str(initval.maxfile),'_',initval.outname{1},'.mat');
+save(initval.ImagesWorkspaceName, 'drift','-append');
 
 disp('Drift vector found');
 end
