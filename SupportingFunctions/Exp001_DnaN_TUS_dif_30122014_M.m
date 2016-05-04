@@ -2,6 +2,7 @@ function initval=Exp001_DnaN_TUS_dif_30122014_M(initval, user)
 
 initval.viewchan={'RFP','YFP','CFP'};
 initval.DnaNchan='RFP';
+nmspath ={'Exp001_DnaN_TUS_dif_30122014_MChan_x228','Exp001_DnaN_TUS_dif_30122014_MChan_x248'};
 
 switch user
       case 'Jacob', 
@@ -50,7 +51,7 @@ initval.maxfile=421;
 
 %used for kymograph processing-------------------------
 initval.channeldistance=32.0; %in pixels
-initval.channelno=1; %number of channels
+initval.channelno=2; %number of channels
 initval.perpadjust=0; %degrees
 initval.kymoangle=47;  %CCW
 initval.kymolength=150;  %in pixels
@@ -72,8 +73,6 @@ initval.skip2Danalysis=1;
 %Used for database collection----------------
 %initval.nms={'ExpCM_DnaXDnaN_DualColour_Col002_DnaXSignalChan_x209' ;'ExpCM_DnaXDnaN_DualColour_Col002_DnaXSignalChan_x231'; 'ExpCM_DnaXDnaN_DualColour_Col002_DnaXSignalChan_x273'; 'ExpCM_DnaXDnaN_DualColour_Col002_DnaXSignalChan_x295'; 'ExpCM_DnaXDnaN_DualColour_Col002_DnaXSignalChan_x317'; 'ExpCM_DnaXDnaN_DualColour_Col002_DnaXSignalChan_x339'} ; 
 %initval.nms={'ExpCM_Dn0aN-Dif-Gamma-ve-Position1_Series1Chan_x126' ;'ExpCM_DnaN-Dif-Gamma-ve-Position1_Series1Chan_x146'; 'ExpCM_DnaN-Dif-Gamma-ve-Position1_Series1Chan_x173'; 'ExpCM_DnaN-Dif-Gamma-ve-Position1_Series1Chan_x219'; 'ExpCM_DnaN-Dif-Gamma-ve-Position1_Series1Chan_x245'; 'ExpCM_DnaN-Dif-Gamma-ve-Position1_Series1Chan_x291'; 'ExpCM_DnaN-Dif-Gamma-ve-Position1_Series1Chan_x314'; 'ExpCM_DnaN-Dif-Gamma-ve-Position1_Series1Chan_x382'; 'ExpCM_DnaN-Dif-Gamma-ve-Position1_Series1Chan_x405'} ; 
-
-nmspath ={'Exp001_DnaN_TUS_dif_30122014_MChan_x228'};
 
 initval.nms=cell(size(nmspath,2),1);
 
