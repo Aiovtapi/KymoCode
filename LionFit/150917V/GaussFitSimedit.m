@@ -28,23 +28,14 @@ clc
 
 %% Inputs 
 
-for Cell=1:24;
+for Cell=1;
 
 clear XNorm x NSpots SNR ydatacrpd pixels
 
-% Bac=num2str(Cell);
-% BacStr='Fluo0Chan01Bac0003';
-% Mainfolder=strcat(initval.basepath,'Stacks/Tus/');
-% Stackpth=strcat(Mainfolder,BacStr);
-% d1{1}=readtimeseries(strcat(Stackpth,'/',BacStr,'Im'),'tif'); %read zstack
- 
-
-folder = {'01','02', '07', '08', '13', '14', '15', '16', '19','20','21','22','27','28','35','36','37','38','39','40','41','42','47','56'};
 ClipFactor=1;
-GaussFactor=1;Mainfolder='D:\Users\water\OneDrive\Documents\BEP\Data\141230_dnaN_dif_tus\Figures\BacPics\';
-Stackpth=strcat('Fluo0Chan01Bac00',folder{Cell},'\');
-Channel=strcat('Fluo0Chan01Bac00',folder{Cell},'Im');
-d1{1}=readtimeseries(strcat(Mainfolder,Stackpth,Channel,'.tif'),'tif');
+GaussFactor=1;
+
+GaussDefine
 
 data=dip_array(d1{1}); %turn into uint16 array
 
