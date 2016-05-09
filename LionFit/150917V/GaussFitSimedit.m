@@ -28,7 +28,7 @@ clc
 
 %% Inputs 
 
-for Cell=3;
+for Cell=4;
 
 clear XNorm x NSpots SNR ydatacrpd pixels
 
@@ -125,7 +125,7 @@ for i=1:Tsize
     [x0{j}(i,:),Case{j}(i),ydatacrpdR1{i,j+1},Ydata{i,j},Size{i,j},Yg(i,j),Xg(i,j)]= ... 
         LionSpotter(ydatacrpdR1{i,j},SA,Sx,Sy,Px,Py,Bs,lob,upb);
    %still needs background level to be mediated from within the channel.   
-    while x0{j}(i,1)>IntensityPeakThreshold && j<50 && Size{i,j}(1)>0
+    while x0{j}(i,1)>IntensityPeakThreshold && j<10 && Size{i,j}(1)>0
     
     % make guesses for spot position
     
@@ -212,6 +212,7 @@ for i=1:Tsize
    end
    
     end
+    display(i)
 end
 
 NSpots=size(x,2);

@@ -8,7 +8,7 @@ clc
 %initval.basepath='/Users/rleeuw/Work/Data/OriZ-Dif_Results/';
 %% Define variables
 
-Ncells=3;
+Ncells=4;
 
 T=cell(Ncells+1,1);
 d=cell(Ncells+1,1);
@@ -155,8 +155,8 @@ SS=LionComBIS(SS,DeltaXcost,MeanBacLifeT,IlowerboundT);
 
 %1. Linking
 
-% Sd=LionLink(Sd,MeanBacLifed);
-%  S=LionLink(S,MeanBacLifeT);
+Sd=LionLink(Sd,MeanBacLifed);
+S=LionLink(S,MeanBacLifeT);
 
 % To do 2. close gaps and capture merging and splitting events. (Using Cost Matrix Gap Closing, merging, splitting.)
 
