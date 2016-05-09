@@ -26,15 +26,16 @@ end
 
 sigma=1E20;            %at start, use a total-upper-limit 
 ratio=0;
-ld=length(data);
-flag=ones(ld,1);  %at start, all points are selected
+ld1=size(data,1);
+ld2=size(data,2);
+flag=ones(ld1,ld2);  %at start, all points are selected
 cleandata=data;
 while ratio<sigchange     %if not too much changes anymore; the higher this number the less outliers are peeled off.
     sigma_old=sigma;
     selc=find(flag==1);
     data(flag==1); 
     ls=length(selc);
-    av=nanmedian(data(selc));       %since we expect skewed distribution, we use the median iso the mea     
+    av=nanmean(data(selc));       %since we expect skewed distribution, we use the median iso the mea     
     sigma=nanstd(data(selc));
     ratio=sigma/sigma_old;
     switch how

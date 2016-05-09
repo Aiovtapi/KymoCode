@@ -96,7 +96,7 @@ lowerboundchannel=1;
 
 
 Tolerance=2;
-sigmachange=0.7;
+sigmachange=0.05;
 how='positive';
 show=0;
 
@@ -115,7 +115,7 @@ for i=1:Tsize
     higherboundchannel=size(ydatacrpd{i},1);
     % Intensity thresholding for outliers
     Data=ydatacrpd{i}(lowerboundchannel:higherboundchannel,:);
-    [flag,~]=DetermineOutliers(Data,Tolerance,sigmachange,how,show);
+    [flag,A]=DetermineOutliers(Data,Tolerance,sigmachange,how,show);
     Outliersdata=~flag.*ydatacrpd{i}(lowerboundchannel:higherboundchannel,:);
     IntensityPeakThreshold = mean(nonzeros(Outliersdata(:)))+std(nonzeros(Outliersdata(:)));
 
