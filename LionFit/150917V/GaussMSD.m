@@ -38,9 +38,9 @@ ax = gca; % current axes
 ax.FontSize = 16;
 set(ax,'LineWidth',2);
 %     MA.plotMSD
-MA.plotTracks
- %  MA.labelPlotTracks;
-%   MA.plotMeanMSD(gca, true)
+ MA.plotTracks
+% MA.labelPlotTracks;
+% MA.plotMeanMSD(gca, true)
 
 
 %% diffusion coefficient

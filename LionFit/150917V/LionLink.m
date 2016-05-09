@@ -45,7 +45,13 @@ AuxiliaryMatrixd=cell(Ncells,MeanBacLifed);
 
 
 for i=1:Ncells
+    
+    if nargin<2
     TT=size(Sd{i}.x{1},1);
+    else
+    TT=MeanBacLifed;
+    end
+    
     for t=1:TT-1
         for j=1:size(Sd{i}.x,2)
             for k=1:size(Sd{i}.x,2)
@@ -54,7 +60,7 @@ for i=1:Ncells
                 % Cost for linking particle i in frame t to particle j in
                 % frame t+1.
                 
-                Clinkd{i,t}(j,k)=(sqrt(Sd{i}.x{j}(t,2).^2+Sd{i}.x{j}(t,4).^2)- ...
+                Clinkd{i,t}(j,k)=(sqrt(Sd{i}.x{j}(t,2).^2+Sd{i}.x{j}(t,4).^2) - ...
                     sqrt(Sd{i}.x{k}(t+1,2).^2+Sd{i}.x{k}(t+1,4).^2)).^2;
 
                 %Clinkd{i,t}(j+Nspots,k+Nspots)=Clinkd{i,t}(k,j); %lower right matrix (transpose of upper left)
@@ -71,13 +77,13 @@ for i=1:Ncells
         
         % Should be estimated as 1.05 x maximal cost of all previous links.
 
-                bCostd=ones(Nspots,1)*20; % This is still to be implemented (hence 20).
-                dCostd=ones(Nspots,1)*20;
+                bCostd=ones(Nspots,1)*2E5; % This is still to be implemented (hence 20).
+                dCostd=ones(Nspots,1)*2E5;
 
                 bMatrixd=diag(bCostd);
                 dMatrixd=diag(dCostd);
                 
-                AuxiliaryMatrixd{i,t}=0.001*Clinkd{i,t}'; % given the lower cost of the matrix so that it doesn't influence final solution
+                AuxiliaryMatrixd{i,t}=2E5*Clinkd{i,t}'; % given the lower cost of the matrix so that it doesn't influence final solution
 
                 Clinkd{i,t}(j+1:j+Nspots,1:k)=bMatrixd; %lower left matrix
                 Clinkd{i,t}(1:j,k+1:k+Nspots)=dMatrixd; %upper right matrix
@@ -96,8 +102,8 @@ for i=1:Ncells
                 
                 %Linear Assignment Problem (LAP)
                 
-                [Amind{i,t},Costd{i,t}]=LionLAP(Clinkd{i,t}); 
-                
+                [Amind{i,t},Costd{i,t}]=munkres(Clinkd{i,t}); 
+                [Amind2{i,t},Costd2{i,t}]=LionLAP(Clinkd{i,t});
                 %Costd is the cost corresponding with the switches. Numbers
                 %correspond with the columns.
                 
