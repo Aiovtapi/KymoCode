@@ -40,7 +40,6 @@ clear i X dX time X0
 
 ma=msdanalyzer(2,SPACE_UNITS,TIME_UNITS);
 
-% This works:
 ma = ma.addAll(tracks);
 
 % Compute MSD

@@ -31,6 +31,12 @@ t = mmsd(:,1);
 y = mmsd(:,2);
 w = 1./mmsd(:,3);
 
+LOL=isnan(w(:));
+
+if LOL(1)==1
+    w(:,3)=0;
+end
+
 % Clip data, never take the first one dt = 0
 if clip_factor < 1
     t_limit = 2 : round(numel(t) * clip_factor);

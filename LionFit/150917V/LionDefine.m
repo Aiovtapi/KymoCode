@@ -1,6 +1,7 @@
+function [Mainfolder,Stackpth,Channel] = LionDefine(Cell,exp)
+%UNTITLED3 Summary of this function goes here
+%   Detailed explanation goes here
 % Define your experiment
-
-exp='RoySim';
 
 if ~exist('Cell')
     Cell=1;
@@ -38,11 +39,14 @@ switch exp
         
         %GaussFit
         Mainfolder='/Users/rleeuw/Work/DataAnalysis/BlurLab/DiffusionTests/';
-        Stackpth='1/';
+        Stackpth=strcat(num2str(Cell),'/');
         Channel=num2str(Cell);
-        d1{1}=readtimeseries(strcat(Mainfolder,Stackpth,Channel,'.tif'),'tif');
         
         %GaussCalcs
         MainPathTus='/Users/rleeuw/Work/DataAnalysis/BlurLab/DiffusionTests/Results/';
         MainPathdif='/Users/rleeuw/Work/DataAnalysis/BlurLab/DiffusionTests/Results/';
 end
+
+
+end
+

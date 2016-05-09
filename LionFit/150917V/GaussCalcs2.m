@@ -8,7 +8,7 @@ clc
 %initval.basepath='/Users/rleeuw/Work/Data/OriZ-Dif_Results/';
 %% Define variables
 
-Ncells=24;
+Ncells=3;
 
 T=cell(Ncells+1,1);
 d=cell(Ncells+1,1);
@@ -21,31 +21,37 @@ framesT=zeros(Ncells,1);
 
 %  expno='001_DnaN_TUS_dif_30122014_difsignal';
 %  initval=A001_Images_Set_Experiment(expno); %define your paths and files
- 
-% BacLife=zeros(Ncells,1); BacLifed=zeros(Ncells,1);
-% MainPathTus=strcat(initval.basepath,'Stacks/Tus/DataMULTI/');
-% MainPathdif=strcat(initval.basepath,'Stacks/dif/DataMULTI/');
+
 
 % Tus Manual Labor!
 BacLife=zeros(Ncells,1); BacLifed=zeros(Ncells,1);
-MainPathTus='D:\Users\water\OneDrive\Documents\BEP\Data\141230_dnaN_dif_tus\Figures\BacPics\';
-MainPathdif='D:\Users\water\OneDrive\Documents\BEP\Data\141230_dnaN_dif_tus\Figures\BacPics\';
+exp='RoySim';
 
-
+[MainPathTus,MainPathdif]=LionDefine2(exp);
 
 %% Load data
 tic
 
 % CHANGED TO LOAD ONE SINGLE CELL!!!!! 
 
-folder = {'01','02', '07', '08', '13', '14', '15', '16', '19','20','21','22','27','28','35','36','37','38','39','40','41','42','47','56'};
+% folder = {'01','02', '07', '08', '13', '14', '15', '16', '19','20','21','22','27','28','35','36','37','38','39','40','41','42','47','56'};
+
+% for i=1:Ncells;
+%     T{i}=load(strcat(MainPathTus,'YFP\Results\',strcat('Fluo0Chan01Bac00',folder{i},'Im\'),num2str(i),'.mat'));
+%     framesT(i)=length(T{i}.x{1}(:,1));
+%     d{i}=load(strcat(MainPathdif,'CFP\Results\',strcat('Fluo0Chan01Bac00',folder{i},'Im\'),num2str(i),'.mat'));
+%     framesd(i)=length(d{i}.x{1}(:,1));
+% end
+
+%SIMULATION FOR MSDs
 
 for i=1:Ncells;
-    T{i}=load(strcat(MainPathTus,'YFP\Results\',strcat('Fluo0Chan01Bac00',folder{i},'Im\'),num2str(i),'.mat'));
+    T{i}=load(strcat(MainPathTus,num2str(i),'/',num2str(i),'.mat'));
     framesT(i)=length(T{i}.x{1}(:,1));
-    d{i}=load(strcat(MainPathdif,'CFP\Results\',strcat('Fluo0Chan01Bac00',folder{i},'Im\'),num2str(i),'.mat'));
+    d{i}=load(strcat(MainPathdif,num2str(i),'/',num2str(i),'.mat'));
     framesd(i)=length(d{i}.x{1}(:,1));
 end
+
 
 NspotsT=T{i}.NSpots;
 NspotsD=d{i}.NSpots;

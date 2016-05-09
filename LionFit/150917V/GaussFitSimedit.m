@@ -28,14 +28,18 @@ clc
 
 %% Inputs 
 
-for Cell=1;
+for Cell=3;
 
 clear XNorm x NSpots SNR ydatacrpd pixels
+
+exp='RoySim';
 
 ClipFactor=1;
 GaussFactor=1;
 
-GaussDefine
+[Mainfolder,Stackpth,Channel]=LionDefine(Cell,exp);
+
+d1{1}=readtimeseries(strcat(Mainfolder,Stackpth,Channel,'.tif'),'tif');
 
 data=dip_array(d1{1}); %turn into uint16 array
 
@@ -82,14 +86,14 @@ i=1;
     ydata{i}=double(data(:,:,i));
     
     %(Notice that cropping causes shift in simulations!!)
-    [ydatacrpd{i},~]=Crop_Image(ydata{i});
+%     [ydatacrpd{i},~]=Crop_Image(ydata{i});
     ydatacrpd{i}=ydata{i};
     ydatacrpdR1{i,1}=ydatacrpd{i};
 
 %Determine outliers for determining intensity threshold.
 
-lowerboundchannel=8;
-higherboundchannel=16;
+lowerboundchannel=1;
+
 
 Tolerance=2;
 sigmachange=0.7;
@@ -103,11 +107,12 @@ for i=1:Tsize
     ydata{i}=double(data(:,:,i));
     
 %   Noticed that cropping causes shift in simulations!!
-  [ydatacrpd{i},~]=Crop_Image(ydata{i});
+%   [ydatacrpd{i},~]=Crop_Image(ydata{i});
 
-%     ydatacrpd{i}=ydata{i};
+    ydatacrpd{i}=ydata{i};
     ydatacrpdR1{i,1}=ydatacrpd{i};
     
+    higherboundchannel=size(ydatacrpd{i},1);
     % Intensity thresholding for outliers
     Data=ydatacrpd{i}(lowerboundchannel:higherboundchannel,:);
     [flag,~]=DetermineOutliers(Data,Tolerance,sigmachange,how,show);
@@ -197,7 +202,7 @@ for i=1:Tsize
            
    [~,~,ISPOT,Ibacklevel,spotim_clipped,bckim,ydatacrpdR1{i,j+1},pixels{j}(i)]=LionMasker(ydatacrpdR1{i,j},x{j}(i,2),x{j}(i,4),ClipmaskR,GaussmaskW);
 
-   if size(nonzeros(spotim_clipped(:)),1)<9
+   if size(nonzeros(spotim_clipped(:)),1)<1
        break
    else
     j=j+1;
