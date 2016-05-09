@@ -172,7 +172,7 @@ IlowerboundT=0;
 %1. Linking
 
  SdnN=LionLink(SdnN);
-%  SnN=LionLink(SnN);
+ S=LionLink(S,MeanBacLifeT);
 
 % To do 2. close gaps and capture merging and splitting events. (Using Cost Matrix Gap Closing, merging, splitting.)
 

@@ -8,16 +8,9 @@ Nspots=size(Sd{1}.x,2);
 
 % 1. Link particles between consecutive frames. (Using Cost Matrix Linking)
 
-if nargin<2
-    %Cutoffs:
-Timelength=[];
-
+%Cutoffs:
 for i=1:Ncells
-    Timelength=[Timelength size(Sd{i}.x{1},1)];
-end
-
-MeanBacLifed=max(Timelength);
-end
+    
 
 Ctotald=[];
 
