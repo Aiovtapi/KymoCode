@@ -102,8 +102,9 @@ for i=1:Ncells
                 
                 %Linear Assignment Problem (LAP)
                 
-                [Amind{i,t},Costd{i,t}]=munkres(Clinkd{i,t}); 
-                [Amind2{i,t},Costd2{i,t}]=LionLAP(Clinkd{i,t});
+%                 [Amind{i,t},Costd{i,t}]=munkres(Clinkd{i,t}); 
+                [Amind{i,t},Costd{i,t}]=LionLAP(Clinkd{i,t});
+                
                 %Costd is the cost corresponding with the switches. Numbers
                 %correspond with the columns.
                 
