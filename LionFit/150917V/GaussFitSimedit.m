@@ -46,7 +46,7 @@ for Cell=lionval.viewbac;
         ClipFactor=1;
         GaussFactor=1;
 
-        thisbacfolder=strcat(lionval.bacstring{1},lionval.bacstring{2},num2str(Cell));
+        thisbacfolder=strcat(lionval.bacstring{1},lionval.bacstring{2},num2str(Cell,'%03.0f'));
         bacseriepth=strcat(lionval.Mainfolder,thisbacfolder,lionval.OSslash);
         
         if ~strcmp(lionval.viewchan,lionval.difchan)
@@ -107,21 +107,13 @@ for Cell=lionval.viewbac;
 
         i=1;
 
-            %Remove the x,y-Pads
-            ydata{i}=double(data(:,:,i));
-
-            %(Notice that cropping causes shift in simulations!!)
-        %     [ydatacrpd{i},~]=Crop_Image(ydata{i});
-            ydatacrpd{i}=ydata{i};
-            ydatacrpdR1{i,1}=ydatacrpd{i};
-
         %Determine outliers for determining intensity threshold.
 
-        lowerboundchannel=1;
+        lowerboundchannel=7;
 
 
         Tolerance=2;
-        sigmachange=0.05;
+        sigmachange=0.1;
         how='positive';
         show=0;
 
@@ -132,12 +124,14 @@ for Cell=lionval.viewbac;
             ydata{i}=double(data(:,:,i));
 
         %   Noticed that cropping causes shift in simulations!!
-        %   [ydatacrpd{i},~]=Crop_Image(ydata{i});
-
+        if lionval.cropindx==1;
+           [ydatacrpd{i},~]=Crop_Image(ydata{i});
+        else 
             ydatacrpd{i}=ydata{i};
+        end
             ydatacrpdR1{i,1}=ydatacrpd{i};
 
-            higherboundchannel=size(ydatacrpd{i},1);
+            higherboundchannel=16;
             % Intensity thresholding for outliers
             Data=ydatacrpd{i}(lowerboundchannel:higherboundchannel,:);
             [flag,A]=DetermineOutliers(Data,Tolerance,sigmachange,how,show);

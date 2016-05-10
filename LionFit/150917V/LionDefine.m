@@ -29,7 +29,7 @@ switch exp
     case 'Mark',
         
         %GaussFit
-        
+        lionval.cropindx=1;
         lionval.channr=1;
         lionval.viewchan='RFP';
         lionval.viewbac=1; 
@@ -51,8 +51,9 @@ switch exp
         lionval.MainPathdif='D:\Users\water\OneDrive\Documents\BEP\Data\141230_dnaN_dif_tus\Figures\BacPics\';
     
     case 'RoySim'
-        
         %GaussFit
+        lionval.cropindx=0;
+        
         lionval.Mainfolder='/Users/rleeuw/Work/DataAnalysis/BlurLab/DiffusionTests/';
         lionval.Stackpth=strcat(num2str(Cell),'/');
         lionval.Channel=num2str(Cell);
@@ -64,6 +65,7 @@ switch exp
     case 'Roy_MM_Tus_dif'
         %GaussFit     
         lionval.bacstring={'','cell'};
+        lionval.cropindx=1;
         
         lionval.difchan='CFP';
         lionval.bacfolder='/Users/rleeuw/Work/Data/160220_Working_Stacks_diftus/';
