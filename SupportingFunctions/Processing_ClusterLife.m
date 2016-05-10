@@ -582,12 +582,10 @@ function SavePaddedImage(FL_full,maxbaclength,ChNo,BacNo,k,initval,chantype,Chan
 %        end
        
        %Savim=Savim(:,1:mx);  %just to make sure
-       Chl=num2str(ChNo,'%02.0f');
-       Baxx=num2str(BacNo,'%04.0f');
+       %Chl=num2str(ChNo,'%02.0f');
+       Baxx=num2str(BacNo,'%03.0f');
        Imm=num2str(k,'%03.0f');
-       baclabel= strcat('Fluo', num2str(chantype),....
-            'Chan', num2str(Chl),...
-            'Bac', num2str(Baxx));
+       baclabel= strcat('cell', num2str(Baxx));
 %        baclabel_BF= strcat('BriFi', num2str(chantype),....
 %             'Chan', num2str(Chl),...
 %             'Bac', num2str(Baxx));
