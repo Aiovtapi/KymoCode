@@ -29,7 +29,7 @@ exp='Mark';
 
 lionval.channr=1;
 lionval.viewchan='CFP';
-lionval.viewbac=22;
+lionval.viewbac=22:24;
 
 lionval=LionDefine(exp,lionval);
 
@@ -38,6 +38,7 @@ for Cell=lionval.viewbac;
     
     imgflip = 1;        % If you want to align the CFP images.
     imgflipped = 0;
+    flipnumber = 0;
     
     while imgflip == 1; 
 
@@ -49,6 +50,8 @@ for Cell=lionval.viewbac;
         thisbacfolder=strcat(lionval.bacstring{1},lionval.bacstring{2},num2str(Cell,'%03.0f'));
         bacseriepth=strcat(lionval.Mainfolder,thisbacfolder,lionval.OSslash);
         
+        % Check for whether flipping is needed based on the difchannel for
+        % non difchannels. 
         if ~strcmp(lionval.viewchan,lionval.difchan)
             if exist(strcat(lionval.diffolder,'Results',lionval.OSslash,thisbacfolder,'.mat'))
                 flipimage=load(strcat(lionval.diffolder,'Results',lionval.OSslash,thisbacfolder,'.mat'),'imgflipped');
@@ -89,7 +92,7 @@ for Cell=lionval.viewbac;
         lb = [0,0,0,0,0]; %lower bounds for fit
 
         % fit using levenberg-marquardt algorithm
-        OPTIONS = optimoptions('lsqcurvefit','Algorithm','trust-region-reflective');
+        OPTIONS = optimoptions('lsqcurvefit','Algorithm','trust-region-reflective','Display','off');
 
         %% Load Data
         % parameters : [Amplitude, x0, sigmax, y0, sigmay, angel(in rad)]
@@ -209,19 +212,19 @@ for Cell=lionval.viewbac;
                 XNorm{j}(i,1:8)=0;
             end
             
-           % Check 
+           % Check for whether flipping is necessary. This will be skipped
+           % for non dif-channels, as flipping has already been done. 
            if imgflip==1
                 imgflip = x{1}(1,2)>size(ydatacrpd{1},2)/2;
            end
            
-           % Prevent flipping loops. Only one round of flipping is allowed.
-           if imgflipped==1
-               imgflip = 0;
-           end
+            if flipnumber > 1;
+                disp(strcat('cell',num2str(Cell),' is in a flipping loop, check bacseries in ImageJ.'))
+            break
+            end
            
            if imgflip == 1
                imgflipped = 1;
-               disp('hallo')
                break
            end
 
@@ -250,16 +253,17 @@ for Cell=lionval.viewbac;
 
             end
 
-            % MARK MARK MARK
+            % Breaking the loop for image flipping. 
             if imgflip==1
                 break
             end
         end
         
-        % MARK MARK MARK
+        % Flipping the images
         if imgflip==1
             disp(['Flipping ',thisbacfolder])
             GaussImRotate(bacseriepth);
+            flipnumber = flipnumber + 1;
         end
     end
 
@@ -547,6 +551,8 @@ for Cell=lionval.viewbac;
     %     mkdir(strcat(lionval.bacfolder,'Results'));
     % end
 
+            display(strcat('Cell ',num2str(Cell),' analyzed'));
+            display('Saving..');
         if ~exist(strcat(lionval.Mainfolder,'Results'),'dir')
             mkdir(strcat(lionval.Mainfolder,'Results'));
         end
@@ -555,7 +561,9 @@ for Cell=lionval.viewbac;
             disp('This bac series has already been saved. Saving will be skipped')
         else
             save(strcat(lionval.Mainfolder,'Results',lionval.OSslash,thisbacfolder),'x','XNorm','NSpots','SNR','ydatacrpd','pixels','imgflipped');
+            display('Save complete.');
         end
+
 
 end
 

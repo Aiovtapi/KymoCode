@@ -8,6 +8,6 @@ for i=1:size(data,3)
     imwrite(rdata(:,:,i),strcat(bacseriepth,num2str(i,'%03.0f'),'.tif'),'tif');
 end
 
-disp('ik ben bezig manamann')
+disp('Bac series flipped')
 
 end

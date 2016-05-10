@@ -25,11 +25,11 @@ tic
 
 %% Inputs 
 
-exp='Roy_MM_Tus_dif';
+exp='Mark';
 
-lionval.channr=7;
-lionval.viewchan='CFP';
-lionval.viewbac=1:10;
+lionval.channr=2;
+lionval.viewchan='YFP';
+lionval.viewbac=1:15;
 
 lionval=LionDefine(exp,lionval);
 
@@ -38,6 +38,7 @@ for Cell=lionval.viewbac;
     
     imgflip = 1;        % If you want to align the CFP images.
     imgflipped = 0;
+    flipnumber = 0; flipdisplay = 0;
     
     while imgflip == 1; 
 
@@ -115,7 +116,7 @@ for Cell=lionval.viewbac;
 
 
         Tolerance=2;
-        sigmachange=0.5;
+        sigmachange=0.9;
         how='positive';
         show=0;
 
@@ -217,9 +218,14 @@ for Cell=lionval.viewbac;
                 imgflip = x{1}(1,2)>size(ydatacrpd{1},2)/2;
            end
            
-           % Prevent flipping loops. Only one round of flipping is allowed.
-           if imgflipped==1
-               imgflip = 0;
+           % Prevent flipping loops when the estimation of the spot is in
+           % the middle of the cell.
+           if flipnumber > 1;
+                if flipdisplay == 0
+                    disp(strcat('cell',num2str(Cell),' is in a flipping loop, check bacseries in ImageJ.'))
+                    flipdisplay = 1;
+                end
+                imgflip = 0;
            end
            
            if imgflip == 1
@@ -262,6 +268,7 @@ for Cell=lionval.viewbac;
         if imgflip==1
             disp(['Flipping ',thisbacfolder])
             GaussImRotate(bacseriepth);
+            flipnumber = flipnumber + 1;
         end
     end
 
@@ -558,7 +565,7 @@ for Cell=lionval.viewbac;
         if exist(strcat(lionval.Mainfolder,'Results',lionval.OSslash,thisbacfolder,'.mat'))
             disp('This bac series has already been saved. Saving will be skipped')
         else
-            save(strcat(lionval.Mainfolder,'Results',lionval.OSslash,thisbacfolder),'x','XNorm','NSpots','SNR','ydatacrpd','pixels','imgflipped');
+            save(strcat(lionval.Mainfolder,'Results',lionval.OSslash,thisbacfolder),'x','XNorm','NSpots','SNR','ydatacrpdR1','pixels','imgflipped');
             display('Save complete.');
         end
 
