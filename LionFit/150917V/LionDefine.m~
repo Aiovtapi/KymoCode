@@ -67,8 +67,7 @@ switch exp
         lionval.viewchan='YFP';
         lionval.viewbac=1:22;
         
-        lionval.difchan='CFP';
-        lionval.bacfolder='/Users/rleeuw/Work/Data/160220_Working_Stacks_diftus/channel7/';
+        lio
 
         lionval.Mainfolder='/Users/rleeuw/Work/Data/160220_Working_Stacks_diftus/channel7/';
         lionval.Stackpth=strcat('cell',num2str(Cell),'/');

@@ -25,7 +25,7 @@ tic
 
 %% Inputs 
 
-exp='Mark';
+exp='Roy_MM_Tus_dif';
 lionval=LionDefine(exp);
 
     
