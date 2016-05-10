@@ -47,8 +47,8 @@ switch exp
         % lionval.Stackpth=strcat('Fluo0Chan0',num2str(lionval.channr),'Bac00',num2str(Cell,'%02.0f'));
         
         %GaussCalc
-        MainPathTus='D:\Users\water\OneDrive\Documents\BEP\Data\141230_dnaN_dif_tus\Figures\BacPics\';
-        MainPathdif='D:\Users\water\OneDrive\Documents\BEP\Data\141230_dnaN_dif_tus\Figures\BacPics\';
+        lionval.MainPathTus='D:\Users\water\OneDrive\Documents\BEP\Data\141230_dnaN_dif_tus\Figures\BacPics\';
+        lionval.MainPathdif='D:\Users\water\OneDrive\Documents\BEP\Data\141230_dnaN_dif_tus\Figures\BacPics\';
     
     case 'RoySim'
         
@@ -58,8 +58,8 @@ switch exp
         lionval.Channel=num2str(Cell);
         
         %GaussCalcs
-        MainPathTus='/Users/rleeuw/Work/DataAnalysis/BlurLab/DiffusionTests/Results/';
-        MainPathdif='/Users/rleeuw/Work/DataAnalysis/BlurLab/DiffusionTests/Results/';
+        lionval.MainPathTus='/Users/rleeuw/Work/DataAnalysis/BlurLab/DiffusionTests/Results/';
+        lionval.MainPathdif='/Users/rleeuw/Work/DataAnalysis/BlurLab/DiffusionTests/Results/';
 end
 
 
