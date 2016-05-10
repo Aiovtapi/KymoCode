@@ -142,15 +142,16 @@ for i=1:Ncells
 end
 
 
-%% Combining + filtering spots
+%% Combining + intensity filtering spots
 
-DeltaXcost=0.5;
+Ilowerboundd=1000;
+IlowerboundT=700;
 
-Ilowerboundd=0;
-IlowerboundT=0;
+pixel_separation_constant=4;
 
-%  Sd=LionComBI(Sd,DeltaXcost,MeanBacLifed,Ilowerboundd);
-%  SdS=LionComBIS(SdS,DeltaXcost,MeanBacLifed,Ilowerboundd);
+SdS=LionComBI(SdS,d,pixel_separation_constant,Ilowerboundd);
+SS=LionComBI(SS,T,pixel_separation_constant,IlowerboundT);
+
 % % [Sd,dIntReduced]=LionCOMbee(Sd,DeltaXcost,MeanBacLifed,Ilowerboundd);
 % 
 % % dIntReduced is the COM method of spot combining, but accounting for one
@@ -161,17 +162,16 @@ IlowerboundT=0;
 % SS=LionComBIS(SS,DeltaXcost,MeanBacLifeT,IlowerboundT);
 
 %% Spot tracking + linking algorithms
-
 %1. Linking
 
- SdnN=LionLink(SdnN);
+ Sd=LionLink(Sd);
 %  SnN=LionLink(SnN);
 
 % To do 2. close gaps and capture merging and splitting events. (Using Cost Matrix Gap Closing, merging, splitting.)
 
 %% mean distance between spots of two channels (AFTER COMB and FILTERING)
 
-[dd,ddweighted]=LionDistance(SS,SdS,MeanBacLifeT,MeanBacLifed); 
+% [dd,ddweighted]=LionDistance(SS,SdS,MeanBacLifeT,MeanBacLifed); 
 
 %% Construct K for taking means of elements at same time point
 

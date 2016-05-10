@@ -1,6 +1,7 @@
-function [Sd] = LionComBI(Sd,DeltaXcost,MeanBacLifed,Ilb)
+function [Sd] = LionComBI(Sd,d,psc,Ilb)
 %LIONCOMBI Summary of this function goes here
-%   Detailed explanation goes here
+%   d has the images of the bacpics
+%  psc contains the pixel separation constant that is used for combining.
 
 Ncells=size(Sd,1);
 
@@ -12,6 +13,7 @@ VectorXstdd=[];
 for i=1:Ncells
         Nspots=size(Sd{i}.x,2);
     for t=1:size(Sd{i}.x{1},1);
+        DeltaXcost=psc/size(d{i}.ydatacrpd{t},2);
             for j=1:Nspots; 
 
                     VectorXstdd=[VectorXstdd Sd{i}.x{j}(t,3)];
@@ -43,7 +45,8 @@ for i=1:Ncells
     
     for l=1:length(I)
         for n=I(l);
-            for k=J(l);
+            
+            k=J(l);
             
             if DummyId(n)>DummyId(k) 
                 VectorXd2(n)=DummyXd(n);
@@ -57,7 +60,6 @@ for i=1:Ncells
                 VectorId2(n)=0;
             end         
             
-            end
         end
     end
     end
@@ -70,7 +72,7 @@ for i=1:Ncells
     Sd{i}.x{j}(t,1)=VectorId2(j);
     
         if Sd{i}.x{j}(t,1)<Ilb
-            Sd{i}.x{j}(t,1:6)=0;
+            Sd{i}.x{j}(t,1)=0;
         end
 
     end

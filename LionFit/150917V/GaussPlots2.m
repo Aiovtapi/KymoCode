@@ -7,14 +7,14 @@ figure(1)
 
 hold on
 scatter(0:1/(MeanBacLifed-1):1,dif.x{1},dif.I{1}/50+1,'b','filled')
-scatter(0:1/(MeanBacLifed-1):1,dif.x{2},dif.I{2}/50+1,'r','filled')
-scatter(0:1/(MeanBacLifed-1):1,dif.x{3},dif.I{3}/50+1,'k','filled')
+% scatter(0:1/(MeanBacLifed-1):1,dif.x{2},dif.I{2}/50+1,'r','filled')
+% scatter(0:1/(MeanBacLifed-1):1,dif.x{3},dif.I{3}/50+1,'k','filled')
 % plot(0:1/(MeanBacLifed-1):1,dif.x{1}+dif.xstd{1},'b','LineWidth',1)
-% plot(0:1/(MeanBacLifed-1):1,dif.x{1}-dif.xstd{1},'b','LineWidth',1)
-% scatter(0:1/(MeanBacLifed-1):1,Tus.x{1},Tus.I{1}/40+1,'r','filled')
-% scatter(0:1/(MeanBacLifed-1):1,Tus.x{2},Tus.I{2}/40+1,'m','filled')
-% scatter(0:1/(MeanBacLifed-1):1,Tus.x{3},Tus.I{3}/40+1,'k','filled')
-% scatter(0:1/(MeanBacLifed-1):1,Tus.x{4},Tus.I{4}/50+1,'g','filled')
+% % plot(0:1/(MeanBacLifed-1):1,dif.x{1}-dif.xstd{1},'b','LineWidth',1)
+scatter(0:1/(MeanBacLifeT-1):1,Tus.x{1},Tus.I{1}/20+1,'r','filled')
+scatter(0:1/(MeanBacLifeT-1):1,Tus.x{2},Tus.I{2}/20+1,'m','filled')
+scatter(0:1/(MeanBacLifeT-1):1,Tus.x{3},Tus.I{3}/20+1,'k','filled')
+scatter(0:1/(MeanBacLifeT-1):1,Tus.x{4},Tus.I{4}/20+1,'g','filled')
 % plot(0:1/(MeanBacLifed-1):1,Tus.xmean+Tus.xmeanstd,'r','LineWidth',1)
 % plot(0:1/(MeanBacLifed-1):1,Tus.xmean-Tus.xmeanstd,'r','LineWidth',1)
 % scatter(0:1/(MeanBacLifed-1):1,dif.x{2},dif.I{2}/50+1,'b','LineWidth',2)
@@ -133,3 +133,13 @@ xlabel('Time (min)','FontSize',16)
 ylabel('Frequency (-)','FontSize',16)
 set(gca,'FontSize',16,'FontWeight','bold')
 title('Generation Time Distribution')
+
+%% Test
+
+hold on
+plot(0:1/(length(d{1}.x{1}(:,2))-1):1,d{1}.x{1}(:,2),'b');
+plot(0:1/(length(d{1}.x{2}(:,2))-1):1,d{1}.x{2}(:,2),'b');
+plot(0:1/(length(d{1}.x{3}(:,2))-1):1,d{1}.x{3}(:,2),'b');
+plot(0:1/(length(T{1}.x{1}(:,2))-1):1,T{1}.x{1}(:,2),'r');
+plot(0:1/(length(T{1}.x{2}(:,2))-1):1,T{1}.x{2}(:,2),'r');
+plot(0:1/(length(T{1}.x{3}(:,2))-1):1,T{1}.x{3}(:,2),'r');
