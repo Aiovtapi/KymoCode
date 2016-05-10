@@ -6,7 +6,7 @@ end
 
 initval=A001_Images_Set_Experiment(exp);
 
-Nnumbers = 4; % Amount of numbers at the end of the folders
+Nnumbers = 3; % Amount of numbers at the end of the folders
 
 bacpath=strcat(initval.basepath,initval.FiguresFolder,'BacPics',initval.OSslash);
 

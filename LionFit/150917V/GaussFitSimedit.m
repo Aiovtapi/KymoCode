@@ -25,11 +25,11 @@ tic
 
 %% Inputs 
 
-exp='Roy_MM_Tus_dif';
+exp='Mark';
 
-lionval.channr=7;
+lionval.channr=1;
 lionval.viewchan='CFP';
-lionval.viewbac=1:22;
+lionval.viewbac=1:1;
 
 lionval=LionDefine(exp,lionval);
 
@@ -174,17 +174,6 @@ for Cell=lionval.viewbac;
             [x{j}(i,:),resnorm,residual,exitflag] = lsqcurvefit(@GaussPlosFunc, ...
                x0{j}(i,:),xdata(:,j),Ydata{i,j},lb,ub,OPTIONS);
 
-           % MARK MARK MARK
-           if imgflip==1
-                imgflip = x{1}(1,2)>size(ydatacrpd{1},2)/2;
-           end
-           
-           if imgflip == 1
-               imgflipped = 1;
-               break
-           end
-
-
 
            % X-SA-1 is the length in X to the point X-SA on the image.
 
@@ -219,6 +208,17 @@ for Cell=lionval.viewbac;
                 x{j}(i,1:8)=0;
                 XNorm{j}(i,1:8)=0;
             end
+            
+           % MARK MARK MARK
+           if imgflip==1
+                imgflip = x{1}(1,2)>size(ydatacrpd{1},2)/2;
+           end
+           
+           if imgflip == 1
+               imgflipped = 1;
+               disp('hallo')
+               break
+           end
 
 
 

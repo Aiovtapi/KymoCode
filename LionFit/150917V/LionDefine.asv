@@ -31,6 +31,9 @@ switch exp
         %GaussFit
         lionval.cropindx=1;
         lionval.bacstring={'','cell'};
+        lionval.channr=1;
+        lionval.viewchan='CFP';
+        lionval.viewbac=1; 
         
         lionval.difchan='CFP';
         lionval.bacfolder='C:\Users\water\Documents\GitHub\Data\141230_dnaN_dif_tus\Figures\BacPics\';
