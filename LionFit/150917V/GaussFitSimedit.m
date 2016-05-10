@@ -25,11 +25,11 @@ tic
 
 %% Inputs 
 
-exp='Mark';
+exp='Roy_MM_Tus_dif';
 
-lionval.channr=1;
+lionval.channr=7;
 lionval.viewchan='CFP';
-lionval.viewbac=22;
+lionval.viewbac=1:10;
 
 lionval=LionDefine(exp,lionval);
 
@@ -91,7 +91,7 @@ for Cell=lionval.viewbac;
         lb = [0,0,0,0,0]; %lower bounds for fit
 
         % fit using levenberg-marquardt algorithm
-        OPTIONS = optimoptions('lsqcurvefit','Algorithm','trust-region-reflective');
+        OPTIONS = optimoptions('lsqcurvefit','Algorithm','trust-region-reflective','Display','off');
 
         %% Load Data
         % parameters : [Amplitude, x0, sigmax, y0, sigmay, angel(in rad)]
@@ -549,6 +549,8 @@ for Cell=lionval.viewbac;
     %     mkdir(strcat(lionval.bacfolder,'Results'));
     % end
 
+            display(strcat('Cell ',num2str(Cell),' analyzed'));
+            display('Saving..');
         if ~exist(strcat(lionval.Mainfolder,'Results'),'dir')
             mkdir(strcat(lionval.Mainfolder,'Results'));
         end
@@ -557,7 +559,9 @@ for Cell=lionval.viewbac;
             disp('This bac series has already been saved. Saving will be skipped')
         else
             save(strcat(lionval.Mainfolder,'Results',lionval.OSslash,thisbacfolder),'x','XNorm','NSpots','SNR','ydatacrpd','pixels','imgflipped');
+            display('Save complete.');
         end
+
 
 end
 
