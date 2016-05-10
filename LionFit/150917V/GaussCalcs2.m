@@ -8,7 +8,7 @@ clc
 %initval.basepath='/Users/rleeuw/Work/Data/OriZ-Dif_Results/';
 %% Define variables
 
-Ncells=4;
+Ncells=22;
 
 T=cell(Ncells+1,1);
 d=cell(Ncells+1,1);
@@ -28,7 +28,11 @@ framesT=zeros(Ncells,1);
 % Tus Manual Labor!
 BacLife=zeros(Ncells,1); BacLifed=zeros(Ncells,1);
 
-exp='RoySim';
+lionval.channr=7;
+lionval.viewchan='CFP';
+lionval.viewbac=1:22;
+
+exp='Roy_MM_Tus_dif';
 
 [lionval]=LionDefine(exp);
 
