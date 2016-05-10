@@ -26,7 +26,12 @@ tic
 %% Inputs 
 
 exp='Roy_MM_Tus_dif';
-lionval=LionDefine(exp);
+
+lionval.channr=7;
+lionval.viewchan='CFP';
+lionval.viewbac=1:22;
+
+lionval=LionDefine(exp,lionval);
 
     
 for Cell=lionval.viewbac;
@@ -41,7 +46,7 @@ for Cell=lionval.viewbac;
         ClipFactor=1;
         GaussFactor=1;
 
-        thisbacfolder=strcat('Fluo0Chan0',num2str(lionval.channr),'Bac00',num2str(Cell,'%02.0f'));
+        thisbacfolder=strcat(lionval.bacstring{1},lionval.bacstring{2},num2str(Cell));
         bacseriepth=strcat(lionval.Mainfolder,thisbacfolder,lionval.OSslash);
         
         if ~strcmp(lionval.viewchan,lionval.difchan)

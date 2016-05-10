@@ -1,4 +1,4 @@
-function [lionval] = LionDefine(exp)
+function [lionval] = LionDefine(exp,lionval)
 %UNTITLED3 Summary of this function goes here
 %   Detailed explanation goes here
 % Define your experiment
@@ -62,17 +62,16 @@ switch exp
         lionval.MainPathdif='/Users/rleeuw/Work/DataAnalysis/BlurLab/DiffusionTests/Results/';
         
     case 'Roy_MM_Tus_dif'
-        %GaussFit
-        lionval.channr=1;
-        lionval.viewchan='YFP';
-        lionval.viewbac=1:22;
+        %GaussFit     
+        lionval.bacstring={'','cell'};
         
         lionval.difchan='CFP';
-        lionval.bacfolder='/Users/rleeuw/Work/Data/160220_Working_Stacks_diftus/channel7/';
+        lionval.bacfolder='/Users/rleeuw/Work/Data/160220_Working_Stacks_diftus/';
+        lionval.OSslash='/';
 
-        lionval.Mainfolder='/Users/rleeuw/Work/Data/160220_Working_Stacks_diftus/channel7/';
-        lionval.Stackpth=strcat('cell',num2str(Cell),'/');
-        lionval.Channel='CFP';
+        lionval.chanfolder=strcat(lionval.bacfolder,'channel',num2str(lionval.channr),lionval.OSslash);
+        lionval.Mainfolder=strcat(lionval.chanfolder,lionval.viewchan,lionval.OSslash);
+        lionval.diffolder=strcat(lionval.chanfolder,lionval.difchan,lionval.OSslash);
         
         %GaussCalcs
         lionval.MainPathTus='/Users/rleeuw/Work/Data/160220_Working_Stacks_diftus/channel7/Results/YFP';
