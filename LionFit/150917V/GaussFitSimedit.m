@@ -113,7 +113,7 @@ for Cell=lionval.viewbac;
 
 
         Tolerance=2;
-        sigmachange=0.1;
+        sigmachange=0.5;
         how='positive';
         show=0;
 
@@ -132,19 +132,22 @@ for Cell=lionval.viewbac;
             ydatacrpdR1{i,1}=ydatacrpd{i};
 
             higherboundchannel=16;
+            
             % Intensity thresholding for outliers
             Data=ydatacrpd{i}(lowerboundchannel:higherboundchannel,:);
             [flag,A]=DetermineOutliers(Data,Tolerance,sigmachange,how,show);
             Outliersdata=~flag.*ydatacrpd{i}(lowerboundchannel:higherboundchannel,:);
             IntensityPeakThreshold = mean(nonzeros(Outliersdata(:)))+std(nonzeros(Outliersdata(:)));
 
+            ydatacrpdR1{i,1}=Outliersdata;
             j=1;
 
 
             [x0{j}(i,:),Case{j}(i),ydatacrpdR1{i,j+1},Ydata{i,j},Size{i,j},Yg(i,j),Xg(i,j)]= ... 
                 LionSpotter(ydatacrpdR1{i,j},SA,Sx,Sy,Px,Py,Bs,lob,upb);
+            
            %still needs background level to be mediated from within the channel.   
-            while x0{j}(i,1)>IntensityPeakThreshold && j<10 && Size{i,j}(1)>0
+            while x0{j}(i,1)>IntensityPeakThreshold && j<20 && Size{i,j}(1)>0
 
             % make guesses for spot position
 
@@ -224,8 +227,6 @@ for Cell=lionval.viewbac;
             XNorm{j}(i,2)=x{j}(i,2)/Size{i,j}(2);
 
             XNorm{j}(i,4)=(x{j}(i,4))/Size{i,j}(1);
-
-
 
             GaussmaskW=GaussFactor*(x{j}(i,3).^2+x{j}(i,5).^2)^(1/2);
             ClipmaskR=ClipFactor*(x{j}(i,3).^2+x{j}(i,5).^2)^(1/2);
@@ -311,13 +312,12 @@ for Cell=lionval.viewbac;
             [xx_ori,yy_ori]=meshgrid(-5:5,-5:5);
 
 
-
-            GaussmaskW=1*(x{j}(i,3).^2+x{j}(i,5).^2)^(1/2);
-            ClipmaskR=1.2*(x{j}(i,3).^2+x{j}(i,5).^2)^(1/2);
+            GaussmaskW=GaussFactor*(x{j}(i,3).^2+x{j}(i,5).^2)^(1/2);
+            ClipmaskR=ClipFactor*(x{j}(i,3).^2+x{j}(i,5).^2)^(1/2);
 
             ydatacrpdR1{i,j}=[zeros(r,padx) ydatacrpdR1{i,j} zeros(r,padx)]; %make pads because spots can be on the edge of the image
             ydatacrpdR1{i,j}=[zeros(pady,size(ydatacrpdR1{i,j},2)); ...
-                ydatacrpdR1{i,j};zeros(pady,size(ydatacrpdR1{i,j},2))];
+            ydatacrpdR1{i,j};zeros(pady,size(ydatacrpdR1{i,j},2))];
             [R,C]=size(ydatacrpdR1{i,j});
             [XX,YY]=meshgrid(1:C,1:R);
 
