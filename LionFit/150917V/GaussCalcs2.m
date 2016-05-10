@@ -34,7 +34,7 @@ lionval.viewbac=1:22;
 
 exp='Roy_MM_Tus_dif';
 
-[lionval]=LionDefine(exp);
+[lionval]=LionDefine(exp,lionval);
 
 %% Load data
 tic
@@ -42,9 +42,9 @@ tic
 %SIMULATION FOR MSDs
 
 for i=1:Ncells;
-    T{i}=load(strcat(lionval.MainPathTus,num2str(i),'/',num2str(i),'.mat'));
+    T{i}=load(strcat(lionval.MainPathTus,num2str(i,'%03.0f'),'.mat'));
     framesT(i)=length(T{i}.x{1}(:,1));
-    d{i}=load(strcat(lionval.MainPathdif,num2str(i),'/',num2str(i),'.mat'));
+    d{i}=load(strcat(lionval.MainPathdif,num2str(i,'%03.0f'),'.mat'));
     framesd(i)=length(d{i}.x{1}(:,1));
 end
 

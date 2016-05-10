@@ -74,8 +74,8 @@ switch exp
         lionval.diffolder=strcat(lionval.chanfolder,lionval.difchan,lionval.OSslash);
         
         %GaussCalcs
-        lionval.MainPathTus='/Users/rleeuw/Work/Data/160220_Working_Stacks_diftus/channel7/Results/YFP';
-        lionval.MainPathdif='/Users/rleeuw/Work/Data/160220_Working_Stacks_diftus/channel7/Results/CFP';
+        lionval.MainPathTus='/Users/rleeuw/Work/Data/160220_Working_Stacks_diftus/channel7/YFP/Results/cell';
+        lionval.MainPathdif='/Users/rleeuw/Work/Data/160220_Working_Stacks_diftus/channel7/CFP/Results/cell';
 end
 
 
