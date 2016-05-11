@@ -25,11 +25,11 @@ tic
 
 %% Inputs 
 
-exp='Mark';
+exp='Roy_MM_Tus_dif';
 
-lionval.channr=2;
+lionval.channr=7;
 lionval.viewchan='YFP';
-lionval.viewbac=1:15;
+lionval.viewbac=1:22;
 
 lionval=LionDefine(exp,lionval);
 

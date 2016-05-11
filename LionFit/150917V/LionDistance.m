@@ -48,8 +48,8 @@ for i=1:Ncells
                 DxMeanSpotsWShortened{i}(n,1)=mean(DxMeanSpotsW{i}(1:1:Ln(n)+2));
                 end
             end 
-            d(:,i)=abs(DxMeanSpotsShortened{i}-TxMeanSpots{i});
-            dweighted(:,i)=abs(DxMeanSpotsWShortened{i}-TxMeanSpotsW{i});
+            d{i}=abs(DxMeanSpotsShortened{i}-TxMeanSpots{i});
+            dweighted{i}=abs(DxMeanSpotsWShortened{i}-TxMeanSpotsW{i});
         else
             LengthLong=size(TxMeanSpots{i},1);
             LengthShort=size(DxMeanSpots{i},1);

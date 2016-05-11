@@ -171,7 +171,7 @@ SS=LionComBI(SS,T,pixel_separation_constant,IlowerboundT);
 
 %% mean distance between spots of two channels (AFTER COMB and FILTERING)
 
-% [dd,ddweighted]=LionDistance(SS,SdS,MeanBacLifeT,MeanBacLifed); 
+[dd,ddweighted]=LionDistance(S,Sd,MeanBacLifeT,MeanBacLifed); 
 
 %% Construct K for taking means of elements at same time point
 
@@ -446,8 +446,8 @@ dif.totalspotintensitystd=sqrt(dif.totalspotintensity);
 
 %% Cell Length + mean growth
 for i=1:Ncells
-    for t=1:size(d{i}.ydatacrpd,1)
-        dif.length{i}(t,1)=size(d{i}.ydatacrpd{t},2);
+    for t=1:size(d{i}.ydatacrpdR1,1)
+        dif.length{i}(t,1)=size(d{i}.ydatacrpdR1{t},2);
     end
     dif.length{i}=imresize(dif.length{i},[MeanBacLifed 1],'bilinear');
 end

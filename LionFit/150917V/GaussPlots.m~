@@ -190,8 +190,8 @@ set(gca,'FontSize',20);
 
 figure(3)
 hold on
-plot(0:2/(MeanBacLifeT+3):2,S{3}.x{3}(:,2),'b','LineWidth',5);
-plot(0:2/(MeanBacLifeT+3):2,Sd{3}.x{1}(:,2),'r','LineWidth',5);
+plot(0:2/(MeanBacLifeT):2,S{3}.x{3}(:,2),'b','LineWidth',5);
+plot(0:2/(MeanBacLifed-1):2,Sd{3}.x{1}(:,2),'r','LineWidth',5);
 hold off
 axis([0 2 0 1])
 xlabel('Normalized Cell Time (-)');

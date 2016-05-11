@@ -13,7 +13,7 @@ VectorXstdd=[];
 for i=1:Ncells
         Nspots=size(Sd{i}.x,2);
     for t=1:size(Sd{i}.x{1},1);
-        DeltaXcost=psc/size(d{i}.ydatacrpd{t},2);
+        DeltaXcost=psc/size(d{i}.ydatacrpdR1{t},2);
             for j=1:Nspots; 
 
                     VectorXstdd=[VectorXstdd Sd{i}.x{j}(t,3)];
