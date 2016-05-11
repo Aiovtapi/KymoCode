@@ -1,4 +1,4 @@
-function [outimg] = A000_IlluminationCorrection(img, correctionpth)
+function [outimg] = A000_IlluminationCorrection
 
 %%--Import and normalize beam profile image
 Beamframe = double((imread('BeamShape515c.tif')));
