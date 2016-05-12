@@ -1,26 +1,31 @@
-function Roicotrasca(Imgspth,Imgname,Outname,Beampth,Resizeval,Transval,BCpreset)
+function Roicotrasca(Imgspth,Imgname,Beampth,Resizeval,Transval,BCpreset)
 %% Presets
-if nargin < 5;
-    BCpreset = {5,0.01,'sh'};
-    Resizeval = 1;
-    Transval = [0,0];
-end
+BCpreset = {5,0.01,'sh'};
+Resizeval = 1;
+Transval = [0,0];
 
 %% Loading the images
 Agarolysispth = 'C:\Users\water\Documents\GitHub\KymoCode\Agarolysis\';
+Imgspth = 'C:\Users\water\Documents\GitHub\Data\141230_dnaN_dif_tus\Fluorescence\CFP\';
+imgfolder = strcat(Agarolysispth,'testim\');
+
+flpth = strcat(Imgspth,'CFP.tif');
+
+
 backcorpth = strcat(Agarolysispth, 'Backcor\');
 addpath(backcorpth)
 
-% Load Beam
 
-flpth = strcat(Imgspth,Imgname);
 FLinfo = imfinfo(flpth);
 
-Beamimg = im2double(imread(Beampth));
+
+% Convert to double for calculation
+
+Beamimg = im2double(imread(strcat('C:\Users\water\Documents\GitHub\KymoCode\Agarolysis\','testim\','BeamShape457.tif')));
 maxVAlue= max(max(Beamimg));
 NewBeamImg = Beamimg./maxVAlue;
 
-fNameToWriteIllumCorrected = strcat(Imgspth,Outname);
+fNameToWriteIllumCorrected = strcat(Imgspth,'CFPRIauto.tif');
 
 num_images = numel(FLinfo);
 
