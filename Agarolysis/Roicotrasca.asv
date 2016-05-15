@@ -25,9 +25,7 @@ end
 Rballedname = strcat('Rballed_',Imgname);
 
 copyfile(strcat(Imgspath,Imgname),strcat(Imgspath,Rballedname));
-disp('Initializing...')
 pause(3)
-
 %% Rolling ball
 
 % Add ImageJ and MIJI to path
@@ -42,7 +40,6 @@ MIJ.closeAllWindows
 MIJ.exit
 
 disp('Rolling ball finished')
-
 %%
 
 flpth = strcat(Imgspath,Rballedname);
