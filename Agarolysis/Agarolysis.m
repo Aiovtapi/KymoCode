@@ -1,7 +1,7 @@
 clc 
 clear all
 
-user = 'Mark';
+user = 'MarkPC';
 
 switch user
     case 'Mark'
@@ -14,8 +14,8 @@ switch user
         init.datapath = 'D:\Users\water_000\Documents\GitHub\Data\DnaN_dif_Tus_AgarPad\';
 end
 
-Agarpath = strcat(init.kymopath,'Agarolysis',init.OSslash);
-addpath(genpath(strcat(Agarpath)));
+init.Agarpath = strcat(init.kymopath,'Agarolysis',init.OSslash);
+addpath(genpath(strcat(init.Agarpath)));
 addpath(strcat(init.kymopath,'LionFit',init.OSslash,'150917V'));
 
 init.bfimgname = 'BF.tif';
@@ -29,4 +29,25 @@ init.pctrans = [-3,62];
 
 % [refimg,flimg]=Get_data(init);
 
-RoicotrascaPH(Agarpath,init.datapath,init.refimgname,0.421,[-3,62])
+%%
+RoicotrascaPH(init.Agarpath,init.datapath,init.refimgname,0.421,[-3,62]);
+RoicotrascaFL(init.Agarpath,init.datapath,'CFP.tif',strcat(init.datapath,'BeamShape457.tif'),0,[0,0]);
+
+%%
+
+flimg = imread(strcat(init.datapath,init.flimgname));
+pcimg = readtimeseries(strcat(init.datapath,'Trans_',init.pcimgname));
+
+flimg2 = readtimeseries(strcat(init.datapath,'RIT_CFP.tif'));
+
+if isa(pcimg,'uint8')
+    pcimg = uint16(65535*im2double(pcimg));
+end
+
+%%
+
+FLimgsize = size(flimg);
+
+
+
+

@@ -1,4 +1,4 @@
-% function RoicotrascaFL(jarpath,Imgspath,Imgname,Beampath,Rval,Tval)
+ function RoicotrascaFL(jarpath,Imgspath,Imgname,Beampath,Rval,Tval)
 %% Presets
 if nargin < 5;
     Rval = 1;
@@ -44,10 +44,14 @@ imgpath = strcat(Imgspath,Rballedname);
 imginfo = imfinfo(imgpath);
 num_images = numel(imginfo);
 RIpath = strcat(Imgspath,'RI_',Imgname);
+RITpath = strcat(Imgspath,'RIT_',Imgname);
 
 Beamimg = im2double(imread(Beampath));
 maxVAlue= max(max(Beamimg));
 NewBeamImg = Beamimg./maxVAlue;
+
+RXval = floor(Rval*imginfo(1).Width);
+RYval = floor(Rval*imginfo(1).Height);
 
 for k = 1:num_images;
     disp(['Processing image ',num2str(k),' out of ',num2str(num_images)])
@@ -57,29 +61,44 @@ for k = 1:num_images;
     % Illumunation Correction
     RIimg = double(imdivide(img,NewBeamImg));
     
+    %% Transformation
+    
+    RITimg = RIimg;
+    if ~isequal(Rval,0)
+        RITimg = imresize(RITimg,[RXval,RYval],'bilinear');
+    end
+    
+    if ~isequal(Tval,[0,0])
+        RITimg = imtranslate(RITimg,Tval,'FillValues',0);
+    end  
+    
     % Write to file
-    imwrite(uint16(65535*RIimg),RIpath,'WriteMode','append','Compression','none');
+    imwrite(uint16(65535*RITimg),RITpath,'WriteMode','append','Compression','none');
 end
 
 %% Transformation
 
-RITpath = strcat(Imgspath,'RIT_',Imgname);
-copyfile(RIpath,RITpath);
-disp('Copying file...')
-pause(3)
-
-Xstr = num2str(floor(Rval*imginfo(1).Width));
-Ystr = num2str(floor(Rval*imginfo(1).Height));
-Rstr = num2str(Rval);
-
-MIJ.start
-MIJ.run('Open...',strcat('path=[',RIpath,']'))
-MIJ.run('Scale...', ['x=',Rstr,' y=',Rstr,' width=',Xstr,' height=',Ystr,' interpolation=',...
-    'Bilinear average create title=RIT_',Imgname]);
-MIJ.run('Translate...', ['x=',num2str(Tval(1)),' y=',num2str(Tval(2)),' interpolation=None']);
-MIJ.run('Save','Tiff...')
-MIJ.closeAllWindows
-MIJ.exit
+% copyfile(RIpath,RITpath);
+% disp('Copying file...')
+% pause(3)
+% 
+% Xstr = num2str(floor(Rval*imginfo(1).Width));
+% Ystr = num2str(floor(Rval*imginfo(1).Height));
+% Rstr = num2str(Rval);
+% 
+% MIJ.start
+% MIJ.run('Open...',strcat('path=[',RITpath,']'))
+% if ~isequal(Rval,0);
+%     MIJ.run('Scale...', ['x=',Rstr,' y=',Rstr,' width=',Xstr,' height=',Ystr,' interpolation=',...
+%         'Bilinear average create title=RIT_',Imgname]);
+% end
+% if ~isequal(Tval,[0,0])
+%     MIJ.run('Translate...', ['x=',num2str(Tval(1)),' y=',num2str(Tval(2)),' interpolation=None']);
+% end
+% MIJ.run('Save','Tiff...')
+% MIJ.closeAllWindows
+% MIJ.exit
 
 disp('Done')
+ end
 

@@ -27,20 +27,50 @@ javaaddpath(strcat(jarpath,'ij.jar'))
 
 imgpath = strcat(Imgspath,Imgname);
 imginfo = imfinfo(imgpath);
-TRname = strcat('Trans_',Imgname);
+num_images = numel(imginfo);
+Tpath = strcat(Imgspath,'Trans_',Imgname);
 
-Xstr = num2str(floor(Rval*imginfo(1).Width));
-Ystr = num2str(floor(Rval*imginfo(1).Height));
-Rstr = num2str(Rval);
+RXval = floor(Rval*imginfo(1).Width);
+RYval = floor(Rval*imginfo(1).Height);
 
-MIJ.start
-MIJ.run('Open...',strcat('path=[',imgpath,']'))
-MIJ.run('Scale...', ['x=',Rstr,' y=',Rstr,' width=',Xstr,' height=',Ystr,' interpolation=',...
-    'Bilinear average create title=',TRname]);
-MIJ.run('Translate...', ['x=',num2str(Tval(1)),' y=',num2str(Tval(2)),' interpolation=None']);
-MIJ.run('Save','Tiff...')
-MIJ.closeAllWindows
-MIJ.exit
+for k = 1:num_images;
+    disp(['Processing image ',num2str(k),' out of ',num2str(num_images)])
+    
+    img = im2double(imread(imgpath,k,'Info',imginfo));
+    
+    
+    %% Transformation
+    
+    Timg = img;
+    if ~isequal(Rval,0)
+        Timg = imresize(Timg,[RXval,RYval],'bilinear');
+    end
+    
+    if ~isequal(Tval,[0,0])
+        Timg = imtranslate(Timg,Tval,'FillValues',0);
+    end  
+    
+    % Write to file
+    imwrite(uint16(65535*Timg),Tpath,'WriteMode','append','Compression','none');
+    
+end
+
+% Xstr = num2str(floor(Rval*imginfo(1).Width));
+% Ystr = num2str(floor(Rval*imginfo(1).Height));
+% Rstr = num2str(Rval);
+% 
+% MIJ.start
+% MIJ.run('Open...',strcat('path=[',imgpath,']'))
+% if ~isequal(Rval,0);
+%     MIJ.run('Scale...', ['x=',Rstr,' y=',Rstr,' width=',Xstr,' height=',Ystr,' interpolation=',...
+%         'Bilinear average create title=',TRname]);
+% end
+% if ~isequal(Tval,[0,0])
+%     MIJ.run('Translate...', ['x=',num2str(Tval(1)),' y=',num2str(Tval(2)),' interpolation=None']);
+% end
+% MIJ.run('Save','Tiff...')
+% MIJ.closeAllWindows
+% MIJ.exit
 
 disp('Done')
 end
