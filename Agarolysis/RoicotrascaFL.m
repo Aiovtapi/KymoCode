@@ -50,8 +50,8 @@ Beamimg = im2double(imread(Beampath));
 maxVAlue= max(max(Beamimg));
 NewBeamImg = Beamimg./maxVAlue;
 
-RXval = floor(Rval*imginfo(1).Width);
-RYval = floor(Rval*imginfo(1).Height);
+RYval = floor(Rval*imginfo(1).Width);
+RXval = floor(Rval*imginfo(1).Height);
 
 for k = 1:num_images;
     disp(['Processing image ',num2str(k),' out of ',num2str(num_images)])
@@ -64,7 +64,7 @@ for k = 1:num_images;
     %% Transformation
     
     RITimg = RIimg;
-    if ~isequal(Rval,0)
+    if ~isequal(Rval,1)
         RITimg = imresize(RITimg,[RXval,RYval],'bilinear');
     end
     

@@ -30,8 +30,8 @@ imginfo = imfinfo(imgpath);
 num_images = numel(imginfo);
 Tpath = strcat(Imgspath,'Trans_',Imgname);
 
-RXval = floor(Rval*imginfo(1).Width);
-RYval = floor(Rval*imginfo(1).Height);
+RYval = floor(Rval*imginfo(1).Width);
+RXval = floor(Rval*imginfo(1).Height);
 
 for k = 1:num_images;
     disp(['Processing image ',num2str(k),' out of ',num2str(num_images)])
@@ -42,7 +42,7 @@ for k = 1:num_images;
     %% Transformation
     
     Timg = img;
-    if ~isequal(Rval,0)
+    if ~isequal(Rval,1)
         Timg = imresize(Timg,[RXval,RYval],'bilinear');
     end
     
