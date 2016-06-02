@@ -17,60 +17,55 @@
 % sy : std in y of the spot.
 %
 %% 
+function GaussFitSimedit_Agarolysis(init,Bacmask,cells)
 
-clear all
-close all
-clc
 tic
 
 %% Inputs 
 
-exp='Roy_MM_Tus_dif';
-
-lionval.channr=7;
-lionval.viewchan='YFP';
-lionval.viewbac=1:22;
-
-lionval=LionDefine(exp,lionval);
+lionval = Agar2lion(init);
+lionval.viewbac = cells;
 
     
 for Cell=lionval.viewbac;
     
-    imgflip = 1;        % If you want to align the CFP images.
-    imgflipped = 0;
-    flipnumber = 0; flipdisplay = 0;
-    
-    while imgflip == 1; 
+% % %     imgflip = 1;        % If you want to align the CFP images.
+% % %     imgflipped = 0;
+% % %     flipnumber = 0; flipdisplay = 0;
+% % %     
+% % %     while imgflip == 1; 
 
         clear XNorm x NSpots SNR ydatacrpd pixels
 
         ClipFactor=1;
         GaussFactor=1;
 
-        thisbacfolder=strcat(lionval.bacstring{1},lionval.bacstring{2},num2str(Cell,'%03.0f'));
-        bacseriepth=strcat(lionval.Mainfolder,thisbacfolder,lionval.OSslash);
+        thisbacfolder=strcat('Cell_',num2str(Cell,'%03.0f')); % Tif stack 
+        bacseriepth=strcat(lionval.Mainfolder,lionval.OSslash,thisbacfolder,lionval.OSslash);
+
         
-        % Check for whether flipping is needed based on the difchannel for
-        % non difchannels. 
-        if ~strcmp(lionval.viewchan,lionval.difchan)
-            if exist(strcat(lionval.diffolder,'Results',lionval.OSslash,thisbacfolder,'.mat'))
-                flipimage=load(strcat(lionval.diffolder,'Results',lionval.OSslash,thisbacfolder,'.mat'),'imgflipped');
-                if flipimage.imgflipped==1
-                    disp(['Flipping ',thisbacfolder])
-                    GaussImRotate(bacseriepth);  
-                end
-            else
-                disp('Dif-channel not computed. Cell orientation not defined. Do you want to continue? Click to continue')
-                waitforbuttonpress; close all
-            end
-            imgflip = 0;
-            imgflipped = flipimage.imgflipped;           
-        end
+% % %         % Check for whether flipping is needed based on the difchannel for
+% % %         % non difchannels. 
+% % %         if ~strcmp(lionval.viewchan,lionval.difchan)
+% % %             if exist(strcat(lionval.diffolder,'Results',lionval.OSslash,thisbacfolder,'.mat'))
+% % %                 flipimage=load(strcat(lionval.diffolder,'Results',lionval.OSslash,thisbacfolder,'.mat'),'imgflipped');
+% % %                 if flipimage.imgflipped==1
+% % %                     disp(['Flipping ',thisbacfolder])
+% % %                     GaussImRotate(bacseriepth);  
+% % %                 end
+% % %             else
+% % %                 disp('Dif-channel not computed. Cell orientation not defined. Do you want to continue? Click to continue')
+% % %                 waitforbuttonpress; close all
+% % %             end
+% % %             imgflip = 0;
+% % %             imgflipped = flipimage.imgflipped;           
+% % %         end
         
-        
+%         
         d1{1}=readtimeseries(strcat(bacseriepth,'.tif'),'tif');
 
         data=dip_array(d1{1}); %turn into uint16 array
+        
 
         %% Ze Defs
 
@@ -137,9 +132,9 @@ for Cell=lionval.viewbac;
             higherboundchannel=16;
             
             % Intensity thresholding for outliers
-            Data=ydatacrpd{i}(lowerboundchannel:higherboundchannel,:);
+            Data=ydatacrpd{i}; %%%(lowerboundchannel:higherboundchannel,:);
             [flag,A]=DetermineOutliers(Data,Tolerance,sigmachange,how,show);
-            Outliersdata=~flag.*ydatacrpd{i}(lowerboundchannel:higherboundchannel,:);
+            Outliersdata=~flag.*ydatacrpd{i}; %%%(lowerboundchannel:higherboundchannel,:);
             IntensityPeakThreshold = mean(nonzeros(Outliersdata(:)))+std(nonzeros(Outliersdata(:)));
 
             ydatacrpdR1{i,1}=Outliersdata;
@@ -212,26 +207,26 @@ for Cell=lionval.viewbac;
                 XNorm{j}(i,1:8)=0;
             end
             
-           % Check for whether flipping is necessary. This will be skipped
-           % for non dif-channels, as flipping has already been done. 
-           if imgflip==1
-                imgflip = x{1}(1,2)>size(ydatacrpd{1},2)/2;
-           end
-           
-           % Prevent flipping loops when the estimation of the spot is in
-           % the middle of the cell.
-           if flipnumber > 1;
-                if flipdisplay == 0
-                    disp(strcat('cell',num2str(Cell),' is in a flipping loop, check bacseries in ImageJ.'))
-                    flipdisplay = 1;
-                end
-                imgflip = 0;
-           end
-           
-           if imgflip == 1
-               imgflipped = 1;
-               break
-           end
+% % %            % Check for whether flipping is necessary. This will be skipped
+% % %            % for non dif-channels, as flipping has already been done. 
+% % %            if imgflip==1
+% % %                 imgflip = x{1}(1,2)>size(ydatacrpd{1},2)/2;
+% % %            end
+% % %            
+% % %            % Prevent flipping loops when the estimation of the spot is in
+% % %            % the middle of the cell.
+% % %            if flipnumber > 1;
+% % %                 if flipdisplay == 0
+% % %                     disp(strcat('cell',num2str(Cell),' is in a flipping loop, check bacseries in ImageJ.'))
+% % %                     flipdisplay = 1;
+% % %                 end
+% % %                 imgflip = 0;
+% % %            end
+% % %            
+% % %            if imgflip == 1
+% % %                imgflipped = 1;
+% % %                break
+% % %            end
 
 
 
@@ -258,19 +253,19 @@ for Cell=lionval.viewbac;
 
             end
 
-            % Breaking the loop for image flipping. 
-            if imgflip==1
-                break
-            end
+% % %             % Breaking the loop for image flipping. 
+% % %             if imgflip==1
+% % %                 break
+% % %             end
         end
         
-        % Flipping the images
-        if imgflip==1
-            disp(['Flipping ',thisbacfolder])
-            GaussImRotate(bacseriepth);
-            flipnumber = flipnumber + 1;
-        end
-    end
+% % %         % Flipping the images
+% % %         if imgflip==1
+% % %             disp(['Flipping ',thisbacfolder])
+% % %             GaussImRotate(bacseriepth);
+% % %             flipnumber = flipnumber + 1;
+% % %         end
+% % %     end
 
     NSpots=size(x,2);
     LXNormOne=size(XNorm{1},1);
@@ -311,12 +306,16 @@ for Cell=lionval.viewbac;
     for i=1:Tsize
 
          % Full Cell Integrated Intensity
-         FCII{i}=ydatacrpd{i}(lowerboundchannel:higherboundchannel,:);
+         Cellidx = find(Bacmask{Cell,i});
+         
+         FCII{i}=ydatacrpd{i}; %%%(lowerboundchannel:higherboundchannel,:);
 
         for j=1:NSpots
 
             %This is the full cell integrated intensity
-            x{j}(i,7)=sum(sum(FCII{i}));
+% % %             x{j}(i,7)=sum(sum(FCII{i}));
+            x{j}(i,7) = sum(FCII{i}(Cellidx));
+            
             % to do: compare spot positions
             if ~isempty(Size{i,j}) % there still has to be an image.
 
@@ -558,14 +557,14 @@ for Cell=lionval.viewbac;
 
             display(strcat('Cell ',num2str(Cell),' analyzed'));
             display('Saving..');
-        if ~exist(strcat(lionval.Mainfolder,'Results'),'dir')
-            mkdir(strcat(lionval.Mainfolder,'Results'));
+        if ~exist(strcat(lionval.Mainfolder,lionval.OSslash,'Results'),'dir')
+            mkdir(strcat(lionval.Mainfolder,lionval.OSslash,'Results'));
         end
         
-        if exist(strcat(lionval.Mainfolder,'Results',lionval.OSslash,thisbacfolder,'.mat'))
+        if exist(strcat(lionval.Mainfolder,lionval.OSslash,'Results',lionval.OSslash,thisbacfolder,'.mat'))
             disp('This bac series has already been saved. Saving will be skipped')
         else
-            save(strcat(lionval.Mainfolder,'Results',lionval.OSslash,thisbacfolder),'x','XNorm','NSpots','SNR','ydatacrpdR1','pixels','imgflipped');
+            save(strcat(lionval.Mainfolder,lionval.OSslash,'Results',lionval.OSslash,thisbacfolder),'x','XNorm','NSpots','SNR','ydatacrpdR1','pixels'); %,'imgflipped');
             display('Save complete.');
         end
 
@@ -573,3 +572,4 @@ for Cell=lionval.viewbac;
 end
 
 toc
+end

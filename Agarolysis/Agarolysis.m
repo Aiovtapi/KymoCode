@@ -1,35 +1,10 @@
 clc 
 clear all
 
-user = 'Mark';
+user = 'MarkPC';
+init.viewchan = 'CFP';
 
-switch user
-    case 'Mark'
-        init.OSslash = '\';
-        init.kymopath = 'C:\Users\water\Documents\GitHub\KymoCode\';
-        init.datapath = 'C:\Users\water\Documents\GitHub\Data\DnaN_dif_Tus_AgarPad\';
-    case 'MarkPC'
-        init.OSslash = '\';
-        init.kymopath = 'D:\Users\water_000\Documents\GitHub\KymoCode\';
-        init.datapath = 'D:\Users\water_000\Documents\GitHub\Data\DnaN_dif_Tus_AgarPad\';
-end
-
-init.Agarpath = strcat(init.kymopath,'Agarolysis',init.OSslash);
-addpath(genpath(strcat(init.Agarpath)));
-addpath(strcat(init.kymopath,'LionFit',init.OSslash,'150917V'));
-
-init.bfimgname = 'BF.tif';
-init.pcimgname = 'Simul_PC.tif';
-init.flimgname = 'Simul_457-100ms-10mWo-300G.tif';
-init.beamshape = 'BeamShape457.tif';
-init.meshesfile = 'Simul_PC.mat';
-init.refimgname = init.pcimgname;
-init.maxfile = 421;
-
-init.pcresize = 0.421;
-init.pctrans = [0,0];
-init.flresize = 1;
-init.fltrans = [2,-63];
+init = AgarDefine(user,init);
 
 
 %%
@@ -40,39 +15,48 @@ flimg = readtimeseries(strcat(init.datapath,'RIT_',init.flimgname));
 Ouftiout = load(strcat(init.datapath,init.meshesfile),'cellList');
 Meshdata = Ouftiout.cellList.meshData;
 
-[Bettermesh,Cellbox] = TigerCut(Meshdata,flimg,init,2);
+[Bettermesh,Bacmask,Cellbox] = TigerCut(Meshdata,flimg,init,2);
 
+Whichcells = 1:10;
+GaussFitSimedit_Agarolysis(init,Bacmask,Whichcells);
 
-
-% RoicotrascaPH(init.Agarpath,init.datapath,init.refimgname,init.pcresize,init.pctrans);
-% pcimg = imread(strcat(init.datapath,'Trans_',init.pcimgname));
-
-% if isa(pcimg,'uint8')
-%     pcimg = uint16(65535*im2double(pcimg));
-% end
-
-% flimg = double(flimg);
-% pcimg = double(pcimg);
-% 
-% minX = min(size(pcimg,1),size(flimg,1));
-% minY = min(size(pcimg,2),size(flimg,2));
-% 
-% if size(pcimg,1)>minX
-%     pcimg(minX+1:end,:)=[];
-% end
-% if size(flimg,1)>minX
-%     flimg(minX+1:end,:)=[];
-% end
-% if size(pcimg,2)>minY
-%     pcimg(:,minY+1:end)=[];
-% end
-% if size(flimg,2)>minY
-%     flimg(:,minY+1:end)=[];
-% end
-% 
-% imwrite(uint16(flimg),strcat(init.datapath,'Trans_',init.flimgname));
-% imwrite(uint16(pcimg),strcat(init.datapath,'Trans_',init.pcimgname));
 
 %%
+Lionresultspath = strcat(init.bacpath,init.flimgname,init.OSslash,'Results',init.OSslash);
 
-% load(strcat(init.datapath,'Trans_PC.mat'),'cellList')
+for celli = Whichcells;
+    
+    thismatpath = strcat(Lionresultspath,'Cell_',num2str(celli,'%03.0f'));
+    load(thismatpath,'x');
+    ld = x;
+    spots = size(x,2);
+    
+    for frami = 1:size(Bettermesh,2);
+        
+        thismesh = Bettermesh{celli,frami};
+        thiscellbox = Cellbox{celli,frami};
+        
+        thismesh(:,1) = thismesh(:,1) - thiscellbox(1);
+        thismesh(:,2) = thismesh(:,2) - thiscellbox(3);
+        thismesh(:,3) = thismesh(:,3) - thiscellbox(1);
+        thismesh(:,4) = thismesh(:,3) - thiscellbox(3);
+        
+        for spoti = 1:spots
+            spotxy = x{spoti}(frami,:);
+            Xval = spotxy(2);
+            Yval = spotxy(4);
+            
+            [Lval,Dval] = projectToMesh(Xval,Yval,thismesh);
+            varval = sqrt(spotxy(3)^2+spotxy(5)^2);
+            
+            ld{spoti}(frami,2) = Lval;
+            ld{spoti}(frami,4) = Dval;
+            ld{spoti}(frami,3) = varval;
+            ld{spoti}(frami,5) = varval;
+        end
+    end
+    save(thismatpath,'ld','-append')
+end
+
+disp('Projected to Mesh')
+

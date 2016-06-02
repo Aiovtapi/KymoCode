@@ -1,4 +1,4 @@
-function [Bettermesh,Cellbox] = TigerCut(Meshdata,flimg,init,Extrabound)
+function [Bettermesh,Bacmask,ExtCellbox] = TigerCut(Meshdata,flimg,init,Extrabound)
 
 disp(sprintf('-----\nOperating TigerCut'))
 
@@ -7,10 +7,10 @@ cells = size(Meshdata{1},2);
 flimgsize = size(flimg);
 
 [maxX,minX,maxY,minY]=deal(zeros(1,frames));
-Bettermesh = cell(cells,frames);
+[Bettermesh,ExtCellbox] = deal(cell(cells,frames));
 Cellbox = zeros(cells,4);
 
-bacfolder = strcat(init.datapath,'Bacpics',init.OSslash,init.flimgname);
+bacfolder = strcat(init.bacpath,init.flimgname);
 
 if ~exist(bacfolder,'dir')
     mkdir(bacfolder)
@@ -45,6 +45,10 @@ for celli = 1:cells;
     Cellbox(celli,2) = max(maxX(:));
     Cellbox(celli,3) = min(minY(:));
     Cellbox(celli,4) = max(maxY(:));
+    
+    for frami =1:frames;
+        ExtCellbox{celli,frami} = Cellbox(celli,:);
+    end
 end
 
 
@@ -64,34 +68,49 @@ for fcelli = fcells;
     Cellbox(fcelli,:) = [];
     RCellbox(fcelli,:) = [];
     Bettermesh(fcelli,:) = [];
+    ExtCellbox(fcelli,:) = [];
 end
 
 ncells = size(Bettermesh,1);
 
+Bacmask = cell(ncells,frames);
+
 disp('Creating Bacpics')
 
 for celli = 1:ncells;
-    bacpath=strcat(bacfolder,init.OSslash,'Cell_',num2str(celli,'%03.0f'),'.tif');
+    bacpath=strcat(bacfolder,init.OSslash,'Cell_',num2str(celli,'%03.0f'),init.OSslash);
     masksize = round([Cellbox(celli,2)-Cellbox(celli,1),Cellbox(celli,4)-Cellbox(celli,3)]/init.pcresize);
+    
+    if ~exist(bacpath,'dir')
+        mkdir(bacpath)
+    end
 
     for frami = 1:frames;
         
         % Create mask from mesh
-        thismesh = Bettermesh{celli,frames};
+        thismesh = Bettermesh{celli,frami};
         thismesh = [thismesh(:,1:2);thismesh(:,3:4)];
         thiscropmesh = round([thismesh(:,1)-Cellbox(celli,1), thismesh(:,2)-Cellbox(celli,3)]/init.pcresize);
         mask = poly2mask(thiscropmesh(:,2)',thiscropmesh(:,1)',masksize(1),masksize(2));
         
         % Create bacpic from Cellbox
-        imageframe = double(flimg(:,:,frami-1));
+        if numel(flimgsize) == 2
+            imageframe = double(flimg(:,:)); % ,frami-1));
+        else
+            imageframe = double(flimg(:,:,frami-1));
+        end
         croppedimg = imageframe(RCellbox(celli,1):RCellbox(celli,2),RCellbox(celli,3):RCellbox(celli,4));
 
         % Remove non-cell pixels by applying mask to bacpic
         cimgsize = size(croppedimg);
-        nmask = imresize(mask,cimgsize);
-        bacpic = uint16(double(nmask).*croppedimg);
+        nmask = double(imresize(mask,cimgsize));
+        bacpic = uint16(nmask.*croppedimg);
+        Bacmask{celli,frami} = nmask;
+        
 
-        imwrite(bacpic,bacpath,'WriteMode','append','Compression','none')
+        
+        thisbacpath = strcat(num2str(frami,'%03.0f'),'.tif');
+        imwrite(bacpic,strcat(bacpath,thisbacpath));
     end
 end
 
