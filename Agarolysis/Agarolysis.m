@@ -1,7 +1,7 @@
 clc 
 clear all
 
-user = 'MarkPC';
+user = 'Mark';
 init.viewchan = 'CFP';
 
 init = AgarDefine(user,init);
@@ -14,15 +14,18 @@ flimg = readtimeseries(strcat(init.datapath,'RIT_',init.flimgname));
 
 Ouftiout = load(strcat(init.datapath,init.meshesfile),'cellList');
 Meshdata = Ouftiout.cellList.meshData;
+[Bettermesh,Bacmask,Cellbox] = TigerCutV2(Meshdata,flimg,init,2);
 
-[Bettermesh,Bacmask,Cellbox] = TigerCut(Meshdata,flimg,init,2);
-
-Whichcells = 1:10;
+%% 
+Whichcells = 1:75;
 GaussFitSimedit_Agarolysis(init,Bacmask,Whichcells);
 
 
 %%
 Lionresultspath = strcat(init.bacpath,init.flimgname,init.OSslash,'Results',init.OSslash);
+
+
+LD = [];
 
 for celli = Whichcells;
     
@@ -31,10 +34,12 @@ for celli = Whichcells;
     ld = x;
     spots = size(x,2);
     
+    CLDi = 1;
+    
     for frami = 1:size(Bettermesh,2);
         
         thismesh = Bettermesh{celli,frami};
-        thiscellbox = Cellbox{celli,frami};
+        thiscellbox = Cellbox(celli,frami,:);
         
         thismesh(:,1) = thismesh(:,1) - thiscellbox(1);
         thismesh(:,2) = thismesh(:,2) - thiscellbox(3);
@@ -53,8 +58,18 @@ for celli = Whichcells;
             ld{spoti}(frami,4) = Dval;
             ld{spoti}(frami,3) = varval;
             ld{spoti}(frami,5) = varval;
+            
+            % temp
+            LDt(CLDi) = Lval;
+            CLDi = CLDi + 1;
         end
     end
+    
+    sizebac = size(Bacmask{celli});
+    norm = sqrt(sizebac(1)^2+sizebac(2)^2);
+    
+    LD = [LD, LDt/norm];
+    clear LDt
     save(thismatpath,'ld','-append')
 end
 

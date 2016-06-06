@@ -1,12 +1,12 @@
-function [Bettermesh,Bacmask] = TigerCutV2(Meshdata,flimg,init,Extrabound)
+function [Bettermesh,Bacmask,BCellbox] = TigerCutV2(Meshdata,flimg,init,Extrabound)
 
     disp(sprintf('-----\nOperating TigerCut'))
 
-    frames = size(Meshdata,2);
-    cells = size(Meshdata{1},2);
+    Bettermesh = removeemptymesh(Meshdata);
+    frames = size(Bettermesh,2);
+    cells = size(Bettermesh,1);
     flimgsize = size(flimg);
 
-    Bettermesh = cell(cells,frames);
     Cellbox = zeros(cells,frames,4);
 
     bacfolder = strcat(init.bacpath,init.flimgname);
@@ -17,7 +17,6 @@ function [Bettermesh,Bacmask] = TigerCutV2(Meshdata,flimg,init,Extrabound)
 
     for celli = 1:cells;
         for frami = 1:frames;
-            Bettermesh{celli,frami} = Meshdata{frami}{celli}.mesh;
 
             % Add translation to meshes
             
@@ -38,7 +37,7 @@ function [Bettermesh,Bacmask] = TigerCutV2(Meshdata,flimg,init,Extrabound)
 
             Cellbox(celli,frami,1) = min(minmesh(1),minmesh(3));            
             Cellbox(celli,frami,2) = max(maxmesh(1),maxmesh(3));
-            Cellbox(celli,frami,2) = min(minmesh(2),minmesh(4));
+            Cellbox(celli,frami,3) = min(minmesh(2),minmesh(4));
             Cellbox(celli,frami,4) = max(maxmesh(2),maxmesh(4));
         end
     end
@@ -58,11 +57,11 @@ function [Bettermesh,Bacmask] = TigerCutV2(Meshdata,flimg,init,Extrabound)
 
     for celli = 1:ncells;
         bacpath=strcat(bacfolder,init.OSslash,'Cell_',num2str(celli,'%03.0f'),init.OSslash);
-
+        
         if ~exist(bacpath,'dir')
             mkdir(bacpath)
         end
-
+        
         for frami = 1:frames;
             
             if numel(flimgsize) == 2
@@ -74,14 +73,33 @@ function [Bettermesh,Bacmask] = TigerCutV2(Meshdata,flimg,init,Extrabound)
             thismesh = Bettermesh{celli,frami};
             thisBbox = BCellbox(celli,frami,:);
             thisbacsize = bacsize(celli,:);
+            thismsize = round([BCellbox(celli,2)-BCellbox(celli,1),BCellbox(celli,4)-BCellbox(celli,3)]/init.pcresize);
             
             % create bacpic and save mask
-            nmask = createbac(init,imageframe,thismesh,thisBbox,thisbacsize,Rbacpath,frami);          
+            nmask = createbac(init,imageframe,thismesh,thisBbox,thisbacsize,thismsize,bacpath,frami);          
             Bacmask{celli,frami} = nmask;
         end    
     end
     
     disp(sprintf('TigerCut done \n-----'))
+end
+
+
+function Bettermesh = removeemptymesh(Meshdata)
+    
+    frames = size(Meshdata,2);
+    cells = size(Meshdata{1},2);
+    
+    ncelli = 1;
+    % Find cells with empty meshes
+    for celli = 1:cells;
+        for frami = 1:frames;
+            if numel(Meshdata{frami}{celli}.mesh) > 20;
+                Bettermesh{ncelli,frami} = double(Meshdata{frami}{celli}.mesh);
+                ncelli = ncelli + 1;
+            end
+        end
+    end
 end
 
 function [BCellbox, bacsize, baczero] = findbound(Cellbox,cells,frames,bound)
@@ -93,7 +111,7 @@ function [BCellbox, bacsize, baczero] = findbound(Cellbox,cells,frames,bound)
     for celli = 1:cells;
         for frami = 1:frames;
             framesize(celli,frami,1) = Cellbox(celli,frami,2)-Cellbox(celli,frami,1);
-            framesize(celli,frami,2) = Cellbox(celli,frami,4)-Cellbox(celli,frami,2);
+            framesize(celli,frami,2) = Cellbox(celli,frami,4)-Cellbox(celli,frami,3);
         end
         
         bacsize(celli,1) = max(framesize(celli,:,1)) + 2*bound;
@@ -121,19 +139,19 @@ function [BCellbox,bacsize,Bettermesh] = removeoutbound(BCellbox,bacsize,Betterm
         yhigh = find(BCellbox(:,frami,4) > flimgsize(2));
     end
     
-    fcells = xlow | xhigh | ylow | yhigh;
+    fcells = unique([xlow; xhigh; ylow; yhigh])';
 
     % Remove cells our of bounds of FL image
-    for fcelli = fcells;
+    for fcelli = fliplr(fcells);
         BCellbox(fcelli,:,:) = [];
         Bettermesh(fcelli,:) = [];
         bacsize(fcelli,:) = [];
     end
 end
 
-function nmask = createbac(init,imageframe,thismesh,thisBbox,thisbacsize,bacpath,frami)
+function nmask = createbac(init,imageframe,thismesh,thisBbox,thisbacsize,thismsize,bacpath,frami)
             
-    thisRbox = round(thisBbox);
+    thisRbox = round(thisBbox)+1;
     Rbacsize = round(thisbacsize);
 
     % Create mask from mesh
