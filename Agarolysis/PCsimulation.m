@@ -37,29 +37,41 @@ xtshift = 0;
 ytshift = 0;
 xshift = 0;
 yshift = 0;
+rval = 1.5;
+shearx = -0.01;
+sheary = 0.02;
+scalex = 1.003;
+scaley = 1.001;
+
+nflimg = flimg;
+npcimg = pcimg;
+
+fls = size(flimg);
+pcs = size(pcimg);
+
+fll = imref2d(fls);
+pcl = imref2d(pcs);
+
 
 for i = 1:rounds
-    xshift = xshift + randi([-shiftval,shiftval]);
-    yshift = yshift + randi([-shiftval,shiftval]);
+    xshift = -3/fls(2);
+    yshift = -17/fls(1);
     
-    xtshift = xtshift + xshift;
-    ytshift = ytshift + yshift;
+    tformfl = affine2d([scalex, sheary, 0; shearx, scaley, 0; round(xshift*fls(2)), round(yshift*fls(1)), 1]);
+	tformpc = affine2d([scalex, sheary, 0; shearx, scaley, 0; round(xshift*pcs(2)), round(yshift*pcs(1)), 1]);
     
-    if abs(xtshift) > bound
-        xtshift = xtshift - xshift;
-    end
-    if abs(ytshift) > bound
-        ytshift = ytshift - yshift;
-    end
+    nflimg = imwarp(nflimg,tformfl,'FillValues',0,'OutputView',fll);
+    npcimg = imwarp(npcimg,tformpc,'FillValues',0,'OutputView',pcl);
     
-    nflimg = imtranslate(flimg,[xtshift, ytshift]);
-    npcimg = imtranslate(pcimg,[xtshift, ytshift]);
+    nflimg = imrotate(nflimg,rval,'bilinear');
+    npcimg = imrotate(npcimg,rval,'bilinear');
     
-    cnflimg = nflimg(bound+1:end-bound,bound+1:end-bound);
-    cnpcimg = npcimg(bound+1:end-bound,bound+1:end-bound);
+%     cnflimg = nflimg(bound+1:end-bound,bound+1:end-bound);
+%     cnpcimg = npcimg(bound+1:end-bound,bound+1:end-bound);
     
     imwrite(nflimg,flimgpath,'WriteMode','append','Compression','none');
     imwrite(npcimg,pcimgpath,'WriteMode','append','Compression','none');
+    
     
     disp(num2str(i))    
 end
