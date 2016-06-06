@@ -6,7 +6,6 @@ function [Bettermesh,Bacmask] = TigerCutV2(Meshdata,flimg,init,Extrabound)
     cells = size(Meshdata{1},2);
     flimgsize = size(flimg);
 
-    [maxX,minX,maxY,minY]=deal(zeros(1,frames));
     Bettermesh = cell(cells,frames);
     Cellbox = zeros(cells,frames,4);
 
@@ -37,15 +36,11 @@ function [Bettermesh,Bacmask] = TigerCutV2(Meshdata,flimg,init,Extrabound)
             maxmesh = max(Bettermesh{celli,frami});
             minmesh = min(Bettermesh{celli,frami});
 
-            maxX(frami) = max(maxmesh(1),maxmesh(3));
-            minX(frami) = min(minmesh(1),minmesh(3));
-            maxY(frami) = max(maxmesh(2),maxmesh(4));
-            minY(frami) = min(minmesh(2),minmesh(4));
+            Cellbox(celli,frami,1) = min(minmesh(1),minmesh(3));            
+            Cellbox(celli,frami,2) = max(maxmesh(1),maxmesh(3));
+            Cellbox(celli,frami,2) = min(minmesh(2),minmesh(4));
+            Cellbox(celli,frami,4) = max(maxmesh(2),maxmesh(4));
         end
-        Cellbox(celli,frami,1) = min(minX(:));
-        Cellbox(celli,frami,2) = max(maxX(:));
-        Cellbox(celli,frami,3) = min(minY(:));
-        Cellbox(celli,frami,4) = max(maxY(:));
     end
 
     Xboundresized = Extrabound/init.pcresize;
