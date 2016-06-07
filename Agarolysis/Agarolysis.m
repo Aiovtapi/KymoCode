@@ -14,7 +14,7 @@ flimg = readtimeseries(strcat(init.datapath,'RIT_',init.flimgname));
 
 Ouftiout = load(strcat(init.datapath,init.meshesfile),'cellList');
 Meshdata = Ouftiout.cellList.meshData;
-[Bettermesh,BBettermesh,Cellbox,Bacmask,Bacpics,NMBacpics] = TigerCutV2(Meshdata,flimg,init,init.Extrabound);
+[Bettermesh,BBettermesh,Cellbox,Bacmask,Bacpics,NMBacpics] = TigerCut(Meshdata,flimg,init,init.Extrabound);
 
 %% 
 Whichcells = 1:75;

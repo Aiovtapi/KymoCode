@@ -57,6 +57,7 @@ switch init.OSslash
         addpath(genpath(strcat(init.Agarpath,'Oufti_source_code')));
 end
 addpath(strcat(init.kymopath,'LionFit',init.OSslash,'150917V'));
+addpath(strcat(init.kymopath,'Agarolysis',init.OSslash,'Support'));
 
 switch init.viewchan
     case 'CFP'
