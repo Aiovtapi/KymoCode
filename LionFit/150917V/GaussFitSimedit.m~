@@ -29,7 +29,7 @@ exp='Roy_MM_Tus_dif';
 
 lionval.channr=7;
 lionval.viewchan='CFP';
-lionval.viewbac=1:30;
+lionval.viewbac=1;
 
 lionval=LionDefine(exp,lionval);
 
@@ -330,10 +330,10 @@ for Cell=lionval.viewbac;
             GaussmaskW=GaussFactor*(x{j}(i,3).^2+x{j}(i,5).^2)^(1/2);
             ClipmaskR=ClipFactor*(x{j}(i,3).^2+x{j}(i,5).^2)^(1/2);
 
-            ydatacrpdR2{i,j}=[zeros(r,padx) ydatacrpdR1{i,j} zeros(r,padx)]; %make pads because spots can be on the edge of the image
-            ydatacrpdR2{i,j}=[zeros(pady,size(ydatacrpdR2{i,j},2)); ...
-            ydatacrpdR2{i,j};zeros(pady,size(ydatacrpdR2{i,j},2))];
-            [R,C]=size(ydatacrpdR2{i,j});
+            ydatacrpdR1{i,j}=[zeros(r,padx) ydatacrpdR1{i,j} zeros(r,padx)]; %make pads because spots can be on the edge of the image
+            ydatacrpdR1{i,j}=[zeros(pady,size(ydatacrpdR1{i,j},2)); ...
+            ydatacrpdR1{i,j};zeros(pady,size(ydatacrpdR1{i,j},2))];
+            [R,C]=size(ydatacrpdR1{i,j});
             [XX,YY]=meshgrid(1:C,1:R);
 
     %         if x{j}(i,2)>3 && x{j}(i,2)<Size{i,j}(2)-3
@@ -347,7 +347,7 @@ for Cell=lionval.viewbac;
             xx0=x{j}(i,2)+padx+xx_ori;
             yy0=x{j}(i,4)+pady+yy_ori;
 
-            ROI{i,j}=interp2(XX,YY,ydatacrpdR2{i,j},xx0,yy0);
+            ROI{i,j}=interp2(XX,YY,ydatacrpdR1{i,j},xx0,yy0);
 
             [rROI,cROI]=size(ROI{i,j});
 

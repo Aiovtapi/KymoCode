@@ -62,20 +62,20 @@ switch exp
         
     case 'Roy_MM_Tus_dif'
         %GaussFit     
-        lionval.bacstring={'','Cell_'};
+        lionval.bacstring={'cell'};
         lionval.cropindx=1;
         
         lionval.difchan='CFP';
         lionval.bacfolder='/Users/rleeuw/Work/Data/160220_Working_Stacks_diftus/';
         lionval.OSslash='/';
 
-        lionval.chanfolder=strcat(lionval.bacfolder,'Channel_0',num2str(lionval.channr),lionval.OSslash);
+        lionval.chanfolder=strcat(lionval.bacfolder,'AllCells',lionval.OSslash);
         lionval.Mainfolder=strcat(lionval.chanfolder,lionval.viewchan,lionval.OSslash);
         lionval.diffolder=strcat(lionval.chanfolder,lionval.difchan,lionval.OSslash);
         
         %GaussCalcs
-        lionval.MainPathTus='/Users/rleeuw/Work/Data/160220_Working_Stacks_diftus/channel7/YFP/Results/cell';
-        lionval.MainPathdif='/Users/rleeuw/Work/Data/160220_Working_Stacks_diftus/channel7/CFP/Results/cell';
+        lionval.MainPathTus='/Users/rleeuw/Work/Data/160220_Working_Stacks_diftus/AllCells/YFP/Results/';
+        lionval.MainPathdif='/Users/rleeuw/Work/Data/160220_Working_Stacks_diftus/AllCells/CFP/Results/';
 end
 
 
