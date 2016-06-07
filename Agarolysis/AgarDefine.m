@@ -41,6 +41,9 @@ init.fltrans = [2,-63];     % translation of fluorescence [x,y]
 
 init.lioncropindex = 0;     % whether bacpics are cropped in lionfit
 
+init.Extrabound = 4;
+init.strelval = 8;     % disk radius for imdilate of bacpic mask
+
 %% Non edits from now
 
 init.Agarpath = strcat(init.kymopath,'Agarolysis',init.OSslash);

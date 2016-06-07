@@ -69,7 +69,7 @@ function [Bettermesh,BBettermesh,BCellbox,Bacmask,Bacpics,NMbacpics] = TigerCutV
             end
             
             thismesh = BBettermesh{celli,frami};
-            thisBbox = squeeze(BCellbox(celli,frami,:));
+            thisBbox = BCellbox(celli,frami,:);
             thisbacsize = bacsize(celli,:);
             
             % create bacpic and save mask
@@ -124,7 +124,7 @@ function [BCellbox,BBettermesh,bacsize] = findbound(Cellbox,Bettermesh,cells,fra
             BCellbox(celli,frami,3) = (Cellbox(celli,frami,4) + Cellbox(celli,frami,3) - bacsize(celli,2))/2 - bound;
             BCellbox(celli,frami,4) = (Cellbox(celli,frami,4) + Cellbox(celli,frami,3) + bacsize(celli,2))/2 + bound;
             
-            BBettermesh{celli,frami} = Bettermesh{celli,frami} - bound;
+            BBettermesh{celli,frami} = Bettermesh{celli,frami} + bound;
         end 
     end
 end
@@ -151,29 +151,23 @@ end
 
 function [nmask,bacpic,croppedimg] = createbac(init,imageframe,thismesh,thisBbox,thisbacsize,bacpath,frami)
             
-    bound = init.Extrabound;
-    framesize = size(imageframe);
-    thisRbox = round(thisBbox)+bound+1;
+    thisRbox = round(thisBbox)+1;
     Rbacsize = round(thisbacsize);
-    thismsize = round(thisbacsize/init.pcresize);
+    thismsize = [thisBbox(2)-thisBbox(1),thisBbox(4)-thisBbox(3)];
 
     % Create mask from mesh
     thismeshl = [thismesh(:,1:2);thismesh(:,3:4)];
     thiscropmesh = round([thismeshl(:,1)-thisBbox(1), thismeshl(:,2)-thisBbox(3)]/init.pcresize);
-    mask = poly2mask(thiscropmesh(:,1)',thiscropmesh(:,2)',thismsize(2),thismsize(1));
-    dimask = imdilate(mask,strel('disk',init.strelval));
+    mask = poly2mask(thiscropmesh(:,1)',thiscropmesh(:,2)',thismsize(1),thismsize(2));
 
-    
-    nimgframe = zeros(framesize(1)+2*bound,framesize(2)+2*bound);
-    nimgframe(bound+1:end-bound,bound+1:end-bound)=imageframe;
-    
+
     % Create bacpic from Cellbox
 
-    croppedimg = nimgframe(thisRbox(3):thisRbox(3)+Rbacsize(2)-1,thisRbox(1):thisRbox(1)+Rbacsize(1)-1);
+    croppedimg = imageframe(thisRbox(3):thisRbox(3)+Rbacsize(2),thisRbox(1):thisRbox(1)+Rbacsize(1));
 
     % Remove non-cell pixels by applying mask to bacpic
     cimgsize = size(croppedimg);
-    nmask = double(imresize(dimask,cimgsize));
+    nmask = double(imresize(mask,cimgsize));
     
     bacpic = uint16(nmask.*croppedimg);
     thisbacpath = strcat(num2str(frami,'%03.0f'),'.tif');
