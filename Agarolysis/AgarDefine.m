@@ -15,6 +15,10 @@ switch user
         init.OSslash = '\';
         init.kymopath = 'D:\Users\water_000\Documents\GitHub\KymoCode\';
         init.datapath = 'D:\Users\water_000\Documents\GitHub\Data\DnaN_dif_Tus_AgarPad\';
+    case 'Roy'
+        init.OSslash = '/';
+        init.kymopath = '/Users/rleeuw/Work/DataAnalysis/201511_TusdifDnaN_Montage/';
+        init.datapath = '/Users/rleeuw/Work/Data/160205_BN2384_and_Beam_Profiles/5/';
 end
 
 init.bfimgname = 'BF.tif';
@@ -30,12 +34,12 @@ init.meshesfile = 'PC.mat';
 
 init.maxfile = 421;
 
-init.pcresize = 0.421;
-init.pctrans = [0,0];
-init.flresize = 1;
-init.fltrans = [2,-63];
+init.pcresize = 0.421;      % scaling factor for phase contrast 
+init.pctrans = [0,0];       % translation for phase contrast [x,y]
+init.flresize = 1;          % scaling factor for fluorescence
+init.fltrans = [2,-63];     % translation of fluorescence [x,y]
 
-init.lioncropindex = 0;
+init.lioncropindex = 0;     % whether bacpics are cropped in lionfit
 
 %% Non edits from now
 

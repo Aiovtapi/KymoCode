@@ -1,13 +1,13 @@
 clc 
 clear all
 
-user = 'Mark';
+user = 'Roy';
 init.viewchan = 'CFP';
 
 init = AgarDefine(user,init);
 
 
-%%
+%% Roicotrasca on fluorescence images
 
 RoicotrascaFL(init.Agarpath,init.datapath,init.flimgname,strcat(init.datapath,init.beamshape),init.flresize,init.fltrans);
 flimg = readtimeseries(strcat(init.datapath,'RIT_',init.flimgname));
