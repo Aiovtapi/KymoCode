@@ -17,14 +17,14 @@
 % sy : std in y of the spot.
 %
 %% 
-function GaussFitSimedit_Agarolysis(init,Bacmask,cells)
+function GaussFitSimedit_Agarolysis(init,Bacpics,Bacmask,cells,frames)
 
 tic
 
 %% Inputs 
 
 lionval = Agar2lion(init);
-lionval.viewbac = cells;
+lionval.viewbac = 1:cells;
 
     
 for Cell=lionval.viewbac;
@@ -42,30 +42,35 @@ for Cell=lionval.viewbac;
 
         thisbacfolder=strcat('Cell_',num2str(Cell,'%03.0f')); % Tif stack 
         bacseriepth=strcat(lionval.Mainfolder,lionval.OSslash,thisbacfolder,lionval.OSslash);
-
-        
-% % %         % Check for whether flipping is needed based on the difchannel for
-% % %         % non difchannels. 
-% % %         if ~strcmp(lionval.viewchan,lionval.difchan)
-% % %             if exist(strcat(lionval.diffolder,'Results',lionval.OSslash,thisbacfolder,'.mat'))
-% % %                 flipimage=load(strcat(lionval.diffolder,'Results',lionval.OSslash,thisbacfolder,'.mat'),'imgflipped');
-% % %                 if flipimage.imgflipped==1
-% % %                     disp(['Flipping ',thisbacfolder])
-% % %                     GaussImRotate(bacseriepth);  
-% % %                 end
-% % %             else
-% % %                 disp('Dif-channel not computed. Cell orientation not defined. Do you want to continue? Click to continue')
-% % %                 waitforbuttonpress; close all
-% % %             end
-% % %             imgflip = 0;
-% % %             imgflipped = flipimage.imgflipped;           
-% % %         end
-        
+% 
 %         
-        d1{1}=readtimeseries(strcat(bacseriepth,'.tif'),'tif');
-
-        data=dip_array(d1{1}); %turn into uint16 array
+% % % %         % Check for whether flipping is needed based on the difchannel for
+% % % %         % non difchannels. 
+% % % %         if ~strcmp(lionval.viewchan,lionval.difchan)
+% % % %             if exist(strcat(lionval.diffolder,'Results',lionval.OSslash,thisbacfolder,'.mat'))
+% % % %                 flipimage=load(strcat(lionval.diffolder,'Results',lionval.OSslash,thisbacfolder,'.mat'),'imgflipped');
+% % % %                 if flipimage.imgflipped==1
+% % % %                     disp(['Flipping ',thisbacfolder])
+% % % %                     GaussImRotate(bacseriepth);  
+% % % %                 end
+% % % %             else
+% % % %                 disp('Dif-channel not computed. Cell orientation not defined. Do you want to continue? Click to continue')
+% % % %                 waitforbuttonpress; close all
+% % % %             end
+% % % %             imgflip = 0;
+% % % %             imgflipped = flipimage.imgflipped;           
+% % % %         end
+%         
+% %         
+%         d1{1}=readtimeseries(strcat(bacseriepth,'.tif'),'tif');
+% 
+%         data=dip_array(d1{1}); %turn into uint16 array
+        bacsize = size(Bacpics{Cell,1});
+        data = uint16(zeros(bacsize(1),bacsize(2),frames));
         
+        for frami = 1:frames;
+            data(:,:,frami) = Bacpics{Cell,frami};
+        end
 
         %% Ze Defs
 
@@ -233,9 +238,9 @@ for Cell=lionval.viewbac;
         %   Size{i,j}(1) is the height of the image.
         %   Size{i,j}(2) is the width of the image.
 
-            XNorm{j}(i,2)=x{j}(i,2)/Size{i,j}(2);
-
-            XNorm{j}(i,4)=(x{j}(i,4))/Size{i,j}(1);
+% % %             XNorm{j}(i,2)=x{j}(i,2)/Size{i,j}(2);
+% % % 
+% % %             XNorm{j}(i,4)=(x{j}(i,4))/Size{i,j}(1);
 
             GaussmaskW=GaussFactor*(x{j}(i,3).^2+x{j}(i,5).^2)^(1/2);
             ClipmaskR=ClipFactor*(x{j}(i,3).^2+x{j}(i,5).^2)^(1/2);
@@ -268,7 +273,7 @@ for Cell=lionval.viewbac;
 % % %     end
 
     NSpots=size(x,2);
-    LXNormOne=size(XNorm{1},1);
+% % %     LXNormOne=size(XNorm{1},1);
     LxOne=size(x{1},1);
 
     % make sure that each spot data is same length
@@ -277,7 +282,7 @@ for Cell=lionval.viewbac;
 
     for j=2:NSpots;
         x{j}=[x{j};zeros(LxOne-size(x{j},1),5)];
-        XNorm{j}=[XNorm{j};zeros(LXNormOne-size(XNorm{j},1),4)];
+% % %         XNorm{j}=[XNorm{j};zeros(LXNormOne-size(XNorm{j},1),4)];
     end
 
 
@@ -564,7 +569,7 @@ for Cell=lionval.viewbac;
         if exist(strcat(lionval.Mainfolder,lionval.OSslash,'Results',lionval.OSslash,thisbacfolder,'.mat'))
             disp('This bac series has already been saved. Saving will be skipped')
         else
-            save(strcat(lionval.Mainfolder,lionval.OSslash,'Results',lionval.OSslash,thisbacfolder),'x','XNorm','NSpots','SNR','ydatacrpdR1','pixels'); %,'imgflipped');
+            save(strcat(lionval.Mainfolder,lionval.OSslash,'Results',lionval.OSslash,thisbacfolder),'x','NSpots','SNR','ydatacrpdR1','pixels'); %,'imgflipped');
             display('Save complete.');
         end
 
