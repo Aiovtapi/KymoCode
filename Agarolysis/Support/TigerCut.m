@@ -1,4 +1,4 @@
-function [Bettermesh,BCellbox,Bacmask,Bacpics,NMbacpics] = TigerCut(Meshdata,flimg,init,Extrabound)
+function [Bettermesh,BCellbox,Bacmask,CBacmask,Bacpics,NMbacpics] = TigerCut(Meshdata,flimg,init,Extrabound)
 
     disp(sprintf('-----\nOperating TigerCut'))
 
@@ -48,7 +48,7 @@ function [Bettermesh,BCellbox,Bacmask,Bacpics,NMbacpics] = TigerCut(Meshdata,fli
     [BCellbox,bacsize,Bettermesh] = Removeoutbound(BCellbox,bacsize,Bettermesh,flimgsize,frames);
 
     ncells = size(Bettermesh,1);
-    [Bacmask,Bacpics,NMbacpics] = deal(cell(ncells,frames));
+    [Bacmask,CBacmask,Bacpics,NMbacpics] = deal(cell(ncells,frames));
 
     disp('Creating Bacpics')
 
@@ -74,8 +74,9 @@ function [Bettermesh,BCellbox,Bacmask,Bacpics,NMbacpics] = TigerCut(Meshdata,fli
             thisbacsize = bacsize(celli,:);
             
             % create bacpic and save mask
-            [nmask, bacpic,croppedimg] = Createbac(init,imageframe,thismesh,thisBbox,thisbacsize,bacpath,frami);          
+            [mmask, nmask, bacpic,croppedimg] = Createbac(init,imageframe,thismesh,thisBbox,thisbacsize,bacpath,frami);          
             Bacmask{celli,frami} = nmask;
+            CBacmask{celli,frami} = mmask;
             Bacpics{celli,frami} = bacpic;
             NMbacpics{celli,frami} = croppedimg;
         end    

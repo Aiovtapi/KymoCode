@@ -2,7 +2,7 @@ clc
 clear all
 
 user = 'Mark';
-init.viewchan = 'RFP';
+init.viewchan = 'YFP';
 
 init = AgarDefine(user,init);
 
@@ -18,7 +18,7 @@ flimg = readtimeseries(strcat(init.datapath,'RIT_',init.flimgname));
 % Load oufti meshdata and compute bacpics with TigerCut
 Ouftiout = load(strcat(init.datapath,init.meshesfile),'cellList');
 Meshdata = Ouftiout.cellList.meshData;
-[Bettermesh,BCellbox,Bacmask,Bacpics,NMBacpics] = TigerCut(Meshdata,flimg,init,init.Extrabound);
+[Bettermesh,BCellbox,Bacmask,CBacmask,Bacpics,NMBacpics] = TigerCut(Meshdata,flimg,init,init.Extrabound);
 
 %% Lionfit
 [cells,frames]=size(Bacpics);
@@ -36,8 +36,11 @@ for celli = 1:cells;
     
     thismatpath = strcat(Lionresultspath,'Cell_',num2str(celli,'%03.0f'));
     load(thismatpath,'x');
-    ld = x;
-    spots = size(x,2);
+    
+    bx = Removespots(x,CBacmask(celli,:));
+    
+    ld = bx;
+    spots = size(bx,2);
     
     CellLength = zeros(frames,1);
     Lnorm = [];
@@ -52,17 +55,25 @@ for celli = 1:cells;
         thismesh(:,3) = thismesh(:,3) - thiscellbox(1);
         thismesh(:,4) = thismesh(:,4) - thiscellbox(3);
         
-        % Mouseclick to view next back, keyboard press for exit preview 
-        if showfigure == 0;
-            thisfigure = imagesc(Bacpics{celli,1});
-            hold on
-            plot(thismesh(:,1),thismesh(:,2),'r',thismesh(:,3),thismesh(:,4),'r','LineWidth',2)
-            hold off
-            title('Mouseclick to view next bacpic, keypress to exit')
+        % Mouseclick to view next back, keyboard press for exit preview
+        if frami == 1;
+            if showfigure == 0;
+                thisfigure = imagesc(Bacpics{celli,1});
+                hold on
+                plot(thismesh(:,1),thismesh(:,2),'w',thismesh(:,3),thismesh(:,4),'w','LineWidth',2)
+                for spoti = 1:length(x)
+                    plot(x{spoti}(frami,2),x{spoti}(frami,4),'rx','LineWidth',2)
+                end
+                for spoti = 1:spots;
+                    plot(bx{spoti}(frami,2),bx{spoti}(frami,4),'cx','LineWidth',2)
+                end
+                hold off
+                title('Mouseclick to view next bacpic, keypress to exit')
 
-            showfigure = waitforbuttonpress;
-        else
-            close all
+                showfigure = waitforbuttonpress;
+            else
+                close all
+            end
         end
         
         % Find Cell length
@@ -72,8 +83,8 @@ for celli = 1:cells;
         Lnormsp = zeros(spots,1);
         
         % Find LD values by projecting xy values on mesh
-        for spoti = 1:spots
-            spotxy = x{spoti}(frami,:);
+        for spoti = 1:spots;
+            spotxy = bx{spoti}(frami,:);
             Xval = spotxy(2);
             Yval = spotxy(4);
             
@@ -89,7 +100,7 @@ for celli = 1:cells;
         end
         Lnorm = [Lnorm; Lnormsp];
     end
-    save(thismatpath,'ld','CellLength','Lnorm','-append')
+    save(thismatpath,'bx','ld','CellLength','Lnorm','-append')
     AllLnorm = [AllLnorm; Lnorm];
 end
 

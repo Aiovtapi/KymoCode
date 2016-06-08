@@ -22,15 +22,19 @@ switch user
 end
 
 init.bfimgname = 'BF.tif';
-init.pcimgname = 'PC.tif';
-init.CFPimgname = '457-100ms-10mWo-300G.tif';
-init.YFPimgname = '515-100ms-50mWo-300G.tif';
-init.RFPimgname = '561-100ms-33mWo-300G.tif';
+% init.pcimgname = 'PC.tif';
+% init.CFPimgname = '457-100ms-10mWo-300G.tif';
+% init.YFPimgname = '515-100ms-50mWo-300G.tif';
+% init.RFPimgname = '561-100ms-33mWo-300G.tif';
+init.pcimgname = 'StackedPC.tif';
+init.CFPimgname = 'Stacked457.tif';
+init.YFPimgname = 'Stacked515.tif';
+init.RFPimgname = 'Stacked561.tif';
 init.CFPbeamshape = 'BeamShape457.tif';
 init.YFPbeamshape = 'BeamShape515.tif';
 init.RFPbeamshape = 'BeamShape561.tif';
 
-init.meshesfile = 'PC.mat';
+init.meshesfile = 'StackedPC.mat';
 
 init.maxfile = 421;
 

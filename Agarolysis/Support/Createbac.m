@@ -1,4 +1,4 @@
-function [nmask,bacpic,croppedimg] = Createbac(init,imageframe,thismesh,thisBbox,thisbacsize,bacpath,frami)
+function [mmask, nmask,bacpic,croppedimg] = Createbac(init,imageframe,thismesh,thisBbox,thisbacsize,bacpath,frami)
             
     bound = init.Extrabound;
     framesize = size(imageframe);
@@ -25,6 +25,7 @@ function [nmask,bacpic,croppedimg] = Createbac(init,imageframe,thismesh,thisBbox
     % Ensure that size of the mask is the same as the size of the bacpic
     cimgsize = size(croppedimg);
     nmask = double(imresize(dimask,cimgsize));
+    mmask = double(imresize(mask,cimgsize));
     
     % Creating the masked bacpic by applying the mask to the bacpic
     bacpic = uint16(nmask.*croppedimg);
