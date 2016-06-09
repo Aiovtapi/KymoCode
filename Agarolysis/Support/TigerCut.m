@@ -1,5 +1,4 @@
-function [Bettermesh,BCellbox,Bacmask,CBacmask,Bacpics,NMbacpics] = TigerCut(Meshdata,flimg,init,Extrabound)
-
+function [Bettermesh,BCellbox,Bacsize,Bacmask,CBacmask,Bacpics,NMBacpics] = TigerCut(init,chan,Meshdata,flimg)
     disp(sprintf('-----\nOperating TigerCut'))
 
     Bettermesh = Removeemptymesh(Meshdata);
@@ -9,7 +8,7 @@ function [Bettermesh,BCellbox,Bacmask,CBacmask,Bacpics,NMbacpics] = TigerCut(Mes
 
     Cellbox = zeros(cells,frames,4);
 
-    bacfolder = strcat(init.bacpath,init.flimgname);
+    bacfolder = strcat(init.bacpath,init.flimgname{chan});
 
     if ~exist(bacfolder,'dir')
         mkdir(bacfolder)
@@ -42,13 +41,13 @@ function [Bettermesh,BCellbox,Bacmask,CBacmask,Bacpics,NMbacpics] = TigerCut(Mes
     end
 
     % Find size of bacpic and the boundary indeces for each frame
-    [BCellbox,Bettermesh,bacsize] = Findbound(Cellbox,Bettermesh,cells,frames,Extrabound);
+    [BCellbox,Bettermesh,Bacsize] = Findbound(Cellbox,Bettermesh,cells,frames,init.Extrabound);
 
     % Remove cells that move out of the immage
-    [BCellbox,bacsize,Bettermesh] = Removeoutbound(BCellbox,bacsize,Bettermesh,flimgsize,frames);
+    [BCellbox,Bacsize,Bettermesh] = Removeoutbound(BCellbox,Bacsize,Bettermesh,flimgsize,frames);
 
     ncells = size(Bettermesh,1);
-    [Bacmask,CBacmask,Bacpics,NMbacpics] = deal(cell(ncells,frames));
+    [Bacmask,CBacmask,Bacpics,NMBacpics] = deal(cell(ncells,frames));
 
     disp('Creating Bacpics')
 
@@ -71,14 +70,14 @@ function [Bettermesh,BCellbox,Bacmask,CBacmask,Bacpics,NMbacpics] = TigerCut(Mes
             % Set values for current cell and frame
             thismesh = Bettermesh{celli,frami};
             thisBbox = squeeze(BCellbox(celli,frami,:));
-            thisbacsize = bacsize(celli,:);
+            thisbacsize = Bacsize(celli,:);
             
             % create bacpic and save mask
             [mmask, nmask, bacpic,croppedimg] = Createbac(init,imageframe,thismesh,thisBbox,thisbacsize,bacpath,frami);          
             Bacmask{celli,frami} = nmask;
             CBacmask{celli,frami} = mmask;
             Bacpics{celli,frami} = bacpic;
-            NMbacpics{celli,frami} = croppedimg;
+            NMBacpics{celli,frami} = croppedimg;
         end    
     end
     

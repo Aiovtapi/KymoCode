@@ -15,15 +15,15 @@
 % sx : std in x of the spot.
 % y : y-coordinate of the spot. 
 % sy : std in y of the spot.
-%
+
 %% 
-function GaussFitSimedit_Agarolysis(init,Bacpics,Bacmask,cells,frames)
+function GaussFitSimedit_Agarolysis(init,chan,Bacpics,Bacmask,cells,frames)
 
 tic
 
 %% Inputs 
 
-lionval = Agar2lion(init);
+lionval = Agar2lion(init,chan);
 lionval.viewbac = 1:cells;
 
     

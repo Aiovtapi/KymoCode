@@ -1,6 +1,6 @@
- function RoicotrascaFL(jarpath,Imgspath,Imgname,Beampath,Rval,Tval)
+ function RoicotrascaFL(OSslash,jarpath,Imgspath,Imgname,Beampath,Rval,Tval)
 %% Presets
-if nargin < 5;
+if nargin < 6;
     Rval = 1;
     Tval = [0,0];
 end
@@ -19,18 +19,24 @@ if ~exist('Beampath','var')
     Beampath = 'C:\Users\water\Documents\GitHub\Data\141230_dnaN_dif_tus\Fluorescence\BeamShape457.tif';
 end
 
+Outpath = strcat(Imgspath,'Edited Images',OSslash);
+
+if ~exist(Outpath,'dir')
+    mkdir(Outpath);
+end
+
 % Add ImageJ and MIJI to path
 javaaddpath(strcat(jarpath,'mij.jar'))
 javaaddpath(strcat(jarpath,'ij.jar'))
 
 %% Rolling ball
 Rballedname = strcat('Rballed_',Imgname);
-copyfile(strcat(Imgspath,Imgname),strcat(Imgspath,Rballedname));
+copyfile(strcat(Imgspath,Imgname),strcat(Outpath,Rballedname));
 disp('Copying file...')
 pause(3)
 
 MIJ.start
-MIJ.run('Open...',strcat('path=[',Imgspath,Rballedname,']'))
+MIJ.run('Open...',strcat('path=[',Outpath,Rballedname,']'))
 MIJ.run('Subtract Background...', 'rolling=10 stack')
 MIJ.run('Save','Tiff...')
 MIJ.closeAllWindows
@@ -40,11 +46,11 @@ disp('Rolling ball finished')
 
 %%
 
-imgpath = strcat(Imgspath,Rballedname);
+imgpath = strcat(Outpath,Rballedname);
 imginfo = imfinfo(imgpath);
 num_images = numel(imginfo);
-RIpath = strcat(Imgspath,'RI_',Imgname);
-RITpath = strcat(Imgspath,'RIT_',Imgname);
+RIpath = strcat(Outpath,'RI_',Imgname);
+RITpath = strcat(Outpath,'RIT_',Imgname);
 
 Beamimg = im2double(imread(Beampath));
 maxVAlue= max(max(Beamimg));
