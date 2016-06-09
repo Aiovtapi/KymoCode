@@ -6,7 +6,6 @@ user = 'MarkPC';
 init = AgarDefine(user);
 chans = numel(init.flimgname);
 [Bacpics, NMBacpics, Bacmesh] = deal(cell(3,1));
-fcelli = [];
 
 %% Roicotrasca on fluorescence images
 for chan = 1:chans
@@ -48,34 +47,25 @@ for chan = 1:chans
             Bacmesh{chan}{celli,frami}(:,4) = thismesh(:,4) - thiscellbox(3);
         end
     end
-
     
     %% ProjectToMesh
 
     Lionresultspath = strcat(init.bacpath,init.flimgname{chan},init.OSslash,'Results',init.OSslash);
-
-    showfigure = 0;
     AllLnorm = [];
-
 
     for celli = 1:cells;
 
         thismatpath = strcat(Lionresultspath,'Cell_',num2str(celli,'%03.0f'));
         load(thismatpath,'x');
         bx = Removespots(x,CBacmask(celli,:));
+        X{chan,celli} = x;
+        BX{chan,celli} = bx;
+        
         ld = bx;
         spots = size(bx,2);
 
         CellLength = zeros(frames,1);
         Lnorm = [];
-        
-        if showfigure == 0;
-            [showfigure, fault] = ViewbacUI(Bacpics{chan},Bacmesh{chan},x,bx,celli);
-        end
-        
-        if fault == 1;
-            fcelli = [fcelli, celli];
-        end
         
         for frami = 1:frames;
 
@@ -107,28 +97,65 @@ for chan = 1:chans
         save(thismatpath,'bx','ld','CellLength','Lnorm','-append')
         AllLnorm = [AllLnorm; Lnorm];
     end
-    
+
     Lvalnorm{chan} = AllLnorm;
     
     clear celli CellLength Dval frami Lionresultspath Lval Meshlength showfigure spoti...
-        spotxy varval x Xval Yval Meshdata thismesh bx ld Lnorm Lnormsp meshlength...
+        spotxy varval Xval Yval Meshdata thismesh bx ld Lnorm Lnormsp meshlength...
         spots thiscellbox thisfigure thismatpath AllLnorm
     
     disp('Projected to Mesh')
-
 end
 
-%%
+
+%% View bacpics with meshes and spots, find faulty cells
+
+skip = 0;
+fcelli = [];
+celli = 1;
+while celli <= cells;
+    
+    if skip == 0;
+        [skip, fault, previous] = ViewbacUI2(Bacpics,Bacmesh,X,BX,celli,init.flimgname);
+    end
+    
+    % Save faulty cells
+    if fault == 1;
+        fcelli = [fcelli, celli];
+    end
+    
+    % Go to previous cell
+    switch previous
+        case 0; celli = celli + 1;
+        case 1
+            if celli > 1
+                celli = celli - 1;
+            end
+    end
+    
+    if celli == cells + 1;
+        done = questdlg('Advance?','Menu','Yes','No, Go back','Yes');
+        if strcmp(done,'No, Go back')
+            switch skip
+                case 0; celli = celli - 1;
+                case 1; skip = 0; celli = 1;
+                    disp('yes')
+            end
+        end
+    end
+end
+
 faultycells = unique(fcelli);
 fpath = strcat(init.bacpath,'fcells.mat');
 fremoved = 0;
 save(fpath,'faultycells','fremoved')
 
+%% Remove faulty cells
+
 RemoveCells(init,cells,faultycells,fpath);
 disp('Operation done')
 
 
-%%
 
 
 
