@@ -2,21 +2,20 @@ clc
 clear all
 
 user = 'Mark';
-init.viewchan = 'YFP';
 
-init = AgarDefine(user,init);
+init = AgarDefine(user);
 
 
 %% Roicotrasca on fluorescence images
 
 % Read FL images 
-RoicotrascaFL(init.Agarpath,init.datapath,init.flimgname,strcat(init.datapath,init.beamshape),init.flresize,init.fltrans);
+RoicotrascaFL(init.Agarpath,init.datapath,init.flimgname,init.beampath,init.flresize,init.fltrans);
 flimg = readtimeseries(strcat(init.datapath,'RIT_',init.flimgname));
 
 %% Get oufti results and Tigercut
 
 % Load oufti meshdata and compute bacpics with TigerCut
-Ouftiout = load(strcat(init.datapath,init.meshesfile),'cellList');
+Ouftiout = load(init.meshpath),'cellList');
 Meshdata = Ouftiout.cellList.meshData;
 [Bettermesh,BCellbox,Bacmask,CBacmask,Bacpics,NMBacpics] = TigerCut(Meshdata,flimg,init,init.Extrabound);
 
