@@ -1,8 +1,6 @@
-function [init] = AgarDefine(user,init)
+function [init] = AgarDefine(user)
+%init.viewchan = ???
 
-if nargin < 2
-    init.viewchan = 'CFP';
-end
 
 init.difchan = 'CFP';
 
@@ -22,19 +20,48 @@ switch user
 end
 
 init.bfimgname = 'BF.tif';
+
+defaultset = questdlg('Load default dataset?','Menu','Yes','No','Yes');
+switch defaultset
+    case 'Yes'
+        init.pcimgname = 'StackedPC.tif';
+        init.CFPimgname = 'Stacked457.tif';
+        init.YFPimgname = 'Stacked515.tif';
+        init.RFPimgname = 'Stacked561.tif';
+        init.CFPbeampath = strcat(init.kymopath,'beampath457.tif');
+        init.YFPbeampath = strcat(init.kymopath,'beampath515.tif');
+        init.RFPbeampath = strcat(init.kymopath,'beampath561.tif');
+        init.meshfile = 'StackedPC.mat';
+        init.meshpath = strcat(init.datapath,init.meshfile);
+    case 'No'
+        init.datapath = uigetdir('','Select data folder');
+        cd(init.datapath)
+        init.pcimgname = uigetfile('*.tif','Select PC image');
+        init.CFPimgname = uigetfile('*.tif','Select CFP image');
+        init.YFPimgname = uigetfile('*.tif','Select YFP image');
+        init.RFPimgname = uigetfile('*.tif','Select RFP image');
+        [~,init.meshpath,~] = uigetfile('*.mat','Select oufti output for dataset');
+        
+        defaultbeam = questdlg('Load default beamshapes?','Menu','Yes','No','Yes');
+        switch defaultbeam
+            case 'Yes'
+                init.CFPbeampath = strcat(init.kymopath,'beampath457.tif');
+                init.YFPbeampath = strcat(init.kymopath,'beampath515.tif');
+                init.RFPbeampath = strcat(init.kymopath,'beampath561.tif');
+            case 'No'
+                [~,init.CFPbeampath,~] = uigetfile('*.tif','Select CFP beamshape');
+                [~,init.YFPbeampath,~] = uigetfile('*.tif','Select YFP beamshape');
+                [~,init.RFPbeampath,~] = uigetfile('*.tif','Select RFP beamshape');
+        end
+end
+        
+    
+
+
 % init.pcimgname = 'PC.tif';
 % init.CFPimgname = '457-100ms-10mWo-300G.tif';
 % init.YFPimgname = '515-100ms-50mWo-300G.tif';
 % init.RFPimgname = '561-100ms-33mWo-300G.tif';
-init.pcimgname = 'StackedPC.tif';
-init.CFPimgname = 'Stacked457.tif';
-init.YFPimgname = 'Stacked515.tif';
-init.RFPimgname = 'Stacked561.tif';
-init.CFPbeamshape = 'BeamShape457.tif';
-init.YFPbeamshape = 'BeamShape515.tif';
-init.RFPbeamshape = 'BeamShape561.tif';
-
-init.meshesfile = 'StackedPC.mat';
 
 init.maxfile = 421;
 
@@ -66,13 +93,13 @@ addpath(strcat(init.kymopath,'Agarolysis',init.OSslash,'Support'));
 switch init.viewchan
     case 'CFP'
         init.flimgname = init.CFPimgname;
-        init.beamshape = init.CFPbeamshape;
+        init.beampath = init.CFPbeampath;
     case 'YFP'
         init.flimgname = init.YFPimgname;
-        init.beamshape = init.YFPbeamshape;
+        init.beampath = init.YFPbeampath;
     case 'RFP'
         init.flimgname = init.RFPimgname;
-        init.beamshape = init.RFPbeamshape;
+        init.beampath = init.RFPbeampath;
 end
 
 switch init.difchan
