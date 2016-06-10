@@ -1,7 +1,7 @@
 clc 
 clear all
 
-user = 'MarkPC';
+user = 'Mark';
 
 init = AgarDefine(user);
 chans = numel(init.flimgname);
@@ -25,7 +25,7 @@ for chan = 1:chans
     if chan == 1;
         [Bettermesh,BCellbox,Bacsize,Bacmask,CBacmask,Bacpics{chan},NMBacpics{chan}]...
             = TigerCut(init,chan,Meshdata,flimg);
-    else
+    elseif chan > 1;
         [Bacpics{chan},NMBacpics{chan}] = TigerCutSimple(init,chan,Bettermesh,BCellbox,Bacsize,flimg);
     end
     
@@ -96,12 +96,13 @@ for chan = 1:chans
         end
         save(thismatpath,'bx','ld','CellLength','Lnorm','-append')
         AllLnorm = [AllLnorm; Lnorm];
+        clear x bx
     end
 
     Lvalnorm{chan} = AllLnorm;
     
     clear celli CellLength Dval frami Lionresultspath Lval Meshlength showfigure spoti...
-        spotxy varval Xval Yval Meshdata thismesh bx ld Lnorm Lnormsp meshlength...
+        spotxy varval Xval Yval Meshdata thismesh ld Lnorm Lnormsp meshlength...
         spots thiscellbox thisfigure thismatpath AllLnorm
     
     disp('Projected to Mesh')
@@ -113,10 +114,13 @@ end
 skip = 0;
 fcelli = [];
 celli = 1;
+
+f = figure('Name','Agarolysis','NumberTitle','off',...
+        'Visible','on','Position',[350 350 1200, 400]);
 while celli <= cells;
     
     if skip == 0;
-        [skip, fault, previous] = ViewbacUI2(Bacpics,Bacmesh,X,BX,celli,init.flimgname);
+        [skip, fault, previous] = ViewbacUI2(f,Bacpics,Bacmesh,X,BX,celli,init.flimgname);
     end
     
     % Save faulty cells
@@ -139,11 +143,11 @@ while celli <= cells;
             switch skip
                 case 0; celli = celli - 1;
                 case 1; skip = 0; celli = 1;
-                    disp('yes')
             end
         end
     end
 end
+close(f)
 
 faultycells = unique(fcelli);
 fpath = strcat(init.bacpath,'fcells.mat');
