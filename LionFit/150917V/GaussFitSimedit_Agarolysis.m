@@ -17,7 +17,7 @@
 % sy : std in y of the spot.
 
 %% 
-function GaussFitSimedit_Agarolysis(init,chan,Bacpics,Bacmask,cells,frames)
+function GaussFitSimedit_Agarolysis(init,chan,Bacpics,Bacmask,cells,frames,IPTP)
 
 tic
 
@@ -151,7 +151,7 @@ for Cell=lionval.viewbac;
                 LionSpotter(ydatacrpdR1{i,j},SA,Sx,Sy,Px,Py,Bs,lob,upb);
             
            %still needs background level to be mediated from within the channel.   
-            while x0{j}(i,1)>IntensityPeakThreshold && j<20 && Size{i,j}(1)>0
+            while x0{j}(i,1)>IPTP*IntensityPeakThreshold && j<20 && Size{i,j}(1)>0
 
             % make guesses for spot position
 

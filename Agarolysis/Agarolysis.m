@@ -1,7 +1,7 @@
 clc 
 clear all
 
-user = 'Mark';
+user = 'MarkPC';
 
 init = AgarDefine(user);
 chans = numel(init.flimgname);
@@ -32,7 +32,7 @@ for chan = 1:chans
 
     %% Lionfit
     [cells,frames]=size(Bacpics{chan});
-    GaussFitSimedit_Agarolysis(init,chan,Bacpics{chan},Bacmask,cells,frames);
+    GaussFitSimedit_Agarolysis(init,chan,Bacpics{chan},Bacmask,cells,frames,init.IPTP);
 
     %% Get indivudual meshes
 
@@ -103,7 +103,7 @@ for chan = 1:chans
     
     clear celli CellLength Dval frami Lionresultspath Lval Meshlength showfigure spoti...
         spotxy varval Xval Yval Meshdata thismesh ld Lnorm Lnormsp meshlength...
-        spots thiscellbox thisfigure thismatpath AllLnorm
+        spots thiscellbox thisfigure thismatpath AllLnorm thisbacmesh
     
     disp('Projected to Mesh')
 end
@@ -159,6 +159,7 @@ save(fpath,'faultycells','fremoved')
 RemoveCells(init,cells,faultycells,fpath);
 disp('Operation done')
 
+clear chan chans celli done previous skip frames fremoved fault fclii
 
 
 

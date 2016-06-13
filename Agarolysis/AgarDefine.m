@@ -100,6 +100,7 @@ init.maxfile = 421;         % max amount of pictures allowed in stack
 init.lioncropindex = 0;     % whether bacpics are cropped in lionfit
 init.Extrabound = 4;        % extra boudaries added to bacpics
 init.strelval = 8;          % disk radius for imdilate of bacpic mask
+init.IPTP = 1;              % Intensity Peak threshold parameter
 init.bacpath = strcat(init.datapath,'Bacpics',init.OSslash);
 
 %% Selection of channels
