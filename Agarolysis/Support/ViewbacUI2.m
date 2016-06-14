@@ -1,14 +1,15 @@
-function [skip,fault,previous] = ViewbacUI2(f,Bacpics,Bacmesh,X,BX,celli,Title)
+function [skip,fault,previous,Rspot] = ViewbacUI2(f,Bacpics,Bacmesh,X,BX,celli,Title)
 
 frames = size(Bacmesh{1},2);
 [chans, cells] = size(X);
 skip = 0;
 fault = 0;
 previous = 0;
+Rspot = [];
 
 currentbac = ['Bacpic ',num2str(celli),'/',num2str(cells)];
 
-%% Create push buttons
+%% Create push buttons and indicators
 Skip = uicontrol('Style', 'pushbutton', 'String', 'Skip all',...
     'Position', [10 10 50 30],...
     'Callback',@Skipall);    
@@ -29,7 +30,15 @@ Next = uicontrol('Style', 'pushbutton', 'String', 'Next Cell',...
     'Position', [520 10 100 30],...
     'Callback',@Closefigure);
 
-%% Plot first frame
+clcr = uicontrol('Style','text',...
+    'Position',[1000 15 100 15],...
+    'String','Click spot to remove');
+
+clr = uicontrol('Style', 'pushbutton', 'String', 'Clear clicks',...
+    'Position', [1110 10 80 30],...
+    'Callback',@Clearclick);    
+
+%% Plot first frame of bacpic, mesh and spots
 for chan = 1:chans;
     ax(chans) = subplot(1,chans,chan);
     set(gca,'tag',num2str(chan))
@@ -71,22 +80,18 @@ end
 %%
 Rspots = [];
 
-set(f,'HitTest','off')
-set(f,'WindowButtonDownFcn',@clicky)
+set(f,'HitTest','off')                          % Necessary for clicking on plot
+set(f,'WindowButtonDownFcn',@clicky)            % Action for clicks
 
-
-
-
-
-uiwait(f) % Wait for button click
+uiwait(f)                                       % Wait for button click
 
 %% functions for the buttons and sliders
 
-    function selectframe(source,callbackdata)
+    function selectframe(source,callbackdata)   % Plotting for change of frame
         frami = round(source.Value);
         currentframe = ['Frame ',num2str(frami),'/',num2str(frames)];
         
-        frm = uicontrol('Style','text',...
+    frm = uicontrol('Style','text',...          % Add frame counter
             'Position',[900 15 50 15],...
             'String',currentframe);
 
@@ -97,10 +102,12 @@ uiwait(f) % Wait for button click
             x = X{chan,celli};
             bx = BX{chan,celli};
             
-            hold on
+            hold on                             % Plot the bacpic, mesh and spots
             imagesc(Bacpics{chan}{celli,frami})
-            plot(Bacmesh{chan}{celli,frami}(:,1),Bacmesh{chan}{celli,frami}(:,2),'w',...
-                Bacmesh{chan}{celli,frami}(:,3),Bacmesh{chan}{celli,frami}(:,4),'w','LineWidth',2)
+            plot(Bacmesh{chan}{celli,frami}(:,1),...
+                Bacmesh{chan}{celli,frami}(:,2),'w',...
+                Bacmesh{chan}{celli,frami}(:,3),...
+                Bacmesh{chan}{celli,frami}(:,4),'w','LineWidth',2)
             for spoti = 1:length(x)
                 plot(x{spoti}(frami,2),x{spoti}(frami,4),'rx','LineWidth',2)
             end
@@ -111,57 +118,95 @@ uiwait(f) % Wait for button click
             hold off
             clear x bx
         end
+        
+        for respot = 1:size(Rspot,1)                    % plot clicked spots
+            thisx = BX{Rspot(respot,1),celli}{Rspot(respot,2)}(frami,:);
+            subplot(1,chans,Rspot(respot,1))
+            hold on
+            plot(thisx(2),thisx(4),'rx','LineWidth',2)
+            hold off
+        end
+            
     end
 
-    function Closefigure(hObject, eventdata, handles)
+    function Closefigure(hObject, eventdata, handles)   % Close and continue
         uiresume(f)
         clf(f)
     end
 
-    function Skipall(hObject, eventdata, handles)
+    function Skipall(hObject, eventdata, handles)       % Skip all cells
         skip = 1;
         uiresume(f)
         clf(f)
     end
 
-    function Savefault(hObject, eventdata, handles)
+    function Savefault(hObject, eventdata, handles)     % Save faulty cell
         fault = 1;
         uiresume(f)
         clf(f)
     end
 
-    function GoPrev(hObject, eventdata, handles)
+    function GoPrev(hObject, eventdata, handles)        % Go to previous cell
         previous = 1;
         uiresume(f);
         clf(f)
     end
 
     function clicky(gcbo,eventdata,handles)
-        clickXY = get(gca,'CurrentPoint');
-        clickxy = [clickXY(1,1),clickXY(1,2)];
-        clickchan = str2double((get(gca,'tag')));
+        clickXY = get(gca,'CurrentPoint');              % Get click values
+        clickxy = [clickXY(1,1),clickXY(1,2)];          % xy of clicked point
+        clickchan = str2double((get(gca,'tag')));       % channel clicked
         
         if frames > 1
-            frame = round(sld.Value);
+            frame = round(sld.Value);                   % get current frame
         else
             frame = 1;
         end
         
-        thisx = X{clickchan,celli};
+        thisx = BX{clickchan,celli};                     % get spots information
         spots = size(thisx,2);
         
         spotx = zeros(spots,2);
         for spotn = 1:spots
-            spotx(spotn,1) = thisx{spotn}(frame,2);
+            spotx(spotn,1) = thisx{spotn}(frame,2);     % prepare spots coordinates
             spotx(spotn,2) = thisx{spotn}(frame,4);
         end
         
-        [minval,minidx] = min(sqrt(sum(bsxfun(@minus,clickxy,spotx).^2,2)));
+        
+        [minval,minidx] = ...                           % Find minimal spot distance
+            min(sqrt(sum(bsxfun(@minus,clickxy,spotx).^2,2)));
+        
         if minval < 0.5
-            removespot = [clickchan,minidx]
+            removespot = [clickchan,minidx];
+            hold on
+            plot(spotx(minidx,1),spotx(minidx,2),'rx','LineWidth',2);
+            hold off
         else
-            removespot = []
+            removespot = [];
         end
+        
+        Rspot = [Rspot; removespot];
+        Rspot = unique(Rspot, 'rows');
+    end
 
+    function Clearclick(hObject, eventdata, handles)
+        
+        if frames > 1
+            frame = round(sld.Value);                   % get current frame
+        else
+            frame = 1;
+        end
+        
+        for respot = 1:size(Rspot,1);                   % replot clicked spot
+            thisx = BX{Rspot(respot,1),celli}{Rspot(respot,2)}(frame,:);
+            subplot(1,chans,Rspot(respot,1))
+            hold on
+            plot(thisx(2),thisx(4),'kx','LineWidth',2)
+            hold off
+        end
+        
+        Rspot = [];
     end
 end
+
+

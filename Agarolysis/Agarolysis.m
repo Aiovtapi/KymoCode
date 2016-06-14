@@ -120,7 +120,12 @@ f = figure('Name','Agarolysis','NumberTitle','off',...
 while celli <= cells;
     
     if skip == 0;
-        [skip, fault, previous] = ViewbacUI2(f,Bacpics,Bacmesh,X,BX,celli,init.flimgname);
+        [skip,fault,previous,Rspot] = ViewbacUI2(f,Bacpics,Bacmesh,X,BX,celli,init.flimgname);
+    end
+    
+    % Remove clicked spots, new bx and ld are saved as rbx and rld
+	if ~numel(Rspot) == 0
+        Removespotsui(init,celli,Rspot)
     end
     
     % Save faulty cells
