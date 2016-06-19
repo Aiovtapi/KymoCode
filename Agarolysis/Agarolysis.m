@@ -1,9 +1,7 @@
 clc 
 clear all
 
-user = 'MarkPC';
-
-init = AgarDefine(user);
+init = AgarDefine;
 chans = numel(init.flimgname);
 [Bacpics, NMBacpics, Bacmesh] = deal(cell(3,1));
 
