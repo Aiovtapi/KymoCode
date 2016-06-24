@@ -85,5 +85,3 @@ elseif nargin==7
 else
     error('Incorrect number of inputs.')
 end
-
-disp('Done')

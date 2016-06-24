@@ -1,6 +1,6 @@
     
 function [X0,Y0,Z0,I0,L0,A0,R0,pts,npts,NewL] = ...
-    Appearance(X0,Y0,Z0,I0,L0,A0,R0,npts,meanI,NewL,Apois,Lx,Ly,Lz,D)
+    Tig_Appearance(X0,Y0,Z0,I0,L0,A0,R0,npts,meanI,NewL,Apois,Lx,Ly,Lz,D)
 
     N_app = round(poissrnd(Apois));
 

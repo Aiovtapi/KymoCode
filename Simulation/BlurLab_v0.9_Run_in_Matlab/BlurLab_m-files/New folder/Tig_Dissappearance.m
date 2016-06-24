@@ -1,5 +1,5 @@
 function [X0,Y0,Z0,I0,L0,A0,R0,pts] = ...
-    Dissappearance(X0,Y0,Z0,I0,L0,A0,R0,pts,CDis)
+    Tig_Dissappearance(X0,Y0,Z0,I0,L0,A0,R0,pts,CDis)
 
     Diss_cells = find(rand(pts,1) < CDis);
 

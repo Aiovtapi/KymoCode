@@ -1,5 +1,5 @@
 function [X0,Y0,Z0,I0,L0,A0,R0,pts,npts,NewL] = ...
-    merging(X0,Y0,Z0,I0,L0,A0,R0,pts,npts,NewL,MergeD,CMerge,i_fr)
+    Tig_merging(X0,Y0,Z0,I0,L0,A0,R0,pts,npts,NewL,MergeD,CMerge,i_fr)
 
     [Xa,Xb] = meshgrid(X0);
     [Ya,Yb] = meshgrid(Y0);

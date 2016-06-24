@@ -1,5 +1,5 @@
 function [X0,Y0,Z0,I0,L0,A0,R0,pts,npts,NewL] = ...
-    splitting(X0,Y0,Z0,I0,L0,A0,R0,pts,npts,NewL,CSplit,DSplit,i_fr,meanI)
+    Tig_splitting(X0,Y0,Z0,I0,L0,A0,R0,pts,npts,NewL,CSplit,DSplit,i_fr,meanI)
 
     Split_cells = find(rand(pts,1) < CSplit);
 
