@@ -155,7 +155,10 @@ function Tigercreate(nframes,pts,meanI,D,Lx,Ly,Lz,ini)
 
 
     % write output file
+    oldfolder = pwd;
+    cd(ini.Tigfolder)
     BlurLab_text(Xout,Yout,Zout,Iout,Fout,Lout,fname)
+    cd(oldfolder);
 end
 
 function [X0,Y0,Z0,I0,L0,A0,R0,pts,npts,NewL] = ...

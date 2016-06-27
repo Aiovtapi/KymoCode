@@ -32,7 +32,7 @@ function varargout = BlurLab_Tig(varargin)
 % folder 'M-File_Models'.
 %
 
-% Last Modified by GUIDE v2.5 24-Jun-2016 10:33:26
+% Last Modified by GUIDE v2.5 27-Jun-2016 16:17:28
 
 % Skip frame option?
 % only frap certain Z thickness
@@ -3310,6 +3310,7 @@ ini.tog_split = get(handles.Tig_tog_splitting,'Value');
 ini.tog_spotdis = get(handles.Tig_tog_spotdis,'Value');
 ini.tog_spotapp = get(handles.Tig_tog_spotapp,'Value');
 ini.tog_blinking = get(handles.Tig_tog_blinking,'Value');
+ini.Tigfolder = uigetdir(pwd);
 
 nframes = str2double(get(handles.Tedit_frames,'String'));
 pts = str2double(get(handles.Tedit_points,'String'));
