@@ -139,13 +139,20 @@ function Tigercreate(nframes,pts,meanI,D,Lx,Ly,Lz,ini)
         clear NewL sortd 
     end
 
-    %I know this isn't quite right
-    Xout(Xout<0)=0;
-    Xout(Xout>Lx)=Lx;
-    Yout(Yout<0)=0;
-    Yout(Yout>Ly)=Ly;
-    Zout(Zout<0)=0;
-    Zout(Zout>Lz)=Lz;
+    % I know this isn't quite right
+%     Xout(Xout<0)=0;
+%     Xout(Xout>Lx)=Lx;
+%     Yout(Yout<0)=0;
+%     Yout(Yout>Ly)=Ly;
+%     Zout(Zout<0)=0;
+%     Zout(Zout>Lz)=Lz;
+    Iout(Xout<0)=0;
+    Iout(Xout>Lx)=0;
+    Iout(Yout<0)=0;
+    Iout(Yout>Ly)=0;
+    Iout(Zout<0)=0;
+    Iout(Zout>Lz)=0;
+
 
     % write output file
     BlurLab_text(Xout,Yout,Zout,Iout,Fout,Lout,fname)
