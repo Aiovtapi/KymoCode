@@ -44,12 +44,19 @@ function Tigercreate(nframes,pts,meanI,D,Lx,Ly,Lz,ini)
         X0 = X0 + R0.*sin(A0);
         Y0 = Y0 + R0.*cos(A0);
         
+        Xstay = X0<0 | X0>Lx;
+        Ystay = Y0<0 | Y0>Ly;
+        X0(Xstay) = X0(Xstay) - R0(Xstay).*sin(A0(Xstay));
+        Y0(Ystay) = Y0(Ystay) - R0(Ystay).*cos(A0(Ystay));
+
+        
         if numel(D0)>0
             [~,blinkspots] = histc(D0(:,1),L0);
 
             blinkI = I0(blinkspots).*D0(:,2);
             J0(blinkspots) = blinkI;
         end
+
 
         %% Merging
         if ini.tog_merging == 1;
@@ -61,14 +68,15 @@ function Tigercreate(nframes,pts,meanI,D,Lx,Ly,Lz,ini)
         if ini.tog_split == 1;
             [X0,Y0,Z0,I0,L0,A0,R0,pts,npts,NewL] = ...
                 Tig_splitting(X0,Y0,Z0,I0,L0,A0,R0,pts,npts,NewL,ini.CSplit,ini.DSplit,i_fr,meanI);
-
         end
+
 
         %% Spot Disappearence
         if ini.tog_spotdis == 1;
             [X0,Y0,Z0,I0,L0,A0,R0,pts] = ...
                 Tig_Dissappearance(X0,Y0,Z0,I0,L0,A0,R0,pts,ini.CDis);
         end
+
 
         %% Spot Appearence
         if ini.tog_spotapp == 1; 
@@ -125,8 +133,6 @@ function Tigercreate(nframes,pts,meanI,D,Lx,Ly,Lz,ini)
             D0 = D0(sortd,:);
         end
 
-        J0 = abs(I0);
-
         Rchange = normrnd(1,ini.SigmaR,pts,1);
         Achange = normrnd(1,ini.SigmaA,pts,1);
         Ichange = normrnd(1,ini.SigmaI,pts,1);
@@ -134,7 +140,11 @@ function Tigercreate(nframes,pts,meanI,D,Lx,Ly,Lz,ini)
         R0 = R0.*Rchange;
         A0 = A0.*Achange;
         I0 = I0.*Ichange;
-
+        
+%       Remove low intensity spots      
+        [X0,Y0,Z0,I0,L0,A0,R0,pts] = ...
+            Tig_MinIntensity(X0,Y0,Z0,I0,L0,A0,R0,ini.MinI);
+        J0 = I0;
 
         clear NewL sortd 
     end
@@ -146,12 +156,12 @@ function Tigercreate(nframes,pts,meanI,D,Lx,Ly,Lz,ini)
 %     Yout(Yout>Ly)=Ly;
 %     Zout(Zout<0)=0;
 %     Zout(Zout>Lz)=Lz;
-    Iout(Xout<0)=0;
-    Iout(Xout>Lx)=0;
-    Iout(Yout<0)=0;
-    Iout(Yout>Ly)=0;
-    Iout(Zout<0)=0;
-    Iout(Zout>Lz)=0;
+%     Iout(Xout<0)=0;
+%     Iout(Xout>Lx)=0;
+%     Iout(Yout<0)=0;
+%     Iout(Yout>Ly)=0;
+%     Iout(Zout<0)=0;
+%     Iout(Zout>Lz)=0;
 
 
     % write output file
@@ -243,11 +253,11 @@ function [X0,Y0,Z0,I0,L0,A0,R0,pts,npts,NewL] = ...
         Mx_old = R0(cell_old)*sin(A0(cell_old))*I0(cell_old);
         My_old = R0(cell_old)*cos(A0(cell_old))*I0(cell_old);
 
-        Mx_a = normrnd(Mx_old,sqrt(2*DSplit)*meanI);
-        My_a = normrnd(My_old,sqrt(2*DSplit)*meanI);
+        Mx_a = normrnd(Mx_old/2,sqrt(2*DSplit)*sqrt(meanI));
+        My_a = normrnd(My_old/2,sqrt(2*DSplit)*sqrt(meanI));
         Mx_b = Mx_old - Mx_a;
         My_b = My_old - My_a;
-        I_a = poissrnd(I_old);
+        I_a = poissrnd(I_old/2);
         I_b = I_old - I_a;
 
         Rx_a = Mx_a/I_a;
@@ -316,6 +326,22 @@ function [X0,Y0,Z0,I0,L0,A0,R0,pts] = ...
     Tig_Dissappearance(X0,Y0,Z0,I0,L0,A0,R0,pts,CDis)
 
     Diss_cells = find(rand(pts,1) < CDis);
+
+    X0(Diss_cells) = [];
+    Y0(Diss_cells) = [];
+    Z0(Diss_cells) = [];
+    I0(Diss_cells) = [];
+    L0(Diss_cells) = [];
+    A0(Diss_cells) = [];
+    R0(Diss_cells) = [];
+
+    pts = length(X0);
+end
+
+function [X0,Y0,Z0,I0,L0,A0,R0,pts] = ...
+    Tig_MinIntensity(X0,Y0,Z0,I0,L0,A0,R0,MinI)
+
+    Diss_cells = find(I0 < MinI);
 
     X0(Diss_cells) = [];
     Y0(Diss_cells) = [];

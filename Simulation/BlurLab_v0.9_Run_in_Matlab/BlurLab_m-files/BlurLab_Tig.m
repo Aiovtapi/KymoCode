@@ -32,7 +32,7 @@ function varargout = BlurLab_Tig(varargin)
 % folder 'M-File_Models'.
 %
 
-% Last Modified by GUIDE v2.5 27-Jun-2016 16:17:28
+% Last Modified by GUIDE v2.5 29-Jun-2016 16:27:25
 
 % Skip frame option?
 % only frap certain Z thickness
@@ -3304,6 +3304,7 @@ ini.Nblink = str2double(get(handles.Tig_Nblink,'String'));   % Number of blinkin
 ini.Tblink = str2double(get(handles.Tig_Tblink,'String'));   % Average blinking duration (in frames)
 ini.Cblink1 = str2double(get(handles.Tig_Cblink1,'String')); % Chance of becoming a blinking spot (new spots)
 ini.Cblink2 = str2double(get(handles.Tig_Cblink2,'String')); % Chance of becoming a stable spot (blinking spots)
+ini.MinI = str2double(get(handles.Tig_MinI,'String'));        % Minimal value of intensity
 
 ini.tog_merging = get(handles.Tig_tog_merging,'Value');
 ini.tog_split = get(handles.Tig_tog_splitting,'Value');
@@ -3324,3 +3325,26 @@ Lz = str2double(get(handles.Tedit_Lz,'String'));
 Tigercreate(nframes,pts,meanI,D,Lx,Ly,Lz,ini)
 
 set(handles.popupmenu1,'Value',1);
+
+
+
+function Tig_MinI_Callback(hObject, eventdata, handles)
+% hObject    handle to Tig_MinI (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+
+% Hints: get(hObject,'String') returns contents of Tig_MinI as text
+%        str2double(get(hObject,'String')) returns contents of Tig_MinI as a double
+
+
+% --- Executes during object creation, after setting all properties.
+function Tig_MinI_CreateFcn(hObject, eventdata, handles)
+% hObject    handle to Tig_MinI (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    empty - handles not created until after all CreateFcns called
+
+% Hint: edit controls usually have a white background on Windows.
+%       See ISPC and COMPUTER.
+if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
+    set(hObject,'BackgroundColor','white');
+end
