@@ -9,11 +9,13 @@ function Tigercreate(nframes,pts,meanI,D,Lx,Ly,Lz,ini)
 
 
     %% Set initial values
+    
+    Nblink2 = round(pts*ini.Nblink/100);
 
-    D0(:,1) = ceil(pts*rand(ini.Nblink,1));
-    D0(:,2) = round(rand(ini.Nblink,1));
-    D0(:,3) = round(ini.Tblink*rand(ini.Nblink,1));
-    D0(:,4) = raylrnd(ini.Tblink,ini.Nblink,1);
+    D0(:,1) = ceil(pts*rand(Nblink2,1));
+    D0(:,2) = round(rand(Nblink2,1));
+    D0(:,3) = round(ini.Tblink*rand(Nblink2,1));
+    D0(:,4) = raylrnd(ini.Tblink,Nblink2,1);
     [~, sortD] = sort(D0(:,1));
     D0 = D0(sortD,:);
 
@@ -46,9 +48,17 @@ function Tigercreate(nframes,pts,meanI,D,Lx,Ly,Lz,ini)
         
         Xstay = X0<0 | X0>Lx;
         Ystay = Y0<0 | Y0>Ly;
+        
         X0(Xstay) = X0(Xstay) - R0(Xstay).*sin(A0(Xstay));
         Y0(Ystay) = Y0(Ystay) - R0(Ystay).*cos(A0(Ystay));
-
+        
+        Allstay =  Xstay | Ystay; 
+        
+        % Angle does not form real collision
+        A0(Allstay) = A0(Allstay) - pi;
+        
+        X0(Allstay) = X0(Allstay) + R0(Allstay).*sin(A0(Allstay));
+        Y0(Allstay) = Y0(Allstay) + R0(Allstay).*cos(A0(Allstay));
         
         if numel(D0)>0
             [~,blinkspots] = histc(D0(:,1),L0);
@@ -67,7 +77,7 @@ function Tigercreate(nframes,pts,meanI,D,Lx,Ly,Lz,ini)
         %% Splitting
         if ini.tog_split == 1;
             [X0,Y0,Z0,I0,L0,A0,R0,pts,npts,NewL] = ...
-                Tig_splitting(X0,Y0,Z0,I0,L0,A0,R0,pts,npts,NewL,ini.CSplit,ini.DSplit,i_fr,meanI);
+                Tig_splitting(X0,Y0,Z0,I0,L0,A0,R0,pts,npts,NewL,ini.CSplit,ini.DSplit,ini.tog_dimer,i_fr,meanI);
         end
 
 
@@ -196,14 +206,14 @@ function [X0,Y0,Z0,I0,L0,A0,R0,pts,npts,NewL] = ...
     Colidx(Dupidx) = [];
     Rowidx(Dupidx) = [];
     Cont_merge = find(rand(length(Colidx),1) < CMerge);
-    Merge_cells = [Rowidx(Cont_merge), Colidx(Cont_merge)];
+    Merge_spots = [Rowidx(Cont_merge), Colidx(Cont_merge)];
 
-    N_merge = size(Merge_cells,1);
+    N_merge = size(Merge_spots,1);
     [X_new,Y_new,Z_new,I_new,F_new,L_new,R_new,A_new] = deal(zeros(N_merge,1));
 
     for i_mrg = 1:N_merge;
-        cell_a = Merge_cells(i_mrg,1);
-        cell_b = Merge_cells(i_mrg,2);
+        cell_a = Merge_spots(i_mrg,1);
+        cell_b = Merge_spots(i_mrg,2);
 
         X_new(i_mrg) = (X0(cell_a)+X0(cell_b))/2;
         Y_new(i_mrg) = (Y0(cell_a)+Y0(cell_b))/2;
@@ -225,39 +235,46 @@ function [X0,Y0,Z0,I0,L0,A0,R0,pts,npts,NewL] = ...
         npts = npts + 1;
     end
 
-    Rcells = Merge_cells(:);
-    X0(Rcells) = [];    X0 = [X0; X_new];
-    Y0(Rcells) = [];    Y0 = [Y0; Y_new];
-    Z0(Rcells) = [];    Z0 = [Z0; Z_new];
-    I0(Rcells) = [];    I0 = [I0; I_new];
-    L0(Rcells) = [];    L0 = [L0; L_new];
-    A0(Rcells) = [];    A0 = [A0; A_new];
-    R0(Rcells) = [];    R0 = [R0; R_new];
+    Rspots = Merge_spots(:);
+    X0(Rspots) = [];    X0 = [X0; X_new];
+    Y0(Rspots) = [];    Y0 = [Y0; Y_new];
+    Z0(Rspots) = [];    Z0 = [Z0; Z_new];
+    I0(Rspots) = [];    I0 = [I0; I_new];
+    L0(Rspots) = [];    L0 = [L0; L_new];
+    A0(Rspots) = [];    A0 = [A0; A_new];
+    R0(Rspots) = [];    R0 = [R0; R_new];
 
     pts = length(X0);
     NewL = [NewL; L_new];
 end
 
 function [X0,Y0,Z0,I0,L0,A0,R0,pts,npts,NewL] = ...
-    Tig_splitting(X0,Y0,Z0,I0,L0,A0,R0,pts,npts,NewL,CSplit,DSplit,i_fr,meanI)
+    Tig_splitting(X0,Y0,Z0,I0,L0,A0,R0,pts,npts,NewL,CSplit,DSplit,tog_dimer,i_fr,meanI)
 
-    Split_cells = find(rand(pts,1) < CSplit);
+    Split_spots = find(rand(pts,1) < CSplit);
 
-    N_split = size(Split_cells,1);
+    N_split = size(Split_spots,1);
     [X_new,Y_new,Z_new,I_new,F_new,L_new,R_new,A_new] = deal(zeros(N_split*2,1));
 
     for i_splt = 1:N_split;
-        cell_old = Split_cells(i_splt);
+        cell_old = Split_spots(i_splt);
 
         I_old = I0(cell_old);            
         Mx_old = R0(cell_old)*sin(A0(cell_old))*I0(cell_old);
         My_old = R0(cell_old)*cos(A0(cell_old))*I0(cell_old);
 
-        Mx_a = normrnd(Mx_old/2,sqrt(2*DSplit)*sqrt(meanI));
-        My_a = normrnd(My_old/2,sqrt(2*DSplit)*sqrt(meanI));
+        if tog_dimer == 0
+            Mx_a = normrnd(Mx_old/2,sqrt(2*DSplit)*sqrt(meanI));
+            My_a = normrnd(My_old/2,sqrt(2*DSplit)*sqrt(meanI));
+            I_a = poissrnd(I_old/2);
+        else
+            Mx_a = Mx_old/2;
+            My_a = My_old/2;
+            I_a = I_old/2;
+        end
+        
         Mx_b = Mx_old - Mx_a;
         My_b = My_old - My_a;
-        I_a = poissrnd(I_old/2);
         I_b = I_old - I_a;
 
         Rx_a = Mx_a/I_a;
@@ -289,13 +306,13 @@ function [X0,Y0,Z0,I0,L0,A0,R0,pts,npts,NewL] = ...
         npts = npts + 2;
     end
 
-    X0(Split_cells) = [];    X0 = [X0; X_new];
-    Y0(Split_cells) = [];    Y0 = [Y0; Y_new];
-    Z0(Split_cells) = [];    Z0 = [Z0; Z_new];
-    I0(Split_cells) = [];    I0 = [I0; I_new];
-    L0(Split_cells) = [];    L0 = [L0; L_new];
-    A0(Split_cells) = [];    A0 = [A0; A_new];
-    R0(Split_cells) = [];    R0 = [R0; R_new];
+    X0(Split_spots) = [];    X0 = [X0; X_new];
+    Y0(Split_spots) = [];    Y0 = [Y0; Y_new];
+    Z0(Split_spots) = [];    Z0 = [Z0; Z_new];
+    I0(Split_spots) = [];    I0 = [I0; I_new];
+    L0(Split_spots) = [];    L0 = [L0; L_new];
+    A0(Split_spots) = [];    A0 = [A0; A_new];
+    R0(Split_spots) = [];    R0 = [R0; R_new];
 
     pts = length(X0);
     NewL = [NewL; L_new];
@@ -325,15 +342,15 @@ end
 function [X0,Y0,Z0,I0,L0,A0,R0,pts] = ...
     Tig_Dissappearance(X0,Y0,Z0,I0,L0,A0,R0,pts,CDis)
 
-    Diss_cells = find(rand(pts,1) < CDis);
+    Diss_spots = find(rand(pts,1) < CDis);
 
-    X0(Diss_cells) = [];
-    Y0(Diss_cells) = [];
-    Z0(Diss_cells) = [];
-    I0(Diss_cells) = [];
-    L0(Diss_cells) = [];
-    A0(Diss_cells) = [];
-    R0(Diss_cells) = [];
+    X0(Diss_spots) = [];
+    Y0(Diss_spots) = [];
+    Z0(Diss_spots) = [];
+    I0(Diss_spots) = [];
+    L0(Diss_spots) = [];
+    A0(Diss_spots) = [];
+    R0(Diss_spots) = [];
 
     pts = length(X0);
 end
@@ -341,15 +358,15 @@ end
 function [X0,Y0,Z0,I0,L0,A0,R0,pts] = ...
     Tig_MinIntensity(X0,Y0,Z0,I0,L0,A0,R0,MinI)
 
-    Diss_cells = find(I0 < MinI);
+    Diss_spots = find(I0 < MinI);
 
-    X0(Diss_cells) = [];
-    Y0(Diss_cells) = [];
-    Z0(Diss_cells) = [];
-    I0(Diss_cells) = [];
-    L0(Diss_cells) = [];
-    A0(Diss_cells) = [];
-    R0(Diss_cells) = [];
+    X0(Diss_spots) = [];
+    Y0(Diss_spots) = [];
+    Z0(Diss_spots) = [];
+    I0(Diss_spots) = [];
+    L0(Diss_spots) = [];
+    A0(Diss_spots) = [];
+    R0(Diss_spots) = [];
 
     pts = length(X0);
 end

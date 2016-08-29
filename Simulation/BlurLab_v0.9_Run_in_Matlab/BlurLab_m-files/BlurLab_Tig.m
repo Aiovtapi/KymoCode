@@ -32,7 +32,7 @@ function varargout = BlurLab_Tig(varargin)
 % folder 'M-File_Models'.
 %
 
-% Last Modified by GUIDE v2.5 29-Jun-2016 16:27:25
+% Last Modified by GUIDE v2.5 01-Jul-2016 13:36:21
 
 % Skip frame option?
 % only frap certain Z thickness
@@ -3311,6 +3311,7 @@ ini.tog_split = get(handles.Tig_tog_splitting,'Value');
 ini.tog_spotdis = get(handles.Tig_tog_spotdis,'Value');
 ini.tog_spotapp = get(handles.Tig_tog_spotapp,'Value');
 ini.tog_blinking = get(handles.Tig_tog_blinking,'Value');
+ini.tog_dimer = get(handles.Tig_tog_dimer,'Value');
 ini.Tigfolder = uigetdir(pwd);
 
 nframes = str2double(get(handles.Tedit_frames,'String'));
@@ -3348,3 +3349,12 @@ function Tig_MinI_CreateFcn(hObject, eventdata, handles)
 if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
     set(hObject,'BackgroundColor','white');
 end
+
+
+% --- Executes on button press in Tig_tog_dimer.
+function Tig_tog_dimer_Callback(hObject, eventdata, handles)
+% hObject    handle to Tig_tog_dimer (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+
+% Hint: get(hObject,'Value') returns toggle state of Tig_tog_dimer
