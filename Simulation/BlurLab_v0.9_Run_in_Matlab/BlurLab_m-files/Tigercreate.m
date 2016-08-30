@@ -12,13 +12,22 @@ function Tigercreate(nframes,pts,meanI,D,Lx,Ly,Lz,ini)
     
     Nblink2 = round(pts*ini.Nblink/100);
 
+    % D0 Matrix contains only the blinking spots with in...
+    %   colum 1: The index of the spot.
+    %   colum 2: The current state of the spot (on/off)
+    %   colum 3: The time spent the this state
+    %   colum 4: The target time the spot will stay in its current state
+    
     D0(:,1) = ceil(pts*rand(Nblink2,1));
     D0(:,2) = round(rand(Nblink2,1));
     D0(:,3) = round(ini.Tblink*rand(Nblink2,1));
     D0(:,4) = raylrnd(ini.Tblink,Nblink2,1);
+    
+    % Sort D0 to the indices of the spots
     [~, sortD] = sort(D0(:,1));
     D0 = D0(sortD,:);
-
+    
+    % Create initial values of position, intensity and movement
     X0 = Lx*rand(pts,1);
     Y0 = Ly*rand(pts,1);
     Z0 = Lz*rand(pts,1);
@@ -29,6 +38,13 @@ function Tigercreate(nframes,pts,meanI,D,Lx,Ly,Lz,ini)
     npts = pts + 1;
     J0 = I0;
 
+    % Create empty output variables
+    %   Xout: X position
+    %   Yout: Y position
+    %   Zout: Z position
+    %   Iout: Intensity value
+    %   Fout: Frame number
+    %   Lout: Label; spot number
     [Xout,Yout,Zout,Iout,Fout,Lout] = deal([]);
 
     %% 
@@ -43,28 +59,33 @@ function Tigercreate(nframes,pts,meanI,D,Lx,Ly,Lz,ini)
         Fout = [Fout; ones(pts,1)*i_fr];
         Lout = [Lout; L0];
 
+        % Compute new XY position
         X0 = X0 + R0.*sin(A0);
         Y0 = Y0 + R0.*cos(A0);
         
+        % Find out-of-bound spots
         Xstay = X0<0 | X0>Lx;
         Ystay = Y0<0 | Y0>Ly;
         
+        % Limit Movement of out-of-bound spots
         X0(Xstay) = X0(Xstay) - R0(Xstay).*sin(A0(Xstay));
         Y0(Ystay) = Y0(Ystay) - R0(Ystay).*cos(A0(Ystay));
         
-        Allstay =  Xstay | Ystay; 
+        % Calculate new angles after wall collision for out-of-bound spots
+        A0 = wrapTo2Pi(A0);
+        A0 = Tig_wallcol(Xstay,Ystay,A0);
+        Allstay = Xstay | Ystay;
         
-        % Angle does not form real collision
-        A0(Allstay) = A0(Allstay) - pi;
-        
+        % Compute new YX position after wall collision
         X0(Allstay) = X0(Allstay) + R0(Allstay).*sin(A0(Allstay));
         Y0(Allstay) = Y0(Allstay) + R0(Allstay).*cos(A0(Allstay));
         
+        % Compute real intensity (with blinking) (using histc to take into
+        % account the appearence and dissapearence of spots
         if numel(D0)>0
             [~,blinkspots] = histc(D0(:,1),L0);
-
             blinkI = I0(blinkspots).*D0(:,2);
-            J0(blinkspots) = blinkI;
+            J0(blinkspots) = blinkI;        
         end
 
 
@@ -179,6 +200,34 @@ function Tigercreate(nframes,pts,meanI,D,Lx,Ly,Lz,ini)
     cd(ini.Tigfolder)
     BlurLab_text(Xout,Yout,Zout,Iout,Fout,Lout,fname)
     cd(oldfolder);
+end
+
+function A0 = Tig_wallcol(Xstay,Ystay,A0)
+    
+    XYstay = Xstay & Ystay;
+    Xstay = logical(Xstay - XYstay);
+    Ystay = logical(Ystay - XYstay); 
+    
+    XA = A0(Xstay);
+    YA = A0(Ystay);
+    XYA = A0(XYstay);
+    
+    for i = 1:numel(XA);
+        ag = XA(i);
+        if ag <= pi
+            ag = pi - ag; 
+        else
+            ag = 3*pi - ag; 
+        end
+        XA(i) = ag;         
+    end
+    
+    YA = 2*pi - YA; 
+    XYA = XYA - pi;
+    
+    A0(Xstay) = XA;
+    A0(Ystay) = YA;
+    A0(XYstay) = XYA;
 end
 
 function [X0,Y0,Z0,I0,L0,A0,R0,pts,npts,NewL] = ...

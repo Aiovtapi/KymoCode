@@ -140,7 +140,7 @@ close(handles.figure1)
 % --- Executes on button press in agarstart.
 function agarstart_Callback(hObject, eventdata, handles)
 
-ddata = logical(handles.radio_data_no.Value);
+ddata = logical(handles.radio_ddata_no.Value);
 dbeam = logical(handles.radio_dbeam_no.Value);
 
 if ddata
