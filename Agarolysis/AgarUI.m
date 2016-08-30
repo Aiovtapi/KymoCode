@@ -63,6 +63,7 @@ if exist('Users.dat','file')
     handles.kymopath = handles.userinfo{1,3};
     handles.agarpath = strcat(handles.kymopath,'Agarolysis',handles.OSslash);
     handles.datapath = handles.kymopath;
+    handles.beampath = handles.kymopath;
 else
     handles.nouserfile = 1;
     handles.kymopath = '';
@@ -129,7 +130,7 @@ for i = 1:3;
 end
 
 varargout{1} = init;
-varargout{2} = handles.radio_data_yes.Value;
+varargout{2} = handles.radio_ddata_yes.Value;
 varargout{3} = handles.radio_dtrans_yes.Value;
 varargout{4} = handles.radio_dbeam_yes.Value;
 

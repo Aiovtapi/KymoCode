@@ -1,5 +1,4 @@
 clc 
-clear all
 
 init = AgarDefine;
 chans = numel(init.flimgname);
