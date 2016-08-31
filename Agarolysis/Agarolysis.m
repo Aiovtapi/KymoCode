@@ -26,11 +26,12 @@ for chan = 1:chans
         [Bacpics{chan},NMBacpics{chan}] = TigerCutSimple(init,chan,Bettermesh,BCellbox,Bacsize,flimg);
     end
     
-    %%%% LionfitcontrolUI
-
     %% Lionfit
     [cells,frames]=size(Bacpics{chan});
-    GaussFitSimedit_Agarolysis(init,chan,Bacpics{chan},Bacmask,cells,frames,init.IPTP);
+    
+    IPTPvalue(chan) = LionfitcontrolUI(init,Bacpics{chan},Bacmask,cells);
+    
+    GaussFitSimedit_Agarolysis(init,chan,Bacpics{chan},Bacmask,cells,frames,IPTPvalue(chan));
 
     %% Get indivudual meshes
 

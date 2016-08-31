@@ -27,7 +27,7 @@ addpath(strcat(init.kymopath,'Agarolysis',init.OSslash,'Support'));
 %% Default values
 
 if ddata == 1
-    init.datapath = 'C:\Users\water\Documents\GitHub\Data\DnaN_dif_Tus_AgarPad\';
+    init.datapath = 'D:\Users\water_000\Documents\GitHub\Data\DnaN_dif_Tus_AgarPad\';
     init.pcimgname = 'PC.tif';
     init.CFPimgname = '457-100ms-10mWo-300G.tif';
     init.YFPimgname = '515-100ms-50mWo-300G.tif';
