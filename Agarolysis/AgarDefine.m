@@ -10,7 +10,6 @@ init.lioncropindex = 0;     % whether bacpics are cropped in lionfit
 init.Extrabound = 4;        % extra boudaries added to bacpics
 init.strelval = 8;          % disk radius for imdilate of bacpic mask
 init.IPTP = 1;              % Intensity Peak threshold parameter
-init.bacpath = strcat(init.datapath,'Bacpics',init.OSslash);
 init.difchan = 'CFP';
 
 %% Add paths
@@ -28,7 +27,7 @@ addpath(strcat(init.kymopath,'Agarolysis',init.OSslash,'Support'));
 %% Default values
 
 if ddata == 1
-    init.datapath = 'D:\Users\water_000\Documents\GitHub\Data\DnaN_dif_Tus_AgarPad\';
+    init.datapath = 'C:\Users\water\Documents\GitHub\Data\DnaN_dif_Tus_AgarPad\';
     init.pcimgname = 'PC.tif';
     init.CFPimgname = '457-100ms-10mWo-300G.tif';
     init.YFPimgname = '515-100ms-50mWo-300G.tif';
@@ -36,6 +35,8 @@ if ddata == 1
     init.meshfile = 'PC.mat';
     init.meshpath = strcat(init.datapath,init.meshfile);
 end
+
+init.bacpath = strcat(init.datapath,'Bacpics',init.OSslash);
 
 if dtrans == 1;
     init.pcresize = 0.421;

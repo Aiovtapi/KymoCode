@@ -26,6 +26,7 @@ for chan = 1:chans
         [Bacpics{chan},NMBacpics{chan}] = TigerCutSimple(init,chan,Bettermesh,BCellbox,Bacsize,flimg);
     end
     
+    %%%% LionfitcontrolUI
 
     %% Lionfit
     [cells,frames]=size(Bacpics{chan});
@@ -158,7 +159,9 @@ save(fpath,'faultycells','fremoved')
 
 %% Remove faulty cells
 
-RemoveCells(init,cells,faultycells,fpath);
+if ~isempty(faultycells)
+    RemoveCells(init,cells,faultycells,fpath);
+end
 disp('Operation done')
 
 clear chan chans celli done previous skip frames fremoved fault fclii
