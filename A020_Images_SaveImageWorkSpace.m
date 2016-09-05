@@ -1,10 +1,13 @@
-%Images_SaveImageWorkSpace
+function A020_Images_SaveImageWorkSpace(user,exp)
 
-close all;
+if nargin<2
+    exp='Exp001_DnaN_TUS_dif_01092016_M';
+end
+if nargin<1
+    user = 'MarkPC';
+end
 
-expno='001_DnaN_TUS_dif_30122014_M';
-
-initval=A001_Images_Set_Experiment(expno); %define your paths and files
+initval=A001_Images_Set_Experiment(user,exp); %define your paths and files
 
 ColourNum=size(initval.viewchan,2);
 
@@ -15,4 +18,6 @@ save(initval.ImagesWorkspaceName, 'initval','aa','ff','drift');
 
 disp(strcat(initval.viewchan{i},' done')); 
 end
+
+disp('A20 done')
 

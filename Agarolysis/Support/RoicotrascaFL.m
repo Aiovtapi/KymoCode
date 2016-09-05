@@ -49,7 +49,6 @@ disp('Rolling ball finished')
 imgpath = strcat(Outpath,Rballedname);
 imginfo = imfinfo(imgpath);
 num_images = numel(imginfo);
-RIpath = strcat(Outpath,'RI_',Imgname);
 RITpath = strcat(Outpath,'RIT_',Imgname);
 
 Beamimg = im2double(imread(Beampath));

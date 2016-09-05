@@ -1,11 +1,19 @@
-function dum=RepliCluster00_Click%Analyze_ReplicationCluster
+function A060_RepliCluster00_Click(user,exp)
+
+if nargin<2
+    exp='Exp001_DnaN_TUS_dif_01092016_M';
+end
+if nargin<1
+    user = 'MarkPC';
+end
+
+%Analyze_ReplicationCluster
 %ReplicationCluster
 %-------------------------------------------------------------------------
 tic
 close all;
 
 % exp='001_DnaN_TUS_dif_30122014_difsignal';
-exp='001_DnaN_TUS_dif_30122014_M';
 
 actions.init=1;        %default=1 (new analysis)
 actions.clickcycles=1; %default=1 (new analysis) else load
@@ -14,7 +22,7 @@ actions.eliminate_growth=1;
 
 peak_tol=0;   %sensitivity for detecting peaks
 
-initval=A001_Images_Set_Experiment(exp);
+initval=A001_Images_Set_Experiment(user,exp);
 
 chans=initval.channelno;
 for ch=1:chans

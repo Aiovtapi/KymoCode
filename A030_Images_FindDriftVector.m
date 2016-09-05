@@ -1,4 +1,12 @@
-function dum=A030_Images_FindDriftVector
+function A030_Images_FindDriftVector(user,exp)
+
+if nargin<2
+    exp='Exp001_DnaN_TUS_dif_01092016_M';
+end
+if nargin<1
+    user = 'MarkPC';
+end
+
 %This code loads a movie, allows the user to click a region with a blob and
 %tracks a vector from it.
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%5
@@ -9,11 +17,8 @@ function dum=A030_Images_FindDriftVector
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 close all; 
-%dipstart;
-% expno='001_DnaN_TUS_dif_30122014?_DnaNsignal';
-expno='001_DnaN_TUS_dif_30122014_M';
 
-initval=A001_Images_Set_Experiment(expno); %define your paths and files
+initval=A001_Images_Set_Experiment(user,exp); %define your paths and files
 initval.domovieload=1;  %default=1 (new analysis) %if not saved workspace before
 initval.hROI=15;
 initval.updateROI=1;

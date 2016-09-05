@@ -2,13 +2,18 @@
 %This script collects a series of automatic analysis steps
 %JacobKers 2013----------------------------------------------------
 
-tic
-% exp='001_DnaN_TUS_dif_30122014_DnaNsignal';
-% exp2='001_DnaN_TUS_dif_30122014_TUSsignal';
-% exp3='001_DnaN_TUS_dif_30122014_difsigqnal';
-exp='001_DnaN_TUS_dif_30122014_M';
+function A100_Processing_ReplicationAutoShell(user,exp)
 
-initval=A001_Images_Set_Experiment(exp);
+if nargin<2
+    exp='Exp001_DnaN_TUS_dif_01092016_M';
+end
+if nargin<1
+    user = 'MarkPC';
+end
+
+tic
+
+initval=A001_Images_Set_Experiment(user,exp);
 
 DnaNIdx=find(ismember(initval.viewchan,initval.DnaNchan));
 ChanNum=size(initval.viewchan,2);

@@ -1,6 +1,8 @@
-function initval=Exp001_DnaN_TUS_dif_30122014_M(initval, user) 
+function initval=Exp001_DnaN_TUS_dif_01092016_M(initval, user) 
 
-initval.viewchan={'RFP','YFP','CFP'}
+initval.viewchan={'RFP','YFP','CFP'}; 
+initval.DnaNchan='RFP';
+nmspath ={'Exp001_DnaN_TUS_dif_01092016_MChan_x228','Exp001_DnaN_TUS_dif_01092016_MChan_x248'};
 
 switch user
       case 'Jacob', 
@@ -20,7 +22,7 @@ switch user
         initval.BFdatapath='Brightfield/';
         initval.FiguresFolder='Figures/';
         initval.FLpath='Fluorescence/';
-        initval.FLdatapath=[initval.FLpath,initval.channelRFP,'/'];
+        initval.OSslash='/';
     case 'RoyPC'
 %         initval.basepath='D:\rleeuw\Data\141230_dnaN_dif_tus\dnaN_dif_tus_40msExpTime_5minAcqTimeYFP_30msExpCFP_002_C1\';
 %         initval.BFdatapath='Brightfield\';
@@ -28,27 +30,43 @@ switch user
 %         initval.FLdatapath='Fluorescence\RFP\';
 
     case 'MarkPC'
-        initval.basepath='D:\Users\water_000\OneDrive\Documents\BEP\Data\141230_dnaN_dif_tus\';
+        initval.basepath='D:\Users\water_000\Documents\GitHub\Data\Target Data\Kymo Data\';
         initval.BFdatapath='Brightfield\';
         initval.FiguresFolder='Figures\';
         initval.FLpath='Fluorescence\';
+        initval.OSslash='\';
         
     case 'Mark'
-        initval.basepath='D:\Users\water\Documents\GitHub\Data\141230_dnaN_dif_tus\';
+        initval.basepath='C:\Users\water\Documents\GitHub\Data\Target Data\Kymo Data\';
         initval.BFdatapath='Brightfield\';
         initval.FiguresFolder='Figures\';
         initval.FLpath='Fluorescence\';
-        initval.FLdatapath=[initval.FLpath,initval.viewchannel,'\'];
+        initval.OSslash='\';
         
 end
-
-initval.BFfiletemplate='BF1.tif';
-initval.FLfiletemplate=[initval.viewchannel,'_R_I_Corrected.tif'];
+initval.FLdatapath=strcat(initval.FLpath,initval.viewchan,initval.OSslash);
+initval.BFfiletemplate='BF.tif';
+initval.FLfiletemplate=strcat('RIT_',initval.viewchan,'.tif');
 initval.maxfile=421;
+
+%used for roicotrasca processing---------------
+
+% fluorescence transformation values
+initval.flresize = 1; 
+initval.fltrans = [0,0];
+    
+% beamshapes for illumination correction
+initval.rawfolder = 'RAW';
+initval.kymopath = initval.Kymopath;
+initval.beampaths = {'CFP',strcat(initval.kymopath,'BeamShape457.tif');...
+                     'YFP',strcat(initval.kymopath,'BeamShape515.tif');...
+                     'RFP',strcat(initval.kymopath,'BeamShape561.tif')};
+
+%-------------------------------------------------
 
 %used for kymograph processing-------------------------
 initval.channeldistance=32.0; %in pixels
-initval.channelno=1; %number of channels
+initval.channelno=2; %number of channels
 initval.perpadjust=0; %degrees
 initval.kymoangle=47;  %CCW
 initval.kymolength=150;  %in pixels
@@ -71,15 +89,11 @@ initval.skip2Danalysis=1;
 %initval.nms={'ExpCM_DnaXDnaN_DualColour_Col002_DnaXSignalChan_x209' ;'ExpCM_DnaXDnaN_DualColour_Col002_DnaXSignalChan_x231'; 'ExpCM_DnaXDnaN_DualColour_Col002_DnaXSignalChan_x273'; 'ExpCM_DnaXDnaN_DualColour_Col002_DnaXSignalChan_x295'; 'ExpCM_DnaXDnaN_DualColour_Col002_DnaXSignalChan_x317'; 'ExpCM_DnaXDnaN_DualColour_Col002_DnaXSignalChan_x339'} ; 
 %initval.nms={'ExpCM_Dn0aN-Dif-Gamma-ve-Position1_Series1Chan_x126' ;'ExpCM_DnaN-Dif-Gamma-ve-Position1_Series1Chan_x146'; 'ExpCM_DnaN-Dif-Gamma-ve-Position1_Series1Chan_x173'; 'ExpCM_DnaN-Dif-Gamma-ve-Position1_Series1Chan_x219'; 'ExpCM_DnaN-Dif-Gamma-ve-Position1_Series1Chan_x245'; 'ExpCM_DnaN-Dif-Gamma-ve-Position1_Series1Chan_x291'; 'ExpCM_DnaN-Dif-Gamma-ve-Position1_Series1Chan_x314'; 'ExpCM_DnaN-Dif-Gamma-ve-Position1_Series1Chan_x382'; 'ExpCM_DnaN-Dif-Gamma-ve-Position1_Series1Chan_x405'} ; 
 
-nmspath = 'Exp001_DnaN_TUS_dif_30122014_MChan_x228';
+initval.nms=cell(size(nmspath,2),1);
 
-% if initval.viewchannel == initval.DnaNchan;
-%     initval.nms={strcat(nmspath,initval.DnaNchan)};
-% else
-%     initval.nms={strcat(nmspath,initval.DnaNchan),strcat(nmspath,initval.viewchannel)};
-% end
-
-initval.nms=strcat(nmspath,initval.viewchan);
+for i=1:size(nmspath,2)
+initval.nms{i,1}=strcat(nmspath{i},initval.viewchan);
+end
 
 initval.outname=strcat('DnaN_TUS_dif_',initval.viewchan);
 initval.outname_usr='DnaN_TUS_dif_UserInputs';

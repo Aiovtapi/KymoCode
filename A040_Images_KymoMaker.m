@@ -13,9 +13,16 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %Below, you can define your own paths and files-------------------------
 
-exp='001_DnaN_TUS_dif_30122014_M';
+function A040_Images_KymoMaker(user,exp)
 
-initval=A001_Images_Set_Experiment(exp);
+if nargin<2
+    exp='Exp001_DnaN_TUS_dif_01092016_M';
+end
+if nargin<1
+    user = 'MarkPC';
+end
+
+initval=A001_Images_Set_Experiment(user,exp);
 
 actions.getdatabase=1;          % default=1 
 
