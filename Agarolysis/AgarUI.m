@@ -345,6 +345,7 @@ data{1,15} = num2str(handles.checkbox_CFP.Value);
 data{1,16} = num2str(handles.checkbox_YFP.Value);
 data{1,17} = num2str(handles.checkbox_RFP.Value);
 data{1,18} = handles.datapath;
+data{1,19} = handles.beampath; 
 
 filename = inputdlg('Set preset name','');
 savename = strcat(filename{1},'.dat');
@@ -378,6 +379,7 @@ set(handles.checkbox_YFP,'Value',data{1,16});
 set(handles.checkbox_RFP,'Value',data{1,17});
 set(handles.edit_folder,'String',data{1,18});
 handles.datapath = data{1,18};
+handles.beampath = data{1,19};
 
 cd(handles.agarpath)
 guidata(hObject, handles);
