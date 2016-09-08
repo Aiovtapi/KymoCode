@@ -2,12 +2,12 @@ function [mmask, nmask,bacpic,croppedimg] = Createbac(init,imageframe,thismesh,t
             
     bound = init.Extrabound;
     framesize = size(imageframe);
-    thisRbox = round(thisBbox)+2*bound+1;
-    Rbacsize = round(thisbacsize);
+    thisRbox = thisBbox;
+    Rbacsize = thisbacsize;
     thismsize = round(thisbacsize/init.pcresize);
 
     % Create mask from mesh
-    thismeshl = [thismesh(:,1:2);thismesh(:,3:4)];
+    thismeshl = [thismesh(:,1:2);thismesh(:,3:4)] + bound;
     thiscropmesh = round([thismeshl(:,1)-thisBbox(1), thismeshl(:,2)-thisBbox(3)]/init.pcresize);
     mask = poly2mask(thiscropmesh(:,1)',thiscropmesh(:,2)',thismsize(2),thismsize(1));
     
@@ -15,8 +15,7 @@ function [mmask, nmask,bacpic,croppedimg] = Createbac(init,imageframe,thismesh,t
     dimask = imdilate(mask,strel('disk',init.strelval));
 
     % Add bound to imageframe
-    nimgframe = zeros(framesize(1)+2*bound,framesize(2)+2*bound);
-    nimgframe(bound+1:end-bound,bound+1:end-bound)=imageframe;
+    nimgframe = padarray(imageframe,[bound,bound]);
     
     % Create non-masked bacpic from Cellbox
 

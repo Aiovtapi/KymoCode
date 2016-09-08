@@ -27,12 +27,12 @@ addpath(strcat(init.kymopath,'Agarolysis',init.OSslash,'Support'));
 %% Default values
 
 if ddata == 1
-    init.datapath = 'D:\Users\water_000\Documents\GitHub\Data\DnaN_dif_Tus_AgarPad\';
+    init.datapath = 'D:\Users\water_000\Documents\GitHub\Data\Target Data\Agar Data\1\';
     init.pcimgname = 'PC.tif';
-    init.CFPimgname = '457-100ms-10mWo-300G.tif';
-    init.YFPimgname = '515-100ms-50mWo-300G.tif';
-    init.RFPimgname = '561-100ms-33mWo-300G.tif';
-    init.meshfile = 'PC.mat';
+    init.CFPimgname = '457-100ms-10mWo.tif';
+    init.YFPimgname = '515-100ms-50mWo.tif';
+    init.RFPimgname = '561-100ms-33mWo.tif';
+    init.meshfile = 'PC1.mat';
     init.meshpath = strcat(init.datapath,init.meshfile);
 end
 
@@ -40,7 +40,7 @@ init.bacpath = strcat(init.datapath,'Bacpics',init.OSslash);
 
 if dtrans == 1;
     init.pcresize = 0.421;
-    init.pctrans = [0,0];
+    init.pctrans = [2,-2];
     init.flresize = 1; 
     init.fltrans = [2,-63];
 end

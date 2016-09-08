@@ -123,7 +123,7 @@ for i=1:initval.channelno;
     figure; pcolor(kymo_FL); shading flat; colormap hot;
 
     %Savefiles----------------------------------------------------------------
-    initval.WorkspaceOutName=strcat('Exp',exp,'Chan_x',num2str(ceil(presets.twopoints(1,1))),initval.viewchan{I},'.mat'); %channel data base
+    initval.WorkspaceOutName=strcat(exp,'Chan_x',num2str(ceil(presets.twopoints(1,1))),initval.viewchan{I},'.mat'); %channel data base
     lbl1=strcat(initval.basepath,initval.WorkspaceOutName);  %path+channel database
     save(lbl1, 'endpoints', 'presets' ,'initval', 'kymo_FL','kymo_BF','chanstk_BF','chanstk_FL');
 
@@ -152,3 +152,5 @@ end
 
 disp(strcat('Kymos done for ',initval.viewchan{I}));
 end
+
+disp('A40 done')

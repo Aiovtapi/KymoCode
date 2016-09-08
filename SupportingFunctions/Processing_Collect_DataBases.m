@@ -1,4 +1,4 @@
-function Processing_Collect_DataBases(exp,ColourIdx,DnaNIdx)
+function Processing_Collect_DataBases(exp,user,ColourIdx,DnaNIdx)
 %Load databases and save them in  common databases 'S' (for automatic
 %processing results) and 'M'(anual) for user inputs (clicked positions
 %etc.)
@@ -9,7 +9,7 @@ end
 resaveclickdata=1;  %default=1 (new analysis)
 %%%------------------------------------
 
-initval=A001_Images_Set_Experiment(exp);
+initval=A001_Images_Set_Experiment(user,exp);
 
 chans=initval.channelno;
 
@@ -18,7 +18,7 @@ for ch=1:chans
     bof=load(DnaNpath);
 infi=strcat(initval.basepath,initval.nms{ch}{ColourIdx});
 buf=load(infi);
-initval=A001_Images_Set_Experiment(exp);  %just to be sure
+initval=A001_Images_Set_Experiment(user,exp);  %just to be sure
 S(ch).channels.initval=buf.initval;
 S(ch).channels.RepClicks=bof.RepClicks;
 

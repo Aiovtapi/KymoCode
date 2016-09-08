@@ -1,4 +1,4 @@
-function dum=Processing00_TwoDSpot_ImageAnalyzerAuto(exp,ColourIdx,DnaNIdx)
+function dum=Processing00_TwoDSpot_ImageAnalyzerAuto(exp,user,ColourIdx,DnaNIdx)
 %Two-dim analysis of EcoliData for bacterial analysis; Jacob Kerssemakers,
 %TNW-BN-ND lab 2012; developed for Charl Moolman
 
@@ -20,7 +20,7 @@ end
 
 actions.loaddatabase=1; %default=1 (new analysis)
 
-initval=A001_Images_Set_Experiment(exp);
+initval=A001_Images_Set_Experiment(user,exp);
 
 %load the databases--------------------------------------------------
 outname=strcat(initval.basepath,initval.outname{DnaNIdx}); %processed inputs

@@ -74,6 +74,8 @@ save(outname, 'initval', 'RepClicks', 'ReplicationCluster',  '-append');
 end
 end
 toc
+disp('A60 done')
+
 
 
 function [RepClicks,ReplicationCluster]=LoadCyclePoints(M,ch,initval);

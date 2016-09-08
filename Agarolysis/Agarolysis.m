@@ -2,7 +2,8 @@ clc
 
 init = AgarDefine;
 chans = numel(init.flimgname);
-[Bacpics, NMBacpics, Bacmesh] = deal(cell(3,1));
+[Bacpics, NMBacpics, Bacmesh] = deal(cell(3,1)); 
+
 
 %% Roicotrasca on fluorescence images
 for chan = 1:chans
@@ -37,7 +38,7 @@ for chan = 1:chans
 
     for celli = 1:cells
         for frami = 1:frames;
-            thismesh = Bettermesh{celli,frami};
+            thismesh = Bettermesh{celli,frami} + init.Extrabound;
             thiscellbox = BCellbox(celli,frami,:);
 
             Bacmesh{chan}{celli,frami}(:,1) = thismesh(:,1) - thiscellbox(1);

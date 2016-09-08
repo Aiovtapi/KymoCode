@@ -377,7 +377,7 @@ set(handles.checkbox_CFP,'Value',data{1,15});
 set(handles.checkbox_YFP,'Value',data{1,16});
 set(handles.checkbox_RFP,'Value',data{1,17});
 set(handles.edit_folder,'String',data{1,18});
-handles.datafolder = data{1,18};
+handles.datapath = data{1,18};
 
 cd(handles.agarpath)
 guidata(hObject, handles);
@@ -389,7 +389,7 @@ guidata(hObject, handles);
 % --- Executes on button press in select_folder.
 function select_folder_Callback(hObject, eventdata, handles)
 cd(handles.kymopath)
-name = uigetdir('','Select data folder');
+name = strcat(uigetdir('','Select data folder'),handles.OSslash);
 cd(handles.agarpath)
 set(handles.edit_folder,'String',name);
 handles.datapath = name;
@@ -766,33 +766,39 @@ end
 
 % --- Executes on button press in select_cfpbeam.
 function select_cfpbeam_Callback(hObject, eventdata, handles)
-cd(handles.beampath)
+if ~strcmp(handles.beampath,'');
+    cd(handles.beampath)
+end
 [name,beampath] = uigetfile('*.tif','Select CFP beamshape');
 cd(handles.agarpath)
 set(handles.edit_cfpbeam,'String',name);
-if strcmp(name,'0')==0
+if ~strcmp(name,'0')
     handles.beampath = beampath;
 end
 guidata(hObject,handles)
 
-% --- Executes on button press in select_yfpbeam.
+% --- Executes on button press in select_yfpbeam
 function select_yfpbeam_Callback(hObject, eventdata, handles)
-cd(handles.beampath)
+if ~strcmp(handles.beampath,'');
+    cd(handles.beampath)
+end
 [name,beampath] = uigetfile('*.tif','Select YFP beamshape');
 cd(handles.agarpath)
 set(handles.edit_yfpbeam,'String',name);
-if strcmp(name,'0')==0
+if ~strcmp(name,'0')
     handles.beampath = beampath;
 end
 guidata(hObject,handles)
 
 % --- Executes on button press in select_rfpbeam.
 function select_rfpbeam_Callback(hObject, eventdata, handles)
-cd(handles.beampath)
+if ~strcmp(handles.beampath,'');
+    cd(handles.beampath)
+end
 [name,beampath] = uigetfile('*.tif','Select RFP beamshape');
 cd(handles.beampath)
 set(handles.edit_rfpbeam,'String',name);
-if strcmp(name,'0')==0
+if ~strcmp(name,'0')
     handles.beampath = beampath;
 end
 guidata(hObject,handles)

@@ -53,7 +53,7 @@ initval.maxfile=421;
 
 % fluorescence transformation values
 initval.flresize = 1; 
-initval.fltrans = [0,0];
+initval.fltrans = [-10,-21];
     
 % beamshapes for illumination correction
 initval.rawfolder = 'RAW';

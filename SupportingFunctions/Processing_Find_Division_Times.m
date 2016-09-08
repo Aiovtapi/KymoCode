@@ -1,5 +1,5 @@
 %function A102_Processing_Find_Division_Times(exp)
-function Processing_Find_Division_Times(exp,ColourIdx)
+function Processing_Find_Division_Times(exp,user,ColourIdx)
 %Load database, 
 %1) For every replicationcluster....
     %find the two daugthers
@@ -22,7 +22,7 @@ if nargin<1,
     %exp='2a';
 end
 
-initval=A001_Images_Set_Experiment(exp);
+initval=A001_Images_Set_Experiment(user,exp);
 
 %load the databases--------------------------------------------------
 outname=strcat(initval.basepath,initval.outname{ColourIdx}); %processed inputs

@@ -1,4 +1,4 @@
-function Processing_InitTer_analysisAuto(exp,ColourIdx)
+function Processing_InitTer_analysisAuto(exp,user,ColourIdx)
 %Load database, analyze start and stop
 %JacobKers 2012
 
@@ -13,7 +13,7 @@ if nargin<1,
     %exp='TEST';
     exp='2a';
 end
-initval=A001_Images_Set_Experiment(exp);
+initval=A001_Images_Set_Experiment(user,exp);
 rnge=2*initval.extension;
 
 

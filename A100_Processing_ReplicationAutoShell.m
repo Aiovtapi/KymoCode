@@ -25,7 +25,7 @@ Dummy(Dummy==DnaNIdx)=[];
 %First, perform Center-off mass tracking on clusters starting at time
 %points indicated by users 
 disp('cleaning, quick tracking...');
-if 1, RepliCluster00_TrackandcleanQuick(exp,DnaNIdx); end
+if 1, RepliCluster00_TrackandcleanQuick(exp,user,DnaNIdx); end
 
 %%-----------------------------------------------------------
 %Next, Collect all channel data in one big database (just an administrative
@@ -33,7 +33,7 @@ if 1, RepliCluster00_TrackandcleanQuick(exp,DnaNIdx); end
 
 
 disp('collecting...');
-if 1, Processing_Collect_DataBases(exp,DnaNIdx,DnaNIdx); end
+if 1, Processing_Collect_DataBases(exp,user,DnaNIdx,DnaNIdx); end
 
 %%------------------------------------------------------------
 %In this step, the moments of birth and division are detected (from the brightfield data)  associated 
@@ -41,20 +41,20 @@ if 1, Processing_Collect_DataBases(exp,DnaNIdx,DnaNIdx); end
 %these points are cleaned from erroneous detections and used for
 %(time-position) fits on the positions of this bacterium's edges 
 disp('find division times...');
-if 1, Processing_Find_Division_Times(exp,DnaNIdx); end %NB:still need to put off ginput for BW traces
+if 1, Processing_Find_Division_Times(exp,user,DnaNIdx); end %NB:still need to put off ginput for BW traces
 
 %--------------------------------------------------------------------------
 %Next, Get various fluorescence props like total fluorescence count, median excess
 %count (a robust spots count estimate )
 disp('adding general fluorescence info');
-if 1, Processing_AnalyzeDivReptimingAuto(exp,DnaNIdx); end  
+if 1, Processing_AnalyzeDivReptimingAuto(exp,user,DnaNIdx); end  
 
 %--------------------------------------------------------------------------
 %Next, a more detailed analysis on tthe precise times of initiation and
 %termination (as opposed to the manual clicks) based on step fittng the
 %spot focii signal
 disp('finding init and ter......');
-if 1, Processing_InitTer_analysisAuto(exp,DnaNIdx); end
+if 1, Processing_InitTer_analysisAuto(exp,user,DnaNIdx); end
 
 %--------------------------------------------------------------------------
 %Now, a detailed (and time consuming) analysis on the individual foci, based on first 1D-double
@@ -62,19 +62,19 @@ if 1, Processing_InitTer_analysisAuto(exp,DnaNIdx); end
 
 if 1, 
     disp('adding spot fluorescence info');
-    Processing00_TwoDSpot_ImageAnalyzerAuto(exp,DnaNIdx,DnaNIdx); 
+    Processing00_TwoDSpot_ImageAnalyzerAuto(exp,user,DnaNIdx,DnaNIdx); 
 end
 
 
 for N=Dummy;
-    Processing_Collect_DataBases(exp,N,DnaNIdx);
-    Processing00_TwoDSpot_ImageAnalyzerAuto(exp,N,DnaNIdx);
+    Processing_Collect_DataBases(exp,user,N,DnaNIdx);
+    Processing00_TwoDSpot_ImageAnalyzerAuto(exp,user,N,DnaNIdx);
 end
 
 % The folders of the bacpics will be renamed so that the indices of the
 % folders corresponds to the foldernames. 
 disp('Renaming Bacfolders')
-if 1, Processing_Relabel_Bacfolders(exp); end
+if 1, Processing_Relabel_Bacfolders(exp,user); end
 
 toc
 

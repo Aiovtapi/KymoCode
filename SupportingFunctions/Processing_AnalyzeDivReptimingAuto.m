@@ -1,4 +1,4 @@
-function Processing_AnalyzeDivReptimingAuto(exp,ColourIdx)
+function Processing_AnalyzeDivReptimingAuto(exp,user,ColourIdx)
 %Get some generalfluorescent properties of the fluorescence signal
 %JacobKers 2012
 
@@ -12,7 +12,7 @@ if nargin<1,
     %exp='CM_DnaN_37Deg_Series1002';
 end
 
-initval=A001_Images_Set_Experiment(exp);
+initval=A001_Images_Set_Experiment(user,exp);
 
 
 actions.savedata=1;         %default=1 (new analysis)

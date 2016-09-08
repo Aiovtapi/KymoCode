@@ -26,7 +26,8 @@ A040_Images_KymoMaker(user,exp)
 %% Click through cell cycles
 
 A060_RepliCluster00_Click(user,exp)
+close all
 
 %% Processing
 
-A100_Processing_RepclclicationAutoShell(user,exp)
+A100_Processing_ReplicationAutoShell(user,exp)

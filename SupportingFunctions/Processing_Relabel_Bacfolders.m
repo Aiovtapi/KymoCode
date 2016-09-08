@@ -1,10 +1,10 @@
-function Processing_Relabel_Bacfolders(exp)
+function Processing_Relabel_Bacfolders(exp,user)
 
 if nargin<1, exp='001_DnaN_TUS_dif_30122014_M';
 end
 
 
-initval=A001_Images_Set_Experiment(exp);
+initval=A001_Images_Set_Experiment(user,exp);
 
 Nnumbers = 3; % Amount of numbers at the end of the folders
 

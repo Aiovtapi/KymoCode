@@ -30,8 +30,8 @@ function [Bettermesh,BCellbox,Bacsize,Bacmask,CBacmask,Bacpics,NMBacpics] = Tige
             end  
 
             % Find mesh maxima and minima
-            maxmesh = max(Bettermesh{celli,frami});
-            minmesh = min(Bettermesh{celli,frami});
+            maxmesh = round(max(Bettermesh{celli,frami}));
+            minmesh = round(min(Bettermesh{celli,frami}));
 
             Cellbox(celli,frami,1) = min(minmesh(1),minmesh(3));            
             Cellbox(celli,frami,2) = max(maxmesh(1),maxmesh(3));
