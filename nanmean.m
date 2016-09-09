@@ -1,4 +1,4 @@
-function [y] = nanmean(x,dim)
+function y = nanmean(x,dim)
 % FORMAT: Y = NANMEAN(X,DIM)
 % 
 %    Average or mean value ignoring NaNs
@@ -17,7 +17,7 @@ function [y] = nanmean(x,dim)
 %    See also MEAN
 
 % -------------------------------------------------------------------------
-%    author:      Jan Glscher
+%    author:      Jan Gläscher
 %    affiliation: Neuroimage Nord, University of Hamburg, Germany
 %    email:       glaescher@uke.uni-hamburg.de
 %    
@@ -48,5 +48,7 @@ count(i) = ones(size(i));
 
 y = sum(x,dim)./count;
 y(i) = i + NaN;
-end
 
+
+
+% $Id: nanmean.m,v 1.1 2004/07/15 22:42:13 glaescher Exp glaescher $
