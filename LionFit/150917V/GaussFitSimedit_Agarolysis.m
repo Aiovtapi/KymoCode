@@ -351,12 +351,14 @@ for Cell=lionval.viewbac;
             xx0=x{j}(i,2)+padx+xx_ori;
             yy0=x{j}(i,4)+pady+yy_ori;
 
-            ROI{i,j}=interp2(XX,YY,ydatacrpdR1{i,j},xx0,yy0);
+%             ROI{i,j}=interp2(XX,YY,ydatacrpdR1{i,j},xx0,yy0,'cubic');
+                %Have to fix the unsupport for interp2
+                
+              ROI{i,j}=ydatacrpdR1{i,j};
+              [rROI,cROI]=size(ROI{i,j});
 
-            [rROI,cROI]=size(ROI{i,j});
-
-            xROI=cROI/2;
-            yROI=rROI/2;
+             xROI=cROI/2;
+             yROI=rROI/2;
 
             [~,~,Ispot(i,j),Ibackground_level(i,j),spotim_masked,bckim]=DoubleMaskedCom(ROI{i,j},xROI...
                 ,yROI,ClipmaskR,GaussmaskW);
