@@ -109,7 +109,7 @@ init.CFPimgname = handles.edit_CFP.String;
 init.YFPimgname = handles.edit_YFP.String;
 init.RFPimgname = handles.edit_RFP.String;
 init.meshfile = handles.edit_oufti.String;
-init.meshpath = strcat(init.datapath,init.meshfile);
+init.meshpath = strcat(init.datapath,init.OSslash,init.meshfile);
 
 init.flresize = str2double(handles.edit_fl_resize.String);
 init.fltrans = [str2double(handles.edit_fl_x.String),...

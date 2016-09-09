@@ -29,11 +29,19 @@ addpath(strcat(init.kymopath,'Agarolysis',init.OSslash,'Support'));
 if ddata == 1
     init.datapath = 'D:\Users\water_000\Documents\GitHub\Data\Target Data\Agar Data\1\';
     init.pcimgname = 'PC.tif';
+% <<<<<<< Updated upstream
     init.CFPimgname = '457-100ms-10mWo.tif';
     init.YFPimgname = '515-100ms-50mWo.tif';
     init.RFPimgname = '561-100ms-33mWo.tif';
     init.meshfile = 'PC1.mat';
     init.meshpath = strcat(init.datapath,init.meshfile);
+% =======
+    init.CFPimgname = '457-100ms-10mWo-300G.tif';
+    init.YFPimgname = '515-100ms-50mWo-300G.tif';
+    init.RFPimgname = '561-100ms-33mWo-300G.tif';
+    init.meshfile = 'PC.mat';
+    init.meshpath = strcat(init.datapath,init.OSslash,init.meshfile);
+% >>>>>>> Stashed changes
 end
 
 init.bacpath = strcat(init.datapath,'Bacpics',init.OSslash);

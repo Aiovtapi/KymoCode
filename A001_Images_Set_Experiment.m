@@ -3,6 +3,12 @@ function initval=A001_Images_Set_Experiment(user,exp)
 
 %common settings---------------------------------------------
 
+<<<<<<< Updated upstream
+=======
+if nargin<1, exp='001_DnaN_TUS_dif_30122014_M';end
+
+user='Roy';
+>>>>>>> Stashed changes
 switch user
       case 'Jacob', 
           projectpath='D:\jkerssemakers\My Documents\BN_ND_ActiveProjects\BN_ND11_CharlBacterialReplication\';

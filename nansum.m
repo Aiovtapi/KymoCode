@@ -1,4 +1,4 @@
-function y=nansum(x,dim)
+function y = nansum(x,dim)
 % FORMAT: Y = NANSUM(X,DIM)
 % 
 %    Sum of values ignoring NaNs
@@ -17,7 +17,7 @@ function y=nansum(x,dim)
 %    See also SUM
 
 % -------------------------------------------------------------------------
-%    author:      Jan Glscher
+%    author:      Jan Gläscher
 %    affiliation: Neuroimage Nord, University of Hamburg, Germany
 %    email:       glaescher@uke.uni-hamburg.de
 %    
@@ -47,5 +47,5 @@ y = sum(x,dim);
 y(i) = NaN;
 
 
-end
 
+% $Id: nansum.m,v 1.2 2005/06/13 12:14:38 glaescher Exp glaescher $

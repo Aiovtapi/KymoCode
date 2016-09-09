@@ -1,27 +1,27 @@
-function y = nanstd(x,dim,flag)
-% FORMAT: Y = NANSTD(X,DIM,FLAG)
+function y = nanvar(x,dim,flag)
+% FORMAT: Y = NANVAR(X,DIM,FLAG)
 % 
-%    Standard deviation ignoring NaNs
+%    Variance ignoring NaNs
 %
-%    This function enhances the functionality of NANSTD as distributed in
+%    This function enhances the functionality of NANVAR as distributed in
 %    the MATLAB Statistics Toolbox and is meant as a replacement (hence the
 %    identical name).  
 %
-%    NANSTD(X,DIM) calculates the standard deviation along any dimension of
+%    NANVAR(X,DIM) calculates the standard deviation along any dimension of
 %    the N-D array X ignoring NaNs.  
 %
-%    NANSTD(X,DIM,0) normalizes by (N-1) where N is SIZE(X,DIM).  This make
-%    NANSTD(X,DIM).^2 the best unbiased estimate of the variance if X is
+%    NANVAR(X,DIM,0) normalizes by (N-1) where N is SIZE(X,DIM).  This make
+%    NANVAR(X,DIM).^2 the best unbiased estimate of the variance if X is
 %    a sample of a normal distribution. If omitted FLAG is set to zero.
 %    
-%    NANSTD(X,DIM,1) normalizes by N and produces the square root of the
-%    second moment of the sample about the mean.
+%    NANVAR(X,DIM,1) normalizes by N and produces second moment of the 
+%    sample about the mean.
 %
-%    If DIM is omitted NANSTD calculates the standard deviation along first
+%    If DIM is omitted NANVAR calculates the standard deviation along first
 %    non-singleton dimension of X.
 %
-%    Similar replacements exist for NANMEAN, NANMEDIAN, NANMIN, NANMAX, and
-%    NANSUM which are all part of the NaN-suite.
+%    Similar replacements exist for NANMEAN, NANMEDIAN, NANMIN, NANMAX, 
+%    NANSTD, and NANSUM which are all part of the NaN-suite.
 %
 %    See also STD
 
@@ -30,7 +30,7 @@ function y = nanstd(x,dim,flag)
 %    affiliation: Neuroimage Nord, University of Hamburg, Germany
 %    email:       glaescher@uke.uni-hamburg.de
 %    
-%    $Revision: 1.1 $ $Date: 2004/07/15 22:42:15 $
+%    $Revision: 1.1 $ $Date: 2008/05/02 21:46:17 $
 
 if isempty(x)
 	y = NaN;
@@ -71,10 +71,10 @@ x(isnan(x)) = 0;
 i = find(count==0);
 
 if flag == 0
-	y = sqrt(sum(x.*x,dim)./max(count-1,1));
+	y = sum(x.*x,dim)./max(count-1,1);
 else
-	y = sqrt(sum(x.*x,dim)./max(count,1));
+	y = sum(x.*x,dim)./max(count,1);
 end
 y(i) = i + NaN;
 
-% $Id: nanstd.m,v 1.1 2004/07/15 22:42:15 glaescher Exp glaescher $
+% $Id: nanvar.m,v 1.1 2008/05/02 21:46:17 glaescher Exp glaescher $

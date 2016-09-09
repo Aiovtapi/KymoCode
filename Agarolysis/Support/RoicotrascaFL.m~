@@ -31,7 +31,7 @@ javaaddpath(strcat(jarpath,'ij.jar'))
 
 %% Rolling ball
 Rballedname = strcat('Rballed_',Imgname);
-copyfile(strcat(Imgspath,OSslash,Imgname),strcat(Outpath,Rballedname));
+copyfile(strcat(Imgspath,Imgname),strcat(Outpath,Rballedname));
 disp('Copying file...')
 pause(3)
 
@@ -49,6 +49,7 @@ disp('Rolling ball finished')
 imgpath = strcat(Outpath,Rballedname);
 imginfo = imfinfo(imgpath);
 num_images = numel(imginfo);
+RIpath = strcat(Outpath,'RI_',Imgname);
 RITpath = strcat(Outpath,'RIT_',Imgname);
 
 Beamimg = im2double(imread(Beampath));
