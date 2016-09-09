@@ -217,6 +217,8 @@ for cellnumber=1:3;
 
            [~,~,ISPOT,Ibacklevel,spotim_clipped,bckim,ydatacrpdR1{i,j+1},pixels{j}(i)]=LionMasker(ydatacrpdR1{i,j},x{j}(i,2),x{j}(i,4),ClipmaskR,GaussmaskW);
 
+           x{j}(i,8)=ISPOT;
+           
            if size(nonzeros(spotim_clipped(:)),1)<1
                break
            else
@@ -226,6 +228,7 @@ for cellnumber=1:3;
                 LionSpotter(ydatacrpdR1{i,j},SA,Sx,Sy,Px,Py,Bs,lob,upb);  
            end
 
+           
             end
 
 % % %             % Breaking the loop for image flipping. 
@@ -291,24 +294,24 @@ for cellnumber=1:3;
 % % %             x{j}(i,7)=sum(sum(FCII{i}));
             x{j}(i,7) = sum(FCII{i}(Cellidx));
             
-            % to do: compare spot positions
+%             % to do: compare spot positions
             if ~isempty(Size{i,j}) % there still has to be an image.
-
-            padx=5;
-            pady=5;
-
-            [r,c]=size(ydatacrpdR1{i,j});
-            [xx_ori,yy_ori]=meshgrid(-5:5,-5:5);
-
-
-            GaussmaskW=GaussFactor*(x{j}(i,3).^2+x{j}(i,5).^2)^(1/2);
-            ClipmaskR=ClipFactor*(x{j}(i,3).^2+x{j}(i,5).^2)^(1/2);
-
-            ydatacrpdR1{i,j}=[zeros(r,padx) ydatacrpdR1{i,j} zeros(r,padx)]; %make pads because spots can be on the edge of the image
-            ydatacrpdR1{i,j}=[zeros(pady,size(ydatacrpdR1{i,j},2)); ...
-            ydatacrpdR1{i,j};zeros(pady,size(ydatacrpdR1{i,j},2))];
-            [R,C]=size(ydatacrpdR1{i,j});
-            [XX,YY]=meshgrid(1:C,1:R);
+% 
+%             padx=5;
+%             pady=5;
+% 
+%             [r,c]=size(ydatacrpdR1{i,j});
+%             [xx_ori,yy_ori]=meshgrid(-5:5,-5:5);
+% 
+% 
+%             GaussmaskW=GaussFactor*(x{j}(i,3).^2+x{j}(i,5).^2)^(1/2);
+%             ClipmaskR=ClipFactor*(x{j}(i,3).^2+x{j}(i,5).^2)^(1/2);
+% 
+%             ydatacrpdR1{i,j}=[zeros(r,padx) ydatacrpdR1{i,j} zeros(r,padx)]; %make pads because spots can be on the edge of the image
+%             ydatacrpdR1{i,j}=[zeros(pady,size(ydatacrpdR1{i,j},2)); ...
+%             ydatacrpdR1{i,j};zeros(pady,size(ydatacrpdR1{i,j},2))];
+%             [R,C]=size(ydatacrpdR1{i,j});
+%             [XX,YY]=meshgrid(1:C,1:R);
 
     %         if x{j}(i,2)>3 && x{j}(i,2)<Size{i,j}(2)-3
     %         xx0=x{j}(i,2)+xx_ori;
@@ -318,26 +321,26 @@ for cellnumber=1:3;
     %         xx0=xx_ori+3;
     %         end
 
-            xx0=x{j}(i,2)+padx+xx_ori;
-            yy0=x{j}(i,4)+pady+yy_ori;
+%             xx0=x{j}(i,2)+padx+xx_ori;
+%             yy0=x{j}(i,4)+pady+yy_ori;
+%             
+%             ROI{i,j}=interp2(XX,YY,ydatacrpdR1{i,j},xx0,yy0);
+% 
+%             [rROI,cROI]=size(ROI{i,j});
+% 
+%             xROI=cROI/2;
+%             yROI=rROI/2;
 
-            ROI{i,j}=interp2(XX,YY,ydatacrpdR1{i,j},xx0,yy0);
-
-            [rROI,cROI]=size(ROI{i,j});
-
-            xROI=cROI/2;
-            yROI=rROI/2;
-
-            [~,~,Ispot(i,j),Ibackground_level(i,j),spotim_masked,bckim]=DoubleMaskedCom(ROI{i,j},xROI...
-                ,yROI,ClipmaskR,GaussmaskW);
-
-            RadiusSpot(i,j)=GaussmaskW;
-
-            nn=size(spotim_masked(spotim_masked>0));
-
-            BCKIM=bckim(1:5,:);
-
-            SNR(i,j)=mean(spotim_masked(spotim_masked>0))/std(BCKIM(:));
+%             [~,~,Ispot(i,j),Ibackground_level(i,j),spotim_masked,bckim]=DoubleMaskedCom(ROI{i,j},xROI...
+%                 ,yROI,ClipmaskR,GaussmaskW);
+% 
+%             RadiusSpot(i,j)=GaussmaskW;
+% 
+%             nn=size(spotim_masked(spotim_masked>0));
+% 
+%             BCKIM=bckim(1:5,:);
+% 
+%             SNR(i,j)=mean(spotim_masked(spotim_masked>0))/std(BCKIM(:));
 
             %SNRSimonetti(i,j)=(sum(spotim_masked(spotim_masked>0))-nn(1)*Ibackground_level)...
             %    /sqrt((mean(spotim_masked(spotim_masked>0))-nn(1)*Ibackground_level)/Gain)+nn(1)*std(bckim(:))^2+(nn(1)*std(bckim(:))^2)/size(bckim(:),1);
@@ -354,7 +357,7 @@ for cellnumber=1:3;
 
             end
 
-            x{j}(i,8)=Ispot(i,j);
+%             x{j}(i,8)=Ispot(i,j);
             
             Xout{cellnumber}(j,1) = x{j}(i,2);
             Xout{cellnumber}(j,2) = x{j}(i,4);
