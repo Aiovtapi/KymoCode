@@ -8,7 +8,7 @@ clc
 %initval.basepath='/Users/rleeuw/Work/Data/OriZ-Dif_Results/';
 %% Define variables
 
-Ncells=22;
+Ncells=31;
 
 T=cell(Ncells+1,1);
 d=cell(Ncells+1,1);
@@ -42,9 +42,9 @@ tic
 %SIMULATION FOR MSDs
 
 for i=1:Ncells;
-    T{i}=load(strcat(lionval.MainPathTus,num2str(i,'%03.0f'),'.mat'));
+    T{i}=load(strcat(lionval.MainPathTus,'cell',num2str(i,'%03.0f'),'.mat'));
     framesT(i)=length(T{i}.x{1}(:,1));
-    d{i}=load(strcat(lionval.MainPathdif,num2str(i,'%03.0f'),'.mat'));
+    d{i}=load(strcat(lionval.MainPathdif,'cell',num2str(i,'%03.0f'),'.mat'));
     framesd(i)=length(d{i}.x{1}(:,1));
 end
 
@@ -145,7 +145,7 @@ end
 %% Combining + intensity filtering spots
 
 Ilowerboundd=1000;
-IlowerboundT=700;
+IlowerboundT=500;
 
 pixel_separation_constant=4;
 
@@ -164,7 +164,7 @@ SS=LionComBI(SS,T,pixel_separation_constant,IlowerboundT);
 %% Spot tracking + linking algorithms
 %1. Linking
 
- Sd=LionLink(Sd);
+S=LionLink(S);
 %  SnN=LionLink(SnN);
 
 % To do 2. close gaps and capture merging and splitting events. (Using Cost Matrix Gap Closing, merging, splitting.)
@@ -402,8 +402,9 @@ Tus.totalspotintensity=Tus.totalspotintensity+Tus.I{i};
 Tus.totalspotintensitystd=Tus.totalspotintensitystd+Tus.Istd{i}.^2;
 
 Tus.totalcellintensity=Tus.totalcellintensity+Tus.FC{i};
+
     for j=1:size(Tus.I{i},1)
-        F=find(Tus.I{i}(j,1)>0);
+        F=find(Tus.I{i}(j,1)>IlowerboundT);
         if isempty(F)
             F=0;
         end
@@ -419,7 +420,7 @@ dif.totalspotintensitystd=dif.totalspotintensitystd+dif.Istd{m}.^2;
 
 dif.totalcellintensity=dif.totalcellintensity+dif.FC{m};
     for j=1:size(dif.I{m},1)
-        F=find(dif.I{m}(j,1)>0);
+        F=find(dif.I{m}(j,1)>Ilowerboundd);
         if isempty(F)
             F=0;
         end

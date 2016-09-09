@@ -14,7 +14,7 @@ scatter(0:1/(MeanBacLifed-1):1,dif.x{1},dif.I{1}/50+1,'b','filled')
 scatter(0:1/(MeanBacLifeT-1):1,Tus.x{1},Tus.I{1}/20+1,'r','filled')
 scatter(0:1/(MeanBacLifeT-1):1,Tus.x{2},Tus.I{2}/20+1,'m','filled')
 scatter(0:1/(MeanBacLifeT-1):1,Tus.x{3},Tus.I{3}/20+1,'k','filled')
-scatter(0:1/(MeanBacLifeT-1):1,Tus.x{4},Tus.I{4}/20+1,'g','filled')
+% scatter(0:1/(MeanBacLifeT-1):1,Tus.x{4},Tus.I{4}/20+1,'g','filled')
 % plot(0:1/(MeanBacLifed-1):1,Tus.xmean+Tus.xmeanstd,'r','LineWidth',1)
 % plot(0:1/(MeanBacLifed-1):1,Tus.xmean-Tus.xmeanstd,'r','LineWidth',1)
 % scatter(0:1/(MeanBacLifed-1):1,dif.x{2},dif.I{2}/50+1,'b','LineWidth',2)
@@ -23,8 +23,10 @@ scatter(0:1/(MeanBacLifeT-1):1,Tus.x{4},Tus.I{4}/20+1,'g','filled')
 % scatter(0:1/(MeanBacLifeT-1):1,Tus.x{2},Tus.I{2}/100+1,'r','LineWidth',2)
 % scatter(0:1/(MeanBacLifeT-1):1,Tus.x{3},Tus.I{3}/100+1,'r','LineWidth',2)
 % scatter(0:1/(MeanBacLifeT-1):1,Tus.x{4},Tus.I{4}/100+1,'r','LineWidth',2)
-% scatter(0:1/(MeanBacLifeT-1):1,Tus.x{5},Tus.I{5}/100+1,'r','LineWidth',2)
-% scatter(0:1/(MeanBacLifeT-1):1,Tus.x{6},Tus.I{6}/100+1,'r','LineWidth',2)
+%  scatter(0:1/(MeanBacLifeT-1):1,Tus.x{5},Tus.I{5}/100+1,'r','LineWidth',2)
+%  scatter(0:1/(MeanBacLifeT-1):1,Tus.x{6},Tus.I{6}/100+1,'r','LineWidth',2)
+%   scatter(0:1/(MeanBacLifeT-1):1,Tus.x{5},Tus.I{7}/100+1,'r','LineWidth',2)
+%  scatter(0:1/(MeanBacLifeT-1):1,Tus.x{6},Tus.I{8}/100+1,'r','LineWidth',2)
 hold off
 axis([0 1 0.01 1])
 xlabel('Normalised cell time (-)','FontSize',16)
@@ -36,13 +38,13 @@ title('Cellular position of Tus proteins and the dif loci')
 %% Intensities
 
 %calibration value Tus (by Sriram - see Tus chapter)
-Pv=200;
+Pv=978.7;
 
 figure(2)
 hold on
-plot(0:1/(MeanBacLifed-1):1,Tus.FC{1}/Pv,'r','LineWidth',5)
-plot(0:1/(MeanBacLifed-1):1,(Tus.FC{1}+Tus.FCstd{1})/Pv,'r','LineWidth',1)
-plot(0:1/(MeanBacLifed-1):1,(Tus.FC{1}-Tus.FCstd{1})/Pv,'r','LineWidth',1)
+plot(0:1/(MeanBacLifeT-1):1,Tus.FC{1}/Pv,'r','LineWidth',5)
+plot(0:1/(MeanBacLifeT-1):1,(Tus.FC{1}+Tus.FCstd{1})/Pv,'r','LineWidth',1)
+plot(0:1/(MeanBacLifeT-1):1,(Tus.FC{1}-Tus.FCstd{1})/Pv,'r','LineWidth',1)
 % scatter(0:1/(MeanBacLifed-1):1,Tus.I{2},'r','LineWidth',2)
 hold off
 xlabel('Normalised cell time (-)','FontSize',16)
@@ -51,26 +53,24 @@ set(gca,'FontSize',16,'FontWeight','bold')
 title('Tus proteins in the cell vs. time')
 
 %% Tus proteins in a spot:
-Pv=200;
 figure(3)
 hold on
-plot(0:1/(MeanBacLifed-1):1,(Tus.I{1}/Pv),'r','LineWidth',5)
-plot(0:1/(MeanBacLifed-1):1,(Tus.I{1}-Tus.Istd{1})/Pv,'r','LineWidth',1)
-plot(0:1/(MeanBacLifed-1):1,(Tus.I{1}+Tus.Istd{1})/Pv,'r','LineWidth',1)
+plot(0:1/(MeanBacLifeT-1):1,(Tus.I{1}/Pv),'r','LineWidth',5)
+plot(0:1/(MeanBacLifeT-1):1,(Tus.I{1}-Tus.Istd{1})/Pv,'r','LineWidth',1)
+plot(0:1/(MeanBacLifeT-1):1,(Tus.I{1}+Tus.Istd{1})/Pv,'r','LineWidth',1)
 hold off
-axis([0 1 0 25])
+axis([0 1 0 3])
 xlabel('Normalised cell time (-)','FontSize',16)
 ylabel('Tus proteins in spot (-)','FontSize',16)
 set(gca,'FontSize',16,'FontWeight','bold')
 title('Tus proteins in a spot vs. time')
 
 %% Total active Tus spots:
-Pv=200;
 figure(4)
 hold on
-scatter(0:1/(MeanBacLifed-1):1,(Tus.activespots),100,'b','filled')
+scatter(0:1/(MeanBacLifeT-1):1,(Tus.activespots),100,'b','filled')
 hold off
-axis([0 1 0.01 6])
+axis([0 1 0.01 10])
 xlabel('Normalised cell time (-)','FontSize',16)
 ylabel('Number of spots (-)','FontSize',16)
 set(gca,'FontSize',16,'FontWeight','bold')
@@ -81,14 +81,13 @@ title('Number of spots vs. time')
 Tus.IoverFCstd=(1/sqrt(3).*(Tus.I{1}./Tus.FC{1})).*sqrt((Tus.Istd{1}./(Tus.I{1})).^2+ ...
     (Tus.FCstd{1}./(Tus.FC{1})).^2);
 
-Pv=200;
 figure(5)
 hold on
-plot(0:1/(MeanBacLifed-1):1,(Tus.I{1}./Tus.FC{1})*100,'b','LineWidth',3)
-plot(0:1/(MeanBacLifed-1):1,((Tus.I{1}./Tus.FC{1})+Tus.IoverFCstd)*100,'b','LineWidth',1)
-plot(0:1/(MeanBacLifed-1):1,((Tus.I{1}./Tus.FC{1})-Tus.IoverFCstd)*100,'b','LineWidth',1)
+plot(0:1/(MeanBacLifeT-1):1,(Tus.I{1}./Tus.FC{1})*100,'b','LineWidth',3)
+plot(0:1/(MeanBacLifeT-1):1,((Tus.I{1}./Tus.FC{1})+Tus.IoverFCstd)*100,'b','LineWidth',1)
+plot(0:1/(MeanBacLifeT-1):1,((Tus.I{1}./Tus.FC{1})-Tus.IoverFCstd)*100,'b','LineWidth',1)
 hold off
-axis([0 1 0.01 100])
+axis([0 1 0.01 40])
 xlabel('Normalised cell time (-)','FontSize',16)
 ylabel('Active fraction (%)','FontSize',16)
 set(gca,'FontSize',16,'FontWeight','bold')
@@ -99,14 +98,13 @@ title('Active fraction in single spot vs. time')
 Tus.IoverFCstd=(1/sqrt(3).*(Tus.I{1}./Tus.FC{1})).*sqrt((Tus.Istd{1}./(Tus.I{1})).^2+ ...
     (Tus.FCstd{1}./(Tus.FC{1})).^2);
 
-Pv=200;
 figure(6)
 hold on
-plot(0:1/(MeanBacLifed-1):1,(Tus.I{1}+Tus.I{2}+Tus.I{3}+Tus.I{4}./Tus.FC{1}),'b','LineWidth',3)
-plot(0:1/(MeanBacLifed-1):1,((Tus.I{1}+Tus.I{2}+Tus.I{3}+Tus.I{4}./Tus.FC{1})+Tus.IoverFCstd)*100,'b','LineWidth',1)
-plot(0:1/(MeanBacLifed-1):1,((Tus.I{1}+Tus.I{2}+Tus.I{3}+Tus.I{4}./Tus.FC{1})-Tus.IoverFCstd)*100,'b','LineWidth',1)
+plot(0:1/(MeanBacLifeT-1):1,(Tus.I{1}+Tus.I{2}+Tus.I{3}+Tus.I{4}./Tus.FC{1}),'b','LineWidth',3)
+plot(0:1/(MeanBacLifeT-1):1,((Tus.I{1}+Tus.I{2}+Tus.I{3}+Tus.I{4}./Tus.FC{1})+Tus.IoverFCstd)*100,'b','LineWidth',1)
+plot(0:1/(MeanBacLifeT-1):1,((Tus.I{1}+Tus.I{2}+Tus.I{3}+Tus.I{4}./Tus.FC{1})-Tus.IoverFCstd)*100,'b','LineWidth',1)
 hold off
-axis([0 1 0.01 3000])
+axis([0 1 0.01 6000])
 xlabel('Normalised cell time (-)','FontSize',16)
 ylabel('Active fraction (%)','FontSize',16)
 set(gca,'FontSize',16,'FontWeight','bold')
@@ -127,8 +125,8 @@ title('Growth curves of relative growth vs. time')
 for i=1:Ncells
     GenerationTime(i)=size(Sd{i}.x{1},1)*2.5;
 end
-hist(GenerationTime,7);
-axis([0 140 0.01 7])
+hist(GenerationTime,10);
+axis([0 500 0.01 10])
 xlabel('Time (min)','FontSize',16)
 ylabel('Frequency (-)','FontSize',16)
 set(gca,'FontSize',16,'FontWeight','bold')

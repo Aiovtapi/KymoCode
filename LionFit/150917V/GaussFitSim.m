@@ -28,15 +28,15 @@ clc
 
 %% Inputs 
 
-for Cell=0:31;
+for Cell=1;
 
-TestFolder='GaussNoiseTest4';
+TestFolder='DiffusionElfTest';
 
-NoiseFolder='images220nmPS';
+NoiseFolder='test';
 
 TestFile=num2str(Cell);
 
-d1{1}=readtimeseries(strcat('/Users/rleeuw/Work/DataAnalysis/BlurLab/',TestFolder,'/',NoiseFolder,'/',TestFile),'tif',[Cell+1 Cell+1]);
+d1{1}=readtimeseries(strcat('/Users/rleeuw/Work/DataAnalysis/BlurLab/',TestFolder,'/',NoiseFolder,'/',TestFile),'tif');
 
 data=dip_array(d1{1}); %turn into uint16 array
 
@@ -44,7 +44,7 @@ data=dip_array(d1{1}); %turn into uint16 array
 
 Nspots=1; %ignore this name
 
-Tsize=1;
+Tsize=100;
 
 XSize=zeros(size(data,2),1);
 YSize=zeros(size(data,1),1); %Ysize
@@ -120,7 +120,7 @@ for i=1:Tsize
     [x0{j}(i,:),Case{j}(i),ydatacrpdR1{i,j+1},Ydata{i,j},Size{i,j},Yg(i,j),Xg(i,j)]= ... 
         LionSpotter(ydatacrpdR1{i,j},SA,Sx,Sy,Px,Py,Bs,lob,upb);
     
-    while x0{j}(i,1)>IntensityPeakThreshold && j<100
+%      while x0{j}(i,1)>IntensityPeakThreshold && j<100
     
     % make guesses for spot position
     
@@ -195,7 +195,7 @@ for i=1:Tsize
         [x0{j}(i,:),Case{j}(i),ydatacrpdR1{i,j+1},Ydata{i,j},Size{i,j},Yg(i,j),Xg(i,j)]= ... 
         LionSpotter(ydatacrpdR1{i,j},SA,Sx,Sy,Px,Py,Bs,lob,upb);    
     
-    end
+%     end
 end
 
 NSpots=size(x,2);
@@ -465,7 +465,7 @@ end
 if exist(strcat('/Users/rleeuw/Work/DataAnalysis/BlurLab/',TestFolder,'/',NoiseFolder,'/','Results'),'dir')
   save(strcat('/Users/rleeuw/Work/DataAnalysis/BlurLab/',TestFolder,'/',NoiseFolder,'/','Results/',TestFile),'x','XNorm','NSpots','SNR','ydatacrpd');
 else
-    mkdir(strcat('/Users/rleeuw/Work/DataAnalysis/BlurLab/',TestFolder,'/',NoiseFolder,'/',Results))
+    mkdir(strcat('/Users/rleeuw/Work/DataAnalysis/BlurLab/',TestFolder,'/',NoiseFolder,'/','Results'))
     save(strcat('/Users/rleeuw/Work/DataAnalysis/BlurLab/',TestFolder,'/',NoiseFolder,'/Results/',TestFile),'x','XNorm','NSpots','SNR','ydatacrpd');
 end
 end
