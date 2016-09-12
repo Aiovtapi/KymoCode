@@ -79,7 +79,7 @@ for Cell=lionval.viewbac;
 
         Nspots=1; %ignore this name
 
-        Tsize=size(data,3);
+        Tsize=frames;
 
         XSize=zeros(size(data,2),1);
         YSize=zeros(size(data,1),1); %Ysize
@@ -413,7 +413,7 @@ for Cell=lionval.viewbac;
             mkdir(strcat(lionval.Mainfolder,lionval.OSslash,'Results'));
         end
         
-        if exist(strcat(lionval.Mainfolder,lionval.OSslash,'Results',lionval.OSslash,thisbacfolder,'.mat'))
+        if exist(strcat(lionval.Mainfolder,lionval.OSslash,'Results',lionval.OSslash,thisbacfolder,'.mat'),'file')
             disp('This bac series has already been saved. Saving will be skipped')
         else
             save(strcat(lionval.Mainfolder,lionval.OSslash,'Results',lionval.OSslash,thisbacfolder),'x','NSpots','SNR','ydatacrpdR1','pixels'); %,'imgflipped');

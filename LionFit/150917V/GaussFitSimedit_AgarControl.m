@@ -30,6 +30,7 @@ lionval.viewbac = cells:cells+2;
 PSFSigma=1;
 iterations=10;
 fittype=4;
+Xout = cell(1,3);
     
 for cellnumber=1:3;
         
@@ -219,6 +220,9 @@ for cellnumber=1:3;
         end
         
     NSpots=size(x,2);
+    if isempty(x{1})
+        NSpots = 0;
+    end
     LxOne=size(x{1},1);
 
     % make sure that each spot data is same length
@@ -233,6 +237,7 @@ for cellnumber=1:3;
 
 
     %% Save Output
+
     
     for i=1:Tsize
         for j=1:NSpots

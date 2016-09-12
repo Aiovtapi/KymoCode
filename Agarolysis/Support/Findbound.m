@@ -1,4 +1,4 @@
-function [BCellbox,Bettermesh,Bacsize] = Findbound(Cellbox,Bettermesh,cells,frames,bound)
+function [BCellbox,Bacsize] = Findbound(Cellbox,cells,frames,bound)
 
     framesize = zeros(cells,frames,2);
     BCellbox = zeros(cells,frames,4);

@@ -41,7 +41,7 @@ function [Bettermesh,BCellbox,Bacsize,Bacmask,CBacmask,Bacpics,NMBacpics] = Tige
     end
 
     % Find size of bacpic and the boundary indeces for each frame
-    [BCellbox,Bettermesh,Bacsize] = Findbound(Cellbox,Bettermesh,cells,frames,init.Extrabound);
+    [BCellbox,Bacsize] = Findbound(Cellbox,cells,frames,init.Extrabound);
 
     % Remove cells that move out of the immage
     [BCellbox,Bacsize,Bettermesh] = Removeoutbound(BCellbox,Bacsize,Bettermesh,flimgsize,frames);

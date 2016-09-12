@@ -32,19 +32,11 @@ for chan = chans
     Ouftiout = load(init.meshpath,'cellList');
     Meshdata = Ouftiout.cellList.meshData;
     
-    % Use TigerCutSimple if meshes and cellboxes are already calculated
     if chan == 1;
         [Bettermesh,BCellbox,Bacsize,Bacmask,CBacmask,Bacpics{chan},NMBacpics{chan}]...
             = TigerCut(init,chan,Meshdata,flimg);
     elseif chan > 1;
-        [Bacpics{chan},NMBacpics{chan}] = TigerCutSimple(init,chan,OBettermesh,OBCellbox,OBacsize,flimg);
-    end
-    
-    %S Save mesh and cellbox for TigerCutSimple
-    if chan == chans(1)
-        OBettermesh = Bettermesh;
-        OBCellbox = BCellbox;
-        OBacsize = Bacsize;
+        [Bacpics{chan},NMBacpics{chan}] = TigerCutSimple(init,chan,OBettermesh,OBCellbox,Bacsize,flimg);
     end
     
     %% Lionfit
@@ -75,23 +67,20 @@ for chan = chans
     
     
     % Rotation of the cells according to the dif-site information
-    
     if exist(strcat(init.datapath,'imgflip.mat'),'file')
-        % Only flip Bettermesh and BCellbox once
         if chan == chans(1)
-            disp('Flipping Meshes...')
-            [Bettermesh, BCellbox, Bacsize] = AgarRotate1(init, Bettermesh, cells, frames, imgflip);
+            OBettermesh = Bettermesh;
+            OBCellbox = BCellbox;
         end
-        
-        % Flipping the bacpics and masks
         disp('Flipping Bacpics...')
-        [Bacmask, CBacmask, Bacpics{chan}, NMBacpics{chan}] = ...
-            AgarRotate2(init, Bacmask, CBacmask, Bacpics{chan}, NMBacpics{chan},...
+        [Bettermesh, BCellbox, Bacmask, CBacmask, Bacpics{chan}, NMBacpics{chan}] = ...
+            AgarRotate(init, Bettermesh, BCellbox, Bacmask, CBacmask, Bacpics{chan}, NMBacpics{chan},...
             cells, frames, imgflip, chan);
-        
-        % Save flipped information
         flippedchan(2,chan) = 1;
         save(strcat(init.datapath,'imgflip.mat'),'flippedchan','-append')
+    else
+        OBettermesh = Bettermesh;
+        OBCellbox = BCellbox;
     end
        
     GaussFitSimedit_Agarolysis(init,chan,Bacpics{chan},Bacmask,cells,frames,IPTPvalue(chan));

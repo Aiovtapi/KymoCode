@@ -11,6 +11,7 @@ init.Extrabound = 4;        % extra boudaries added to bacpics
 init.strelval = 8;          % disk radius for imdilate of bacpic mask
 init.IPTP = 1;              % Intensity Peak threshold parameter
 init.difchan = 'CFP';
+init.channels = {'CFP', 'YFP', 'RFP'};
 
 %% Add paths
 
@@ -29,7 +30,7 @@ addpath(strcat(init.kymopath,'Agarolysis',init.OSslash,'Support'));
 
 if ddata == 1
     init.datapath = 'D:\Users\water_000\Documents\GitHub\Data\Target Data\Agar Data\1\';
-    init.pcimgname = 'PC.tif';
+    init.PCimgname = 'PC.tif';
 
     init.CFPimgname = '457-100ms-10mWo.tif';
     init.YFPimgname = '515-100ms-50mWo.tif';

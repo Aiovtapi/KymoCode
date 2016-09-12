@@ -58,10 +58,14 @@ handles.init = varargin{1};
 handles.Bacpics = varargin{2};
 handles.Bacmask = varargin{3};
 handles.cells = varargin{4};
+handles.chan = varargin{5};
 handles.IPTP = handles.init.IPTP;
 
 Xout = GaussFitSimedit_AgarControl(handles.init,handles.Bacpics,...
     handles.Bacmask,1,handles.init.IPTP);
+
+title = strcat('Tweak Intensity Peak Threshold for ',handles.init.flimgname{handles.chan});
+set(handles.text_title,'String',title);
 
 handles.ScaleValue = 0.1;
 handles.Cellnumber = 1;
@@ -70,19 +74,25 @@ handles.Cellnumber = 1;
 imagesc(handles.Bacpics{1,1},'parent',handles.axes1)
 axes(handles.axes1);
 hold on
-plot(Xout{1}(:,1),Xout{1}(:,2),'kx','LineWidth',2)
+if ~isempty(Xout{1})
+    plot(Xout{1}(:,1),Xout{1}(:,2),'kx','LineWidth',2)
+end
 hold off
 
 imagesc(handles.Bacpics{2,1},'parent',handles.axes2)
 axes(handles.axes2);
 hold on
-plot(Xout{2}(:,1),Xout{2}(:,2),'kx','LineWidth',2)
+if ~isempty(Xout{2})
+    plot(Xout{2}(:,1),Xout{2}(:,2),'kx','LineWidth',2)
+end
 hold off
 
 imagesc(handles.Bacpics{3,1},'parent',handles.axes3)
 axes(handles.axes3);
 hold on
+if ~isempty(Xout{3})
 plot(Xout{3}(:,1),Xout{3}(:,2),'kx','LineWidth',2)
+end
 hold off
 
 % Choose default command line output for LionfitcontrolUI
@@ -152,20 +162,27 @@ Xout = GaussFitSimedit_AgarControl(handles.init,handles.Bacpics,...
 imagesc(handles.Bacpics{C1,1},'parent',handles.axes1)
 axes(handles.axes1);
 hold on
-plot(Xout{1}(:,1),Xout{1}(:,2),'kx','LineWidth',2)
+if ~isempty(Xout{1})
+    plot(Xout{1}(:,1),Xout{1}(:,2),'kx','LineWidth',2)
+end
 hold off
 
 imagesc(handles.Bacpics{C2,1},'parent',handles.axes2)
 axes(handles.axes2);
 hold on
-plot(Xout{2}(:,1),Xout{2}(:,2),'kx','LineWidth',2)
+if ~isempty(Xout{2})
+    plot(Xout{2}(:,1),Xout{2}(:,2),'kx','LineWidth',2)
+end
 hold off
 
 imagesc(handles.Bacpics{C3,1},'parent',handles.axes3)
 axes(handles.axes3);
 hold on
-plot(Xout{3}(:,1),Xout{3}(:,2),'kx','LineWidth',2)
+if ~isempty(Xout{3})
+    plot(Xout{3}(:,1),Xout{3}(:,2),'kx','LineWidth',2)
+end
 hold off
+
 
 guidata(hObject,handles);
 
@@ -186,19 +203,25 @@ Xout = GaussFitSimedit_AgarControl(handles.init,handles.Bacpics,...
 imagesc(handles.Bacpics{C1,1},'parent',handles.axes1)
 axes(handles.axes1);
 hold on
-plot(Xout{1}(:,1),Xout{1}(:,2),'kx','LineWidth',2)
+if ~isempty(Xout{1})
+    plot(Xout{1}(:,1),Xout{1}(:,2),'kx','LineWidth',2)
+end
 hold off
 
 imagesc(handles.Bacpics{C2,1},'parent',handles.axes2)
 axes(handles.axes2);
 hold on
-plot(Xout{2}(:,1),Xout{2}(:,2),'kx','LineWidth',2)
+if ~isempty(Xout{2})
+    plot(Xout{2}(:,1),Xout{2}(:,2),'kx','LineWidth',2)
+end
 hold off
 
 imagesc(handles.Bacpics{C3,1},'parent',handles.axes3)
 axes(handles.axes3);
 hold on
-plot(Xout{3}(:,1),Xout{3}(:,2),'kx','LineWidth',2)
+if ~isempty(Xout{3})
+    plot(Xout{3}(:,1),Xout{3}(:,2),'kx','LineWidth',2)
+end
 hold off
 
 guidata(hObject,handles);
@@ -248,19 +271,25 @@ Xout = GaussFitSimedit_AgarControl(handles.init,handles.Bacpics,...
 imagesc(handles.Bacpics{C1,1},'parent',handles.axes1)
 axes(handles.axes1);
 hold on
-plot(Xout{1}(:,1),Xout{1}(:,2),'kx','LineWidth',2)
+if ~isempty(Xout{1})
+    plot(Xout{1}(:,1),Xout{1}(:,2),'kx','LineWidth',2)
+end
 hold off
 
 imagesc(handles.Bacpics{C2,1},'parent',handles.axes2)
 axes(handles.axes2);
 hold on
-plot(Xout{2}(:,1),Xout{2}(:,2),'kx','LineWidth',2)
+if ~isempty(Xout{2})
+    plot(Xout{2}(:,1),Xout{2}(:,2),'kx','LineWidth',2)
+end
 hold off
 
 imagesc(handles.Bacpics{C3,1},'parent',handles.axes3)
 axes(handles.axes3);
 hold on
-plot(Xout{3}(:,1),Xout{3}(:,2),'kx','LineWidth',2)
+if ~isempty(Xout{3})
+    plot(Xout{3}(:,1),Xout{3}(:,2),'kx','LineWidth',2)
+end
 hold off
 
 if C1 == 1;
@@ -288,19 +317,25 @@ Xout = GaussFitSimedit_AgarControl(handles.init,handles.Bacpics,...
 imagesc(handles.Bacpics{C1,1},'parent',handles.axes1)
 axes(handles.axes1);
 hold on
-plot(Xout{1}(:,1),Xout{1}(:,2),'kx','LineWidth',2)
+if ~isempty(Xout{1})
+    plot(Xout{1}(:,1),Xout{1}(:,2),'kx','LineWidth',2)
+end
 hold off
 
 imagesc(handles.Bacpics{C2,1},'parent',handles.axes2)
 axes(handles.axes2);
 hold on
-plot(Xout{2}(:,1),Xout{2}(:,2),'kx','LineWidth',2)
+if ~isempty(Xout{2})
+    plot(Xout{2}(:,1),Xout{2}(:,2),'kx','LineWidth',2)
+end
 hold off
 
 imagesc(handles.Bacpics{C3,1},'parent',handles.axes3)
 axes(handles.axes3);
 hold on
-plot(Xout{3}(:,1),Xout{3}(:,2),'kx','LineWidth',2)
+if ~isempty(Xout{3})
+    plot(Xout{3}(:,1),Xout{3}(:,2),'kx','LineWidth',2)
+end
 hold off
 
 if C1 >= 4;
