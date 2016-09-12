@@ -26,9 +26,6 @@ tic
 lionval = Agar2lion(init,chan);
 lionval.viewbac = 1:cells;
 
-PSFSigma=1;
-iterations=10;
-fittype=4;
     
 for Cell=lionval.viewbac;
     
@@ -107,6 +104,7 @@ for Cell=lionval.viewbac;
         Px=3; Py=3; % for optimal fitting add black 'pads' around detected spot
         Bs=1; Bss=2*Bs+1; % this defines size of black sqaure
         lob=1; upb=size(data(:,:,1),1); chanthickness=size(data(:,:,1),1); % define the boundaries of the channel
+
 
         % Initiate the spotting process..
 
@@ -251,8 +249,8 @@ for Cell=lionval.viewbac;
         %   Size{i,j}(1) is the height of the image.
         %   Size{i,j}(2) is the width of the image.
 
-%             XNorm{j}(i,2)=x{j}(i,2)/Size{i,j}(2);
-%             XNorm{j}(i,4)=(x{j}(i,4))/Size{i,j}(1);
+            XNorm{j}(i,2)=x{j}(i,2)/Size{i,j}(2);
+            XNorm{j}(i,4)=(x{j}(i,4))/Size{i,j}(1);
 
             GaussmaskW=GaussFactor*(x{j}(i,3).^2+x{j}(i,5).^2)^(1/2);
             ClipmaskR=ClipFactor*(x{j}(i,3).^2+x{j}(i,5).^2)^(1/2);
@@ -285,7 +283,7 @@ for Cell=lionval.viewbac;
 % % %     end
 
     NSpots=size(x,2);
-%     LXNormOne=size(XNorm{1},1);
+    LXNormOne=size(XNorm{1},1);
     LxOne=size(x{1},1);
 
     % make sure that each spot data is same length
@@ -294,7 +292,7 @@ for Cell=lionval.viewbac;
 
     for j=2:NSpots;
         x{j}=[x{j};zeros(LxOne-size(x{j},1),5)];
-%         XNorm{j}=[XNorm{j};zeros(LXNormOne-size(XNorm{j},1),4)];
+        XNorm{j}=[XNorm{j};zeros(LXNormOne-size(XNorm{j},1),4)];
     end
 
 

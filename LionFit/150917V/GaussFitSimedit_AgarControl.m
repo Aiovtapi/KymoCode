@@ -25,9 +25,11 @@ function Xout = GaussFitSimedit_AgarControl(init,Bacpics,Bacmask,cells,IPTP)
 lionval.cropindx = init.lioncropindex;
 lionval.OSslash = init.OSslash;
 
-
 lionval.viewbac = cells:cells+2;
 
+PSFSigma=1;
+iterations=10;
+fittype=4;
     
 for cellnumber=1:3;
         
@@ -75,15 +77,11 @@ for cellnumber=1:3;
         Bs=1; Bss=2*Bs+1; % this defines size of black sqaure
         lob=1; upb=size(data(:,:,1),1); chanthickness=size(data(:,:,1),1); % define the boundaries of the channel
 
-
         % Initiate the spotting process..
 
         i=1;
 
         %Determine outliers for determining intensity threshold.
-
-        lowerboundchannel=7;
-
 
         Tolerance=2;
         sigmachange=0.9;
@@ -104,7 +102,9 @@ for cellnumber=1:3;
         end
             ydatacrpdR1{i,1}=ydatacrpd{i};
 
-            higherboundchannel=16;
+            % Microfluidic channel boundaries (px)
+            lowerboundchannel=6;
+            higherboundchannel=18;
             
             % Intensity thresholding for outliers
             Data=ydatacrpd{i}; %%%(lowerboundchannel:higherboundchannel,:);
@@ -123,29 +123,41 @@ for cellnumber=1:3;
            %still needs background level to be mediated from within the channel.   
             while x0{j}(i,1)>IPTP*IntensityPeakThreshold && j<20 && Size{i,j}(1)>0
 
-            % make guesses for spot position
-
-            % output = [guessvector,case,newcutoutimage,imageusedforfitting]
-            % guessvector = [ampl,x,sigx,y,sigy]
-            % case = 2 (spot out of channel), -1 (left edge), 0 (middle), 1 (right
-            % edge)
-            % imageusedforfitting = only the spot is used for fitting (cut out)
-
-            % preparing framework for gaussian fitting
-            [Ydata_X(j),Ydata_Y(j)]=size(Ydata{i,j});
-            [X{j},Y{j}] =  meshgrid(linspace(1,Ydata_Y(j),Ydata_Y(j)), ...
-                linspace(1,Ydata_X(j),Ydata_X(j)));
-            xdata{1,j} = X{j};
-            xdata{2,j} = Y{j};
-
-            % define upper boundary (Size{i,j}(2) is the X size of the crpd-image)
-            ub = [realmax('double'),Size{i,j}(2),(Size{i,j}(2))^2,Size{i,j}(2), ...
-                (Size{i,j}(2))^2]; %upper bounds
+            Fitdata=mat2im(Ydata{i,j});
+            
+            % Main Fitting Algorithm
+            
+            [P,CRLB,LL,t]=gaussmlev2(Fitdata,PSFSigma,iterations,fittype);
+            
+%       OUTPUTS:
+%   P:      Found parameter values by fittype:
+%    1: [X Y Photons BG] 
+%    2: [X Y Photons BG Sigma] 
+%    3: [X Y Photons BG Z]  
+%    4: [X Y Photons BG SigmaX SigmaY] 
+%   CRLB:   Cramer-Rao lower bound calculated using P
+%   LL:     Log-Likelihood calculated using Stirling's approximation      
+%   t:      Execution time of fitting code. 
+%
+            
+            P(1)=P(1)+1; %dip-image has origin (0,0)
+            P(2)=P(2)+1;
+            
+            % transform to own format
+            x{j}(i,1)=P(3); 
+            x{j}(i,2)=P(1); 
+            x{j}(i,3)=P(5); 
+            x{j}(i,4)=P(2);
+            x{j}(i,5)=P(6);
+            
+%             % define upper boundary (Size{i,j}(2) is the X size of the crpd-image)
+%             ub = [realmax('double'),Size{i,j}(2),(Size{i,j}(2))^2,Size{i,j}(2), ...
+%                 (Size{i,j}(2))^2]; %upper bounds
 
             % Do the Gaussian fitting
 
-            [x{j}(i,:),resnorm,residual,exitflag] = lsqcurvefit(@GaussPlosFunc, ...
-               x0{j}(i,:),xdata(:,j),Ydata{i,j},lb,ub,OPTIONS);
+%             [x{j}(i,:),resnorm,residual,exitflag] = lsqcurvefit(@GaussPlosFunc, ...
+%                x0{j}(i,:),xdata(:,j),Ydata{i,j},lb,ub,OPTIONS);
 
 
            % X-SA-1 is the length in X to the point X-SA on the image.
@@ -181,36 +193,10 @@ for cellnumber=1:3;
                 x{j}(i,1:8)=0;
                 XNorm{j}(i,1:8)=0;
             end
-            
-% % %            % Check for whether flipping is necessary. This will be skipped
-% % %            % for non dif-channels, as flipping has already been done. 
-% % %            if imgflip==1
-% % %                 imgflip = x{1}(1,2)>size(ydatacrpd{1},2)/2;
-% % %            end
-% % %            
-% % %            % Prevent flipping loops when the estimation of the spot is in
-% % %            % the middle of the cell.
-% % %            if flipnumber > 1;
-% % %                 if flipdisplay == 0
-% % %                     disp(strcat('cell',num2str(Cell),' is in a flipping loop, check bacseries in ImageJ.'))
-% % %                     flipdisplay = 1;
-% % %                 end
-% % %                 imgflip = 0;
-% % %            end
-% % %            
-% % %            if imgflip == 1
-% % %                imgflipped = 1;
-% % %                break
-% % %            end
-
 
 
         %   Size{i,j}(1) is the height of the image.
         %   Size{i,j}(2) is the width of the image.
-
-% % %             XNorm{j}(i,2)=x{j}(i,2)/Size{i,j}(2);
-% % % 
-% % %             XNorm{j}(i,4)=(x{j}(i,4))/Size{i,j}(1);
 
             GaussmaskW=GaussFactor*(x{j}(i,3).^2+x{j}(i,5).^2)^(1/2);
             ClipmaskR=ClipFactor*(x{j}(i,3).^2+x{j}(i,5).^2)^(1/2);
@@ -230,23 +216,9 @@ for cellnumber=1:3;
 
            
             end
-
-% % %             % Breaking the loop for image flipping. 
-% % %             if imgflip==1
-% % %                 break
-% % %             end
         end
         
-% % %         % Flipping the images
-% % %         if imgflip==1
-% % %             disp(['Flipping ',thisbacfolder])
-% % %             GaussImRotate(bacseriepth);
-% % %             flipnumber = flipnumber + 1;
-% % %         end
-% % %     end
-
     NSpots=size(x,2);
-% % %     LXNormOne=size(XNorm{1},1);
     LxOne=size(x{1},1);
 
     % make sure that each spot data is same length
@@ -254,128 +226,22 @@ for cellnumber=1:3;
     % and their last will be the length of the array.
 
     for j=2:NSpots;
-        x{j}=[x{j};zeros(LxOne-size(x{j},1),5)];
-% % %         XNorm{j}=[XNorm{j};zeros(LXNormOne-size(XNorm{j},1),4)];
+        if ~LxOne-size(x{j},1)==0;
+            x{j}=[x{j};zeros(LxOne-size(x{j},1),5)];
+        end
     end
 
 
-    %% Translate back to original coords
-
-    % use XNorm for normalization to position w.r.t. cell
-
-    %% Integrated Intensity V2.0
-    II=cell(5,5,Tsize);
-    FCII=cell(1,Tsize);
-    ROI=cell(Tsize,Nspots);
-    Ispot=zeros(Tsize,Nspots);
-
-    %SNR vars
-    SNR=zeros(Tsize,Nspots);
-    SNRSimonetti=zeros(Tsize,Nspots);
-    SNRBlur=zeros(Tsize,Nspots); %theoretical SNR of noise simulator
-
-    %BlurNoise Parameters
-    MeanNoise=1500;
-    STDNoise=225;
-
-    Gain=1;
-
-
+    %% Save Output
+    
     for i=1:Tsize
-
-         % Full Cell Integrated Intensity
-         Cellidx = find(Bacmask{Cell,i});
-         
-         FCII{i}=ydatacrpd{i}; %%%(lowerboundchannel:higherboundchannel,:);
-
         for j=1:NSpots
 
-            %This is the full cell integrated intensity
-% % %             x{j}(i,7)=sum(sum(FCII{i}));
-            x{j}(i,7) = sum(FCII{i}(Cellidx));
-            
-%             % to do: compare spot positions
-            if ~isempty(Size{i,j}) % there still has to be an image.
-% 
-%             padx=5;
-%             pady=5;
-% 
-%             [r,c]=size(ydatacrpdR1{i,j});
-%             [xx_ori,yy_ori]=meshgrid(-5:5,-5:5);
-% 
-% 
-%             GaussmaskW=GaussFactor*(x{j}(i,3).^2+x{j}(i,5).^2)^(1/2);
-%             ClipmaskR=ClipFactor*(x{j}(i,3).^2+x{j}(i,5).^2)^(1/2);
-% 
-%             ydatacrpdR1{i,j}=[zeros(r,padx) ydatacrpdR1{i,j} zeros(r,padx)]; %make pads because spots can be on the edge of the image
-%             ydatacrpdR1{i,j}=[zeros(pady,size(ydatacrpdR1{i,j},2)); ...
-%             ydatacrpdR1{i,j};zeros(pady,size(ydatacrpdR1{i,j},2))];
-%             [R,C]=size(ydatacrpdR1{i,j});
-%             [XX,YY]=meshgrid(1:C,1:R);
-
-    %         if x{j}(i,2)>3 && x{j}(i,2)<Size{i,j}(2)-3
-    %         xx0=x{j}(i,2)+xx_ori;
-    %         elseif x{j}(i,2)>Size{i,j}(2)-3 && Size{i,j}(2)>1
-    %         xx0=Size{i,j}(2)-3+xx_ori;
-    %         else
-    %         xx0=xx_ori+3;
-    %         end
-
-%             xx0=x{j}(i,2)+padx+xx_ori;
-%             yy0=x{j}(i,4)+pady+yy_ori;
-%             
-%             ROI{i,j}=interp2(XX,YY,ydatacrpdR1{i,j},xx0,yy0);
-% 
-%             [rROI,cROI]=size(ROI{i,j});
-% 
-%             xROI=cROI/2;
-%             yROI=rROI/2;
-
-%             [~,~,Ispot(i,j),Ibackground_level(i,j),spotim_masked,bckim]=DoubleMaskedCom(ROI{i,j},xROI...
-%                 ,yROI,ClipmaskR,GaussmaskW);
-% 
-%             RadiusSpot(i,j)=GaussmaskW;
-% 
-%             nn=size(spotim_masked(spotim_masked>0));
-% 
-%             BCKIM=bckim(1:5,:);
-% 
-%             SNR(i,j)=mean(spotim_masked(spotim_masked>0))/std(BCKIM(:));
-
-            %SNRSimonetti(i,j)=(sum(spotim_masked(spotim_masked>0))-nn(1)*Ibackground_level)...
-            %    /sqrt((mean(spotim_masked(spotim_masked>0))-nn(1)*Ibackground_level)/Gain)+nn(1)*std(bckim(:))^2+(nn(1)*std(bckim(:))^2)/size(bckim(:),1);
-
-            %SNRBlur(i,j)=(sum(spotim_masked(spotim_masked>0))-nn(1)*MeanNoise)...
-            %    /sqrt((mean(spotim_masked(spotim_masked>0))--nn(1)*MeanNoise)/Gain)+nn(1)*STDNoise^2+(nn(1)*STDNoise^2)/size(bckim(:),1);
-
-            else 
-
-            ROI{i,j}=0; SNR(i,j)=0;
-            nwx{i,j}=0; nwy{i,j}=0; Ispot(i,j)=0; Ibackground_level(i,j)=0;
-            spotim_masked=0;
-            bckim=0;
-
-            end
-
-%             x{j}(i,8)=Ispot(i,j);
-            
             Xout{cellnumber}(j,1) = x{j}(i,2);
             Xout{cellnumber}(j,2) = x{j}(i,4);
 
         end
     end
-
-    %% Saving
-
-        
-%         if exist(strcat(lionval.Mainfolder,lionval.OSslash,'Results',lionval.OSslash,thisbacfolder,'.mat'))
-%             disp('This bac series has already been saved. Saving will be skipped')
-%         else
-%             save(strcat(lionval.Mainfolder,lionval.OSslash,'Results',lionval.OSslash,thisbacfolder),'x','NSpots','SNR','ydatacrpdR1','pixels'); %,'imgflipped');
-%             display('Save complete.');
-%         end
-
-
 end
 
 end

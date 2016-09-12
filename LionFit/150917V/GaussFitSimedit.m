@@ -257,36 +257,35 @@ for Cell=lionval.viewbac;
                break
            end
 
-
-
         %   Size{i,j}(1) is the height of the image.
         %   Size{i,j}(2) is the width of the image.
 
-            XNorm{j}(i,2)=x{j}(i,2)/Size{i,j}(2);
+           XNorm{j}(i,2)=x{j}(i,2)/Size{i,j}(2);
 
-            XNorm{j}(i,4)=x{j}(i,4)/Size{i,j}(1);
+           XNorm{j}(i,4)=x{j}(i,4)/Size{i,j}(1);
 
-            GaussmaskW=GaussFactor*(x{j}(i,3).^2+x{j}(i,5).^2)^(1/2);
-            ClipmaskR=ClipFactor*(x{j}(i,3).^2+x{j}(i,5).^2)^(1/2);
+           GaussmaskW=GaussFactor*(x{j}(i,3).^2+x{j}(i,5).^2)^(1/2);
+           ClipmaskR=ClipFactor*(x{j}(i,3).^2+x{j}(i,5).^2)^(1/2);
 
            [~,~,ISPOT,Ibacklevel,spotim_clipped,bckim,ydatacrpdR1{i,j+1},pixels{j}(i)]=LionMasker(ydatacrpdR1{i,j},x{j}(i,2),x{j}(i,4),ClipmaskR,GaussmaskW);
 
            if size(nonzeros(spotim_clipped(:)),1)<1
                break
            else
-            j=j+1;
+               j=j+1;
 
-                [x0{j}(i,:),Case{j}(i),~,Ydata{i,j},Size{i,j},Yg(i,j),Xg(i,j)]= ... 
-                LionSpotter(ydatacrpdR1{i,j},SA,Sx,Sy,Px,Py,Bs,lob,upb);  
+               [x0{j}(i,:),Case{j}(i),~,Ydata{i,j},Size{i,j},Yg(i,j),Xg(i,j)]= ... 
+               LionSpotter(ydatacrpdR1{i,j},SA,Sx,Sy,Px,Py,Bs,lob,upb);  
            end
-
-            end
+           
+       end
 
             % Breaking the loop for image flipping. 
-            if imgflip==1
-                break
-            end
-        end
+           if imgflip==1
+               break
+           end
+           
+       end
         
         % Flipping the images
         if imgflip==1
