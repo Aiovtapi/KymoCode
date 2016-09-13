@@ -21,7 +21,7 @@ function [mmask, nmask,bacpic,croppedimg] = Createbac(init,imageframe,thismesh,t
     % Create non-masked bacpic from Cellbox
 %     croppedimg = nimgframe(thisRbox(3):floor(thisRbox(3)+Rbacsize(2)-1),thisRbox(1):floor(thisRbox(1)+Rbacsize(1)-1));
     
-    croppedimg = imcrop(nimgframe, [thisRbox(3), thisRbox(1), Rbacsize(2) - 1, Rbacsize(1) - 1]);
+    croppedimg = imcrop(nimgframe, [thisRbox(1), thisRbox(3), Rbacsize(1) - 1, Rbacsize(2) - 1]);
 
     % Ensure that size of the mask is the same as the size of the bacpic
     cimgsize = size(croppedimg);

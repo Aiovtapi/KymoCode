@@ -176,7 +176,7 @@ for chan = chans
     
     disp('Projected to Mesh')
 end
-
+init.IPTP = IPTPvalue;
 save(strcat(init.datapath,init.OSslash,'Results.mat'),'DataStruct')
 
 
@@ -191,7 +191,7 @@ f = figure('Name','Agarolysis','NumberTitle','off',...
 while celli <= cells;
     
     if skip == 0;
-        [skip,fault,previous,Rspot] = ViewbacUI2(f,Bacpics,Bacmesh,X,BX,celli,init.flimgname);
+        [skip,fault,previous,Rspot] = ViewbacUI2(init,chans,f,Bacpics,Bacmesh,X,BX,celli,init.flimgname);
     end
     
     % Remove clicked spots, new bx and ld are saved as rbx and rld

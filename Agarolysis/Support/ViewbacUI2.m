@@ -1,11 +1,12 @@
-function [skip,fault,previous,Rspot] = ViewbacUI2(f,Bacpics,Bacmesh,X,BX,celli,Title)
+function [skip,fault,previous,Rspot] = ViewbacUI2(init,chans,f,Bacpics,Bacmesh,X,BX,celli,Title)
 
 frames = size(Bacmesh{1},2);
-[chans, cells] = size(X);
+[~, cells] = size(X);
 skip = 0;
 fault = 0;
 previous = 0;
 Rspot = [];
+Nchans = numel(chans);
 
 currentbac = ['Bacpic ',num2str(celli),'/',num2str(cells)];
 
@@ -39,8 +40,8 @@ clr = uicontrol('Style', 'pushbutton', 'String', 'Clear clicks',...
     'Callback',@Clearclick);    
 
 %% Plot first frame of bacpic, mesh and spots
-for chan = 1:chans;
-    ax(chans) = subplot(1,chans,chan);
+for chan = chans;
+    ax(Nchans) = subplot(1,Nchans,chan);
     set(gca,'tag',num2str(chan))
 
     title(Title{chan})
@@ -95,8 +96,8 @@ uiwait(f)                                       % Wait for button click
             'Position',[900 15 50 15],...
             'String',currentframe);
 
-        for chan = 1:chans;
-            ax(chans)=subplot(1,chans,chan);
+        for chan = chans;
+            ax(Nchans)=subplot(1,Nchans,chan);
             title(Title{chan})
             
             x = X{chan,celli};
@@ -121,7 +122,7 @@ uiwait(f)                                       % Wait for button click
         
         for respot = 1:size(Rspot,1)                    % plot clicked spots
             thisx = BX{Rspot(respot,1),celli}{Rspot(respot,2)}(frami,:);
-            subplot(1,chans,Rspot(respot,1))
+            subplot(1,Nchans,Rspot(respot,1))
             hold on
             plot(thisx(2),thisx(4),'rx','LineWidth',2)
             hold off
@@ -193,8 +194,9 @@ uiwait(f)                                       % Wait for button click
                 padbac = padarray(thisbac,[bound,bound]);
                 baccrop = [Rxy, 2*bound, 2*bound];
                 croppedbac = imcrop(padbac, baccrop);
-                figure(2)
-                imagesc(croppedbac)
+%                 figure(2)
+%                 imagesc(croppedbac)
+                x = GaussFitSimedit_ViewBacUI2(init,chan,croppedbac,init.IPTP(chan))
             end
         end
         
@@ -212,7 +214,7 @@ uiwait(f)                                       % Wait for button click
         
         for respot = 1:size(Rspot,1);                   % replot clicked spot
             thisx = BX{Rspot(respot,1),celli}{Rspot(respot,2)}(frame,:);
-            subplot(1,chans,Rspot(respot,1))
+            subplot(1,Nchans,Rspot(respot,1))
             hold on
             plot(thisx(2),thisx(4),'kx','LineWidth',2)
             hold off

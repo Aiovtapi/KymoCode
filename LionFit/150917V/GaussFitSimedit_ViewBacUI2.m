@@ -17,9 +17,7 @@
 % sy : std in y of the spot.
 
 %% 
-function x = GaussFitSimedit_Agarolysis(init,chan,Bacpics,Bacmask,IPTP)
-
-tic
+function x = GaussFitSimedit_ViewBacUI2(init,chan,Bacpic,IPTP)
 
 %% Inputs 
 
@@ -70,11 +68,11 @@ frames = 1;
 %         d1{1}=readtimeseries(strcat(bacseriepth,'.tif'),'tif');
 % 
 %         data=dip_array(d1{1}); %turn into uint16 array
-        bacsize = size(Bacpics{Cell,1});
+        bacsize = size(Bacpic);
         data = uint16(zeros(bacsize(1),bacsize(2),frames));
         
         for frami = 1:frames;
-            data(:,:,frami) = Bacpics{Cell,frami};
+            data(:,:,frami) = Bacpic;
         end
 
         %% Ze Defs
@@ -140,12 +138,12 @@ i = 1; %frame
             higherboundchannel=18;
             
             % Intensity thresholding for outliers
-            Data=ydatacrpd{i}; %%%(lowerboundchannel:higherboundchannel,:);
-            [flag,A]=DetermineOutliers(Data,Tolerance,sigmachange,how,show);
-            Outliersdata=~flag.*ydatacrpd{i}; %%%(lowerboundchannel:higherboundchannel,:);
-            IntensityPeakThreshold = mean(nonzeros(Outliersdata(:)))+std(nonzeros(Outliersdata(:)));
-
-            ydatacrpdR1{i,1}=Outliersdata;
+%             Data=ydatacrpd{i}; %%%(lowerboundchannel:higherboundchannel,:);
+%             [flag,A]=DetermineOutliers(Data,Tolerance,sigmachange,how,show);
+%             Outliersdata=~flag.*ydatacrpd{i}; %%%(lowerboundchannel:higherboundchannel,:);
+%             IntensityPeakThreshold = mean(nonzeros(Outliersdata(:)))+std(nonzeros(Outliersdata(:)));
+% 
+%             ydatacrpdR1{i,1}=Outliersdata;
             
             j=1;
 
@@ -154,7 +152,7 @@ i = 1; %frame
                 LionSpotter(ydatacrpdR1{i,j},SA,Sx,Sy,Px,Py,Bs,lob,upb);
             
            %still needs background level to be mediated from within the channel.   
-%          while x0{j}(i,1)>IPTP*IntensityPeakThreshold && j<20 && Size{i,j}(1)>0
+         while x0{j}(i,1)>IPTP*IntensityPeakThreshold && j<20 && Size{i,j}(1)>0
 
             Data=mat2im(Ydata{i,j});
             
@@ -261,15 +259,15 @@ i = 1; %frame
 
            [~,~,ISPOT,Ibacklevel,spotim_clipped,bckim,ydatacrpdR1{i,j+1},pixels{j}(i)]=LionMasker(ydatacrpdR1{i,j},x{j}(i,2),x{j}(i,4),ClipmaskR,GaussmaskW);
 
-%            if size(nonzeros(spotim_clipped(:)),1)<1
-%                 break
+           if size(nonzeros(spotim_clipped(:)),1)<1
+                break
 %            else
 %                 j=j+1;
 % 
 %                 [x0{j}(i,:),Case{j}(i),~,Ydata{i,j},Size{i,j},Yg(i,j),Xg(i,j)]= ... 
 %                 LionSpotter(ydatacrpdR1{i,j},SA,Sx,Sy,Px,Py,Bs,lob,upb);  
-%            end
-%         end
+           end
+        end
         
 % % %         % Flipping the images
 % % %         if imgflip==1
@@ -398,22 +396,4 @@ i = 1; %frame
 
         end
     end
-
-
-
-    %% Save results
-
-%             display(strcat('Cell ',num2str(Cell),' analyzed'));
-        
-        DataStruct(chan,Cell).x = x;
-        DataStruct(chan,Cell).NSpots = Nspots;
-        DataStruct(chan,Cell).SNR = SNR;
-        DataStruct(chan,Cell).ydatacrpdR1 = ydatacrpdR1;
-        DataStruct(chan,Cell).pixels = pixels;
-
-
-save(strcat(lionval.datapath,lionval.OSslash,'Results.mat'),'DataStruct')
-
-
-toc
 end
