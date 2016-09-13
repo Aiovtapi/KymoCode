@@ -94,7 +94,7 @@ for chan = chans
         save(strcat(init.datapath,'imgflip.mat'),'flippedchan','-append')
     end
        
-    GaussFitSimedit_Agarolysis(init,chan,Bacpics{chan},Bacmask,cells,frames,IPTPvalue(chan));
+    DataStruct = GaussFitSimedit_Agarolysis(init,chan,Bacpics{chan},Bacmask,cells,frames,IPTPvalue(chan));
 
     %% Get indivudual meshes
 
@@ -117,8 +117,10 @@ for chan = chans
 
     for celli = 1:cells;
 
-        thismatpath = strcat(Lionresultspath,'Cell_',num2str(celli,'%03.0f'));
-        load(thismatpath,'x');
+%         thismatpath = strcat(Lionresultspath,'Cell_',num2str(celli,'%03.0f'));
+%         load(thismatpath,'x');
+        
+        x = DataStruct(chan,celli).x;
         bx = Removespots(x,CBacmask(celli,:));
         X{chan,celli} = x;
         BX{chan,celli} = bx;
@@ -156,7 +158,12 @@ for chan = chans
             end
             Lnorm = [Lnorm; Lnormsp];
         end
-        save(thismatpath,'bx','ld','CellLength','Lnorm','-append')
+        
+        DataStruct(chan,celli).bx = bx;
+        DataStruct(chan,celli).ld = ld;
+        DataStruct(chan,celli).CellLength = CellLength;
+        DataStruct(chan,celli).Lnorm = Lnorm;
+        
         AllLnorm = [AllLnorm; Lnorm];
         clear x bx
     end
@@ -169,6 +176,8 @@ for chan = chans
     
     disp('Projected to Mesh')
 end
+
+save(strcat(init.datapath,init.OSslash,'Results.mat'),'DataStruct')
 
 
 %% View bacpics with meshes and spots, find faulty cells

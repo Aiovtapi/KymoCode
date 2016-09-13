@@ -17,14 +17,14 @@
 % sy : std in y of the spot.
 
 %% 
-function DataStruct = GaussFitSimedit_Agarolysis(init,chan,Bacpics,Bacmask,cells,frames,IPTP)
+function x = GaussFitSimedit_Agarolysis(init,chan,Bacpics,Bacmask,IPTP)
 
 tic
 
 %% Inputs 
 
 lionval = Agar2lion(init,chan);
-lionval.viewbac = 1:cells;
+
 
 PSFSigma=1;
 iterations=10;
@@ -34,7 +34,8 @@ if exist(strcat(lionval.datapath,lionval.OSslash,'Results.mat'),'file')
     load(strcat(lionval.datapath,lionval.OSslash,'Results.mat'));
 end
     
-for Cell=lionval.viewbac;
+Cell = 1;
+frames = 1;
     
 % % %     imgflip = 1;        % If you want to align the CFP images.
 % % %     imgflipped = 0;
@@ -47,10 +48,7 @@ for Cell=lionval.viewbac;
         ClipFactor=1;
         GaussFactor=1;
 
-        thisbacfolder=strcat('Cell_',num2str(Cell,'%03.0f')); % Tif stack 
-        bacseriepth=strcat(lionval.Mainfolder,lionval.OSslash,thisbacfolder,lionval.OSslash);
-% 
-%         
+       
 % % % %         % Check for whether flipping is needed based on the difchannel for
 % % % %         % non difchannels. 
 % % % %         if ~strcmp(lionval.viewchan,lionval.difchan)
@@ -124,7 +122,7 @@ for Cell=lionval.viewbac;
         show=0;
 
 
-        for i=1:Tsize
+i = 1; %frame
 
             %Remove the x,y-Pads
             ydata{i}=double(data(:,:,i));
@@ -156,7 +154,7 @@ for Cell=lionval.viewbac;
                 LionSpotter(ydatacrpdR1{i,j},SA,Sx,Sy,Px,Py,Bs,lob,upb);
             
            %still needs background level to be mediated from within the channel.   
-            while x0{j}(i,1)>IPTP*IntensityPeakThreshold && j<20 && Size{i,j}(1)>0
+%          while x0{j}(i,1)>IPTP*IntensityPeakThreshold && j<20 && Size{i,j}(1)>0
 
             Data=mat2im(Ydata{i,j});
             
@@ -263,22 +261,15 @@ for Cell=lionval.viewbac;
 
            [~,~,ISPOT,Ibacklevel,spotim_clipped,bckim,ydatacrpdR1{i,j+1},pixels{j}(i)]=LionMasker(ydatacrpdR1{i,j},x{j}(i,2),x{j}(i,4),ClipmaskR,GaussmaskW);
 
-           if size(nonzeros(spotim_clipped(:)),1)<1
-               break
-           else
-            j=j+1;
-
-                [x0{j}(i,:),Case{j}(i),~,Ydata{i,j},Size{i,j},Yg(i,j),Xg(i,j)]= ... 
-                LionSpotter(ydatacrpdR1{i,j},SA,Sx,Sy,Px,Py,Bs,lob,upb);  
-           end
-
-            end
-
-% % %             % Breaking the loop for image flipping. 
-% % %             if imgflip==1
-% % %                 break
-% % %             end
-        end
+%            if size(nonzeros(spotim_clipped(:)),1)<1
+%                 break
+%            else
+%                 j=j+1;
+% 
+%                 [x0{j}(i,:),Case{j}(i),~,Ydata{i,j},Size{i,j},Yg(i,j),Xg(i,j)]= ... 
+%                 LionSpotter(ydatacrpdR1{i,j},SA,Sx,Sy,Px,Py,Bs,lob,upb);  
+%            end
+%         end
         
 % % %         % Flipping the images
 % % %         if imgflip==1
@@ -290,16 +281,16 @@ for Cell=lionval.viewbac;
 
     NSpots=size(x,2);
 %     LXNormOne=size(XNorm{1},1);
-    LxOne=size(x{1},1);
+%     LxOne=size(x{1},1);
 
     % make sure that each spot data is same length
     % because some spots will be there for just a few frames
     % and their last will be the length of the array.
 
-    for j=2:NSpots;
-        x{j}=[x{j};zeros(LxOne-size(x{j},1),5)];
-%         XNorm{j}=[XNorm{j};zeros(LXNormOne-size(XNorm{j},1),4)];
-    end
+%     for j=2:NSpots;
+%         x{j}=[x{j};zeros(LxOne-size(x{j},1),5)];
+% %         XNorm{j}=[XNorm{j};zeros(LXNormOne-size(XNorm{j},1),4)];
+%     end
 
 
     %% Translate back to original coords
@@ -326,16 +317,17 @@ for Cell=lionval.viewbac;
 
     for i=1:Tsize
 
-         % Full Cell Integrated Intensity
-         Cellidx = find(Bacmask{Cell,i});
-         
-         FCII{i}=ydatacrpd{i}; %%%(lowerboundchannel:higherboundchannel,:);
+%          % Full Cell Integrated Intensity
+%          Cellidx = find(Bacmask{Cell,i});
+%          
+%          FCII{i}=ydatacrpd{i}; %%%(lowerboundchannel:higherboundchannel,:);
 
         for j=1:NSpots
 
             %This is the full cell integrated intensity
 % % %             x{j}(i,7)=sum(sum(FCII{i}));
-            x{j}(i,7) = sum(FCII{i}(Cellidx));
+%             x{j}(i,7) = sum(FCII{i}(Cellidx));
+            x{j}(i,7) = 0;
             
             % to do: compare spot positions
             if ~isempty(Size{i,j}) % there still has to be an image.
@@ -411,27 +403,13 @@ for Cell=lionval.viewbac;
 
     %% Save results
 
-            display(strcat('Cell ',num2str(Cell),' analyzed'));
-%             display('Saving..');
-%         if ~exist(strcat(lionval.Mainfolder,lionval.OSslash,'Results'),'dir')
-%             mkdir(strcat(lionval.Mainfolder,lionval.OSslash,'Results'));
-%         end
-%         
-%         if exist(strcat(lionval.Mainfolder,lionval.OSslash,'Results',lionval.OSslash,thisbacfolder,'.mat'),'file')
-%             disp('This bac series has already been saved. Saving will be skipped')
-%         else
-%             save(strcat(lionval.Mainfolder,lionval.OSslash,'Results',lionval.OSslash,thisbacfolder),'x','NSpots','SNR','ydatacrpdR1','pixels'); %,'imgflipped');
-%             display('Save complete.');
-%         end
+%             display(strcat('Cell ',num2str(Cell),' analyzed'));
         
         DataStruct(chan,Cell).x = x;
         DataStruct(chan,Cell).NSpots = Nspots;
         DataStruct(chan,Cell).SNR = SNR;
         DataStruct(chan,Cell).ydatacrpdR1 = ydatacrpdR1;
         DataStruct(chan,Cell).pixels = pixels;
-
-
-end
 
 
 save(strcat(lionval.datapath,lionval.OSslash,'Results.mat'),'DataStruct')

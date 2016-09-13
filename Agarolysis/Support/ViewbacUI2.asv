@@ -185,16 +185,12 @@ uiwait(f)                                       % Wait for button click
             hold off
         else
             removespot = [];
-            bound = 2; 
-            Rxy = round(clickxy);
-            
-            if ~any(Rxy<1)
-                thisbac = Bacpics{chan}{celli,frami};
-                padbac = padarray(thisbac,[bound,bound]);
-                baccrop = [Rxy, 2*bound, 2*bound];
-                croppedbac = imcrop(padbac, baccrop);
-                figure(2)
-                imagesc(croppedbac)
+            bound = 4; 
+            if 
+            thisbac = Bacpics{chan}{celli,frami};
+            padbac = padarray(thisbac,[bound,bound]);
+            baccrop = [round(clickxy), 2*bound, 2*bound]
+            if 
             end
         end
         
