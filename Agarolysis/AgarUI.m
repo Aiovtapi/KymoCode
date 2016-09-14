@@ -118,9 +118,11 @@ init.pcresize = str2double(handles.edit_pc_resize.String);
 init.pctrans = [str2double(handles.edit_pc_x.String),...
     str2double(handles.edit_pc_y.String)];
 
-init.CFPbeampath = strcat(handles.beampath,handles.edit_cfpbeam.String);
-init.YFPbeampath = strcat(handles.beampath,handles.edit_yfpbeam.String);
-init.RFPbeampath = strcat(handles.beampath,handles.edit_rfpbeam.String);
+if ~handles.radio_dbeam_yes.Value
+    init.CFPbeampath = strcat(handles.beampath,handles.edit_cfpbeam.String);
+    init.YFPbeampath = strcat(handles.beampath,handles.edit_yfpbeam.String);
+    init.RFPbeampath = strcat(handles.beampath,handles.edit_rfpbeam.String);
+end
 
 viewchanbool(1) = handles.checkbox_CFP.Value;
 viewchanbool(2) = handles.checkbox_YFP.Value;

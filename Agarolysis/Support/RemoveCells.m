@@ -1,4 +1,4 @@
-function RemoveCells(init,cells,faultycells,fpath)
+function DataStruct = RemoveCells(init, DataStruct, cells,faultycells,fpath)
 
     goodcells = 1:cells;
     goodcells(faultycells) = [];
@@ -15,16 +15,18 @@ function RemoveCells(init,cells,faultycells,fpath)
 
                 for chan = 1:chans
                     bacfolder = strcat(init.bacpath,init.flimgname{chan},init.OSslash);
-                    resultfolder = strcat(bacfolder,'Results',init.OSslash);
+%                     resultfolder = strcat(bacfolder,'Results',init.OSslash);
                     
                     disp(['Deleting faulty bacpics and results for ',init.flimgname{chan}]);
                     % Delete faulty bacpics and results
                     for fcelli = faultycells;
                         bacdir = strcat(bacfolder,'Cell_',num2str(fcelli,'%03.0f'));
                         rmdir(bacdir,'s');
+                        
+                        DataStruct(:,fcelli) = [];
 
-                        matpath = strcat(resultfolder,'Cell_',num2str(fcelli,'%03.0f'),'.mat');
-                        delete(matpath);
+%                         matpath = strcat(resultfolder,'Cell_',num2str(fcelli,'%03.0f'),'.mat');
+%                         delete(matpath);
                     end
 
                     % Relabel folders and results if requested
@@ -35,15 +37,15 @@ function RemoveCells(init,cells,faultycells,fpath)
                             for celli = newlabel;
                                 obacdir = strcat(bacfolder,'Cell_',num2str(goodcells(celli),'%03.0f'));
                                 nbacdir = strcat(bacfolder,'Cell_',num2str(celli,'%03.0f'));
-                                omatpath = strcat(resultfolder,'Cell_',num2str(goodcells(celli),'%03.0f'),'.mat');
-                                nmatpath = strcat(resultfolder,'Cell_',num2str(celli,'%03.0f'),'.mat');
+%                                 omatpath = strcat(resultfolder,'Cell_',num2str(goodcells(celli),'%03.0f'),'.mat');
+%                                 nmatpath = strcat(resultfolder,'Cell_',num2str(celli,'%03.0f'),'.mat');
                                 
                                 if ~strcmp(obacdir,nbacdir)
                                     movefile(obacdir,nbacdir)
                                 end
-                                if ~strcmp(omatpath,nmatpath)
-                                    movefile(omatpath,nmatpath)
-                                end
+%                                 if ~strcmp(omatpath,nmatpath)
+%                                     movefile(omatpath,nmatpath)
+%                                 end
                             end
                         case 'No'
                     end    

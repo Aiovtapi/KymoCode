@@ -17,7 +17,7 @@
 % sy : std in y of the spot.
 
 %% 
-function x = GaussFitSimedit_ViewBacUI2(init,chan,Bacpic,IPTP)
+function x = GaussFitSimedit_ViewBacUI2(init,chan,Bacpic)
 
 %% Inputs 
 
@@ -27,10 +27,6 @@ lionval = Agar2lion(init,chan);
 PSFSigma=1;
 iterations=10;
 fittype=4;
-
-if exist(strcat(lionval.datapath,lionval.OSslash,'Results.mat'),'file')
-    load(strcat(lionval.datapath,lionval.OSslash,'Results.mat'));
-end
     
 Cell = 1;
 frames = 1;
@@ -102,8 +98,8 @@ frames = 1;
 
         % Define some parameters 
 
-        SA=3; % pixel step from maximum amplitude 
-        Sx=3; Sy=3; % guess of sigmaX of spots
+        SA=1; % pixel step from maximum amplitude 
+        Sx=2; Sy=2; % guess of sigmaX of spots
         Px=3; Py=3; % for optimal fitting add black 'pads' around detected spot
         Bs=1; Bss=2*Bs+1; % this defines size of black sqaure
         lob=1; upb=size(data(:,:,1),1); chanthickness=size(data(:,:,1),1); % define the boundaries of the channel
@@ -114,7 +110,7 @@ frames = 1;
 
         %Determine outliers for determining intensity threshold.
 
-        Tolerance=2;
+        Tolerance=1.25;
         sigmachange=0.9;
         how='positive';
         show=0;
@@ -132,28 +128,24 @@ i = 1; %frame
                 ydatacrpd{i}=ydata{i};
             end
                 ydatacrpdR1{i,1}=ydatacrpd{i};
-
-            % Microfluidic channel boundaries (px)
-            lowerboundchannel=6;
-            higherboundchannel=18;
             
             % Intensity thresholding for outliers
-%             Data=ydatacrpd{i}; %%%(lowerboundchannel:higherboundchannel,:);
-%             [flag,A]=DetermineOutliers(Data,Tolerance,sigmachange,how,show);
-%             Outliersdata=~flag.*ydatacrpd{i}; %%%(lowerboundchannel:higherboundchannel,:);
-%             IntensityPeakThreshold = mean(nonzeros(Outliersdata(:)))+std(nonzeros(Outliersdata(:)));
+            Data=ydatacrpd{i}; %%%(lowerboundchannel:higherboundchannel,:);
+            [flag,A]=DetermineOutliers(Data,Tolerance,sigmachange,how,show);
+            Outliersdata=~flag.*ydatacrpd{i}; %%%(lowerboundchannel:higherboundchannel,:);
+            IntensityPeakThreshold = mean(nonzeros(Outliersdata(:)))+std(nonzeros(Outliersdata(:)));
 % 
-%             ydatacrpdR1{i,1}=Outliersdata;
+            ydatacrpdR1{i,1}=Outliersdata;
             
             j=1;
 
 
             [x0{j}(i,:),Case{j}(i),ydatacrpdR1{i,j+1},Ydata{i,j},Size{i,j},Yg(i,j),Xg(i,j)]= ... 
                 LionSpotter(ydatacrpdR1{i,j},SA,Sx,Sy,Px,Py,Bs,lob,upb);
-            
-           %still needs background level to be mediated from within the channel.   
-         while x0{j}(i,1)>IPTP*IntensityPeakThreshold && j<20 && Size{i,j}(1)>0
 
+           %still needs background level to be mediated from within the channel.   
+%          while x0{j}(i,1)>IPTP*IntensityPeakThreshold && j<20 && Size{i,j}(1)>0
+           
             Data=mat2im(Ydata{i,j});
             
             % Main Fitting Algorithm
@@ -258,17 +250,17 @@ i = 1; %frame
             ClipmaskR=ClipFactor*(x{j}(i,3).^2+x{j}(i,5).^2)^(1/2);
 
            [~,~,ISPOT,Ibacklevel,spotim_clipped,bckim,ydatacrpdR1{i,j+1},pixels{j}(i)]=LionMasker(ydatacrpdR1{i,j},x{j}(i,2),x{j}(i,4),ClipmaskR,GaussmaskW);
-
-           if size(nonzeros(spotim_clipped(:)),1)<1
-                break
-%            else
-%                 j=j+1;
 % 
-%                 [x0{j}(i,:),Case{j}(i),~,Ydata{i,j},Size{i,j},Yg(i,j),Xg(i,j)]= ... 
-%                 LionSpotter(ydatacrpdR1{i,j},SA,Sx,Sy,Px,Py,Bs,lob,upb);  
-           end
-        end
-        
+%            if size(nonzeros(spotim_clipped(:)),1)<1
+%                 break
+% %            else
+% %                 j=j+1;
+% % 
+% %                 [x0{j}(i,:),Case{j}(i),~,Ydata{i,j},Size{i,j},Yg(i,j),Xg(i,j)]= ... 
+% %                 LionSpotter(ydatacrpdR1{i,j},SA,Sx,Sy,Px,Py,Bs,lob,upb);  
+%            end
+% % % % % % % % % % % % % % % % % % %         end
+%         
 % % %         % Flipping the images
 % % %         if imgflip==1
 % % %             disp(['Flipping ',thisbacfolder])

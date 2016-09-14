@@ -425,7 +425,6 @@ for Cell=lionval.viewbac;
 %         end
         
         DataStruct(chan,Cell).x = x;
-        DataStruct(chan,Cell).NSpots = Nspots;
         DataStruct(chan,Cell).SNR = SNR;
         DataStruct(chan,Cell).ydatacrpdR1 = ydatacrpdR1;
         DataStruct(chan,Cell).pixels = pixels;

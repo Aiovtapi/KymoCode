@@ -1,4 +1,4 @@
-function [skip,fault,previous,Rspot] = ViewbacUI2(init,chans,f,Bacpics,Bacmesh,X,BX,celli,Title)
+function [skip,fault,previous,Rspot,Nspot] = ViewbacUI2(init,chans,f,Bacpics,Bacmesh,X,BX,celli,Title)
 
 frames = size(Bacmesh{1},2);
 [~, cells] = size(X);
@@ -6,6 +6,7 @@ skip = 0;
 fault = 0;
 previous = 0;
 Rspot = [];
+Nspot = [];
 Nchans = numel(chans);
 
 currentbac = ['Bacpic ',num2str(celli),'/',num2str(cells)];
@@ -165,14 +166,21 @@ uiwait(f)                                       % Wait for button click
         end
         
         thisx = BX{clickchan,celli};                     % get spots information
-        spots = size(thisx,2);
-        
-        spotx = zeros(spots,2);
-        for spotn = 1:spots
+        rspots = size(thisx,2);
+        nspots = size(Nspot,1);
+                
+        spotx = zeros(rspots+nspots,2);
+        for spotn = 1:rspots
             spotx(spotn,1) = thisx{spotn}(frami,2);     % prepare spots coordinates
             spotx(spotn,2) = thisx{spotn}(frami,4);
         end
         
+        if ~nspots ==0 
+            for spotn = 1:nspots
+                spotx(rspots + spotn,1) = Nspot(spotn,2);
+                spotx(rspots + spotn,2) = Nspot(spotn,4);
+            end
+        end
         
         [minval,minidx] = ...                           % Find minimal spot distance
             min(sqrt(sum(bsxfun(@minus,clickxy,spotx).^2,2)));
@@ -180,47 +188,119 @@ uiwait(f)                                       % Wait for button click
         % If click close position to a spot, the spot will be registered.
         % If not, a 
         if minval < 0.5
-            removespot = [clickchan,minidx];
+            
+            if ~isempty(Rspot)
+                thisRspots = find(Rspot(:,1)==clickchan);
+                if numel(thisRspots) > 0
+                    for i = 1:numel(thisRspots)
+                        thisrpos(i,1) = thisx{Rspot(thisRspots(i),2)}(frami,2);
+                        thisrpos(i,2) = thisx{Rspot(thisRspots(i),2)}(frami,4);
+                    end
+                    [oldspot,rspotidx] = ismember(thisrpos,spotx(minidx,:),'rows');
+                else
+                    oldspot = 0;
+                end
+            else
+                oldspot = 0;
+            end
+            
             hold on
-            plot(spotx(minidx,1),spotx(minidx,2),'rx','LineWidth',2);
+            if oldspot
+                plot(spotx(minidx,1),spotx(minidx,2),'kx','LineWidth',2);
+            else
+                plot(spotx(minidx,1),spotx(minidx,2),'rx','LineWidth',2);
+            end
             hold off
+            
+            
+            if minidx <= rspots
+                if oldspot
+                    Rspot(thisRspots(rspotidx),:) = [];
+                    removespot = [];
+                else
+                    removespot = [clickchan,minidx];
+                end
+            else
+                Nspot(minidx - rspots,:) = [];
+                removespot = [];
+            end
+            newx = [];
+            
         else
             removespot = [];
             bound = 2; 
             Rxy = round(clickxy);
             
             if ~any(Rxy<1)
-                thisbac = Bacpics{chan}{celli,frami};
+                thisbac = Bacpics{clickchan}{celli,frami};
                 padbac = padarray(thisbac,[bound,bound]);
                 baccrop = [Rxy, 2*bound, 2*bound];
                 croppedbac = imcrop(padbac, baccrop);
-%                 figure(2)
-%                 imagesc(croppedbac)
-                x = GaussFitSimedit_ViewBacUI2(init,chan,croppedbac,init.IPTP(chan))
+                newx = GaussFitSimedit_ViewBacUI2(init,chan,croppedbac);
+                newx = newx{1,1};
+                newx(2) = newx(2) + Rxy(1) - bound - 1;
+                newx(4) = newx(4) + Rxy(2) - bound - 1;
+                newx(7) = thisx{1}(frami,7);
+                hold on
+                plot(newx(2),newx(4),'kx','LineWidth',2)
+                hold off
+                newx(9) = clickchan;
+                newx(10) = frami;
+            else
+                newx = [];
             end
         end
+        Nspot = [Nspot; newx];
+        Nspot = unique(Nspot,'rows');
         
         Rspot = [Rspot; removespot];
-        Rspot = unique(Rspot, 'rows');
+        Rspot = unique(Rspot,'rows');
+        
+        clear thisrpos
     end
 
     function Clearclick(hObject, eventdata, handles)
         
         if frames > 1
-            frame = round(sld.Value);                   % get current frame
+            frami = round(sld.Value);                   % get current frame
         else
-            frame = 1;
+            frami = 1;
         end
         
-        for respot = 1:size(Rspot,1);                   % replot clicked spot
-            thisx = BX{Rspot(respot,1),celli}{Rspot(respot,2)}(frame,:);
-            subplot(1,Nchans,Rspot(respot,1))
-            hold on
-            plot(thisx(2),thisx(4),'kx','LineWidth',2)
+%         for respot = 1:size(Rspot,1);                   % replot clicked spot
+%             thisx = BX{Rspot(respot,1),celli}{Rspot(respot,2)}(frame,:);
+%             subplot(1,Nchans,Rspot(respot,1))
+%             hold on
+%             plot(thisx(2),thisx(4),'kx','LineWidth',2)
+%             hold off
+%         end
+        
+        for chan = chans;
+            ax(Nchans)=subplot(1,Nchans,chan);
+            title(Title{chan})
+            
+            x = X{chan,celli};
+            bx = BX{chan,celli};
+            
+            hold on                             % Plot the bacpic, mesh and spots
+            imagesc(Bacpics{chan}{celli,frami})
+            plot(Bacmesh{chan}{celli,frami}(:,1),...
+                Bacmesh{chan}{celli,frami}(:,2),'w',...
+                Bacmesh{chan}{celli,frami}(:,3),...
+                Bacmesh{chan}{celli,frami}(:,4),'w','LineWidth',2)
+            for spoti = 1:length(x)
+                plot(x{spoti}(frami,2),x{spoti}(frami,4),'rx','LineWidth',2)
+            end
+            for spoti = 1:length(bx)
+                plot(bx{spoti}(frami,2),bx{spoti}(frami,4),'kx','LineWidth',2)
+            end
+            axis off
             hold off
+            clear x bx
         end
         
         Rspot = [];
+        Nspot = [];
     end
 end
 

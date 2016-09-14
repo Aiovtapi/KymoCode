@@ -165,7 +165,7 @@ for chan = chans
         DataStruct(chan,celli).Lnorm = Lnorm;
         
         AllLnorm = [AllLnorm; Lnorm];
-        clear x bx
+        clear x bx ld
     end
 
     Lvalnorm{chan} = AllLnorm;
@@ -175,9 +175,11 @@ for chan = chans
         spots thiscellbox thisfigure thismatpath AllLnorm thisbacmesh
     
     disp('Projected to Mesh')
+    
+    save(strcat(init.datapath,init.OSslash,'Results.mat'),'DataStruct')
 end
 init.IPTP = IPTPvalue;
-save(strcat(init.datapath,init.OSslash,'Results.mat'),'DataStruct')
+
 
 
 %% View bacpics with meshes and spots, find faulty cells
@@ -191,12 +193,16 @@ f = figure('Name','Agarolysis','NumberTitle','off',...
 while celli <= cells;
     
     if skip == 0;
-        [skip,fault,previous,Rspot] = ViewbacUI2(init,chans,f,Bacpics,Bacmesh,X,BX,celli,init.flimgname);
+        [skip,fault,previous,Rspot,Nspot] = ViewbacUI2(init,chans,f,Bacpics,Bacmesh,X,BX,celli,init.flimgname);
     end
     
     % Remove clicked spots, new bx and ld are saved as rbx and rld
-	if ~numel(Rspot) == 0
-        Removespotsui(init,celli,Rspot)
+    if size(Rspot,1) > 0
+        DataStruct = ViewBacRspot(DataStruct,celli,Rspot);
+    end
+    
+    if size(Nspot,1) > 0
+        DataStruct = ViewBacNspot(DataStruct,celli,Nspot,Bacmesh);
     end
     
     % Save faulty cells
@@ -222,6 +228,8 @@ while celli <= cells;
             end
         end
     end
+    
+    clear Rspot Nspot
 end
 close(f)
 
@@ -229,12 +237,14 @@ faultycells = unique(fcelli);
 fpath = strcat(init.bacpath,'fcells.mat');
 fremoved = 0;
 save(fpath,'faultycells','fremoved')
+save(strcat(init.datapath,init.OSslash,'Results.mat'),'DataStruct')
 
 %% Remove faulty cells
 
 if ~isempty(faultycells)
-    RemoveCells(init,cells,faultycells,fpath);
+    DataStruct = RemoveCells(init, DataStruct, cells, faultycells, fpath);
 end
+save(strcat(init.datapath,init.OSslash,'Results.mat'),'DataStruct')
 disp('Operation done')
 
 clear chan chans celli done previous skip frames fremoved fault fclii
