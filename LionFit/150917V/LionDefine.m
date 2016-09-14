@@ -1,11 +1,11 @@
-function [lionval] = LionDefine(exp,lionval)
+function [lionval] = LionDefine(exp,initval)
 %UNTITLED3 Summary of this function goes here
 %   Detailed explanation goes here
 % Define your experiment
 
-% if ~exist('Cell')
-%     Cell=1;
-% end
+lionval.channr=7;
+lionval.viewchan='CFP';
+lionval.viewbac=1;
 
 if ~exist('exp')
     exp = 'Mark';

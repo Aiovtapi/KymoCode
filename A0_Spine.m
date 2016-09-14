@@ -31,3 +31,7 @@ close all
 %% Processing
 
 A100_Processing_ReplicationAutoShell(user,exp)
+
+%% Lionfit
+
+GaussFitSimedit(user,exp)
