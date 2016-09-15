@@ -22,7 +22,6 @@ close all
 %% Kymomaker
 
 A040_Images_KymoMaker(user,exp)
-close all
 
 %% Click through cell cycles
 

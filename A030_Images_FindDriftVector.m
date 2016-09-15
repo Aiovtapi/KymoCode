@@ -125,6 +125,7 @@ initval.ImagesWorkspaceName=strcat(initval.basepath,'Images',num2str(initval.max
 save(initval.ImagesWorkspaceName, 'drift','-append');
 
 disp('Drift vector found');
+disp('A30 done');
 end
 
 function [x0,y0,x,y,prfx,prfy]=Track_Kernel(im,fkernel,Nr,DirNameROI,DirNameCR); 
