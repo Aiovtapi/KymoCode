@@ -17,10 +17,10 @@ function [BCellbox,Bacsize] = Findbound(Cellbox,cells,frames,bound)
         
         % Create new Cellbox that is bounded
         for frami = 1:frames;
-            BCellbox(celli,frami,1) = (Cellbox(celli,frami,2) + Cellbox(celli,frami,1) - Bacsize(celli,1))/2 + bound;
-            BCellbox(celli,frami,2) = (Cellbox(celli,frami,2) + Cellbox(celli,frami,1) + Bacsize(celli,1))/2 + bound;
-            BCellbox(celli,frami,3) = (Cellbox(celli,frami,4) + Cellbox(celli,frami,3) - Bacsize(celli,2))/2 + bound;
-            BCellbox(celli,frami,4) = (Cellbox(celli,frami,4) + Cellbox(celli,frami,3) + Bacsize(celli,2))/2 + bound;
+            BCellbox(celli,frami,1) = (Cellbox(celli,frami,2) + Cellbox(celli,frami,1) - (Bacsize(celli,1)-1))/2 + bound;
+            BCellbox(celli,frami,2) = (Cellbox(celli,frami,2) + Cellbox(celli,frami,1) + (Bacsize(celli,1)-1))/2 + bound;
+            BCellbox(celli,frami,3) = (Cellbox(celli,frami,4) + Cellbox(celli,frami,3) - (Bacsize(celli,2)-1))/2 + bound;
+            BCellbox(celli,frami,4) = (Cellbox(celli,frami,4) + Cellbox(celli,frami,3) + (Bacsize(celli,2)-1))/2 + bound;
             
             %Bettermesh{celli,frami} = Bettermesh{celli,frami} - bound;
         end 

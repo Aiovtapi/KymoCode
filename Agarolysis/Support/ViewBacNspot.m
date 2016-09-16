@@ -24,8 +24,8 @@ function DataStruct = ViewBacNspot(DataStruct,celli,Nspot,Bacmesh)
         ld(3) = varval;
         ld(5) = varval;
         
-        nbx = {obx, bx};
-        nld = {old, ld};
+        nbx = [obx, bx];
+        nld = [old, ld];
         
         DataStruct(thischan,celli).bx = nbx;
         DataStruct(thischan,celli).ld = nld;
