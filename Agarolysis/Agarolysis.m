@@ -53,46 +53,46 @@ for chan = chans
     IPTPvalue(chan) = LionfitcontrolUI(init,Bacpics{chan},Bacmask,cells,chan);
     close all
     
-    % Check if rotation information already exists. If not, rotation
-    % information will be generated and saved
-    if strcmp(init.channels{chan},init.difchan)
-        disp('Calculated Bacpic rotation')
-        imgflip = GaussFitSimedit_AgarRotate(init,chan,Bacpics{chan},cells,1,IPTPvalue(chan));
-        flippedchan = [chans ;zeros(size(chans))];
-        save(strcat(init.datapath,'imgflip.mat'),'imgflip','flippedchan')
-    else
-        if exist(strcat(init.datapath,'imgflip.mat'),'file')
-            load(strcat(init.datapath,'imgflip.mat'))
-        else
-        	choice = questdlg('No imgflip file found, cell orientation not defined. Do you want to continue?',...
-                'Warning','Yes','No','No');
-            switch choice
-                case 'No'
-                    return
-            end
-        end
-    end
-    
-    
-    % Rotation of the cells according to the dif-site information
-    
-    if exist(strcat(init.datapath,'imgflip.mat'),'file')
-        % Only flip Bettermesh and BCellbox once
-        if chan == chans(1)
-            disp('Flipping Meshes...')
-            [Bettermesh, BCellbox, Bacsize] = AgarRotate1(init, Bettermesh, cells, frames, imgflip);
-        end
-        
-        % Flipping the bacpics and masks
-        disp('Flipping Bacpics...')
-        [Bacmask, CBacmask, Bacpics{chan}, NMBacpics{chan}] = ...
-            AgarRotate2(init, Bacmask, CBacmask, Bacpics{chan}, NMBacpics{chan},...
-            cells, frames, imgflip, chan);
-        
-        % Save flipped information
-        flippedchan(2,chan) = 1;
-        save(strcat(init.datapath,'imgflip.mat'),'flippedchan','-append')
-    end
+%     % Check if rotation information already exists. If not, rotation
+%     % information will be generated and saved
+%     if strcmp(init.channels{chan},init.difchan)
+%         disp('Calculated Bacpic rotation')
+%         imgflip = GaussFitSimedit_AgarRotate(init,chan,Bacpics{chan},cells,1,IPTPvalue(chan));
+%         flippedchan = [chans ;zeros(size(chans))];
+%         save(strcat(init.datapath,'imgflip.mat'),'imgflip','flippedchan')
+%     else
+%         if exist(strcat(init.datapath,'imgflip.mat'),'file')
+%             load(strcat(init.datapath,'imgflip.mat'))
+%         else
+%         	choice = questdlg('No imgflip file found, cell orientation not defined. Do you want to continue?',...
+%                 'Warning','Yes','No','No');
+%             switch choice
+%                 case 'No'
+%                     return
+%             end
+%         end
+%     end
+%     
+%     
+%     % Rotation of the cells according to the dif-site information
+%     
+%     if exist(strcat(init.datapath,'imgflip.mat'),'file')
+%         % Only flip Bettermesh and BCellbox once
+%         if chan == chans(1)
+%             disp('Flipping Meshes...')
+%             [Bettermesh, BCellbox, Bacsize] = AgarRotate1(init, Bettermesh, cells, frames, imgflip);
+%         end
+%         
+%         % Flipping the bacpics and masks
+%         disp('Flipping Bacpics...')
+%         [Bacmask, CBacmask, Bacpics{chan}, NMBacpics{chan}] = ...
+%             AgarRotate2(init, Bacmask, CBacmask, Bacpics{chan}, NMBacpics{chan},...
+%             cells, frames, imgflip, chan);
+%         
+%         % Save flipped information
+%         flippedchan(2,chan) = 1;
+%         save(strcat(init.datapath,'imgflip.mat'),'flippedchan','-append')
+%     end
        
     DataStruct = GaussFitSimedit_Agarolysis(init,chan,Bacpics{chan},Bacmask,cells,frames,IPTPvalue(chan));
 
@@ -148,13 +148,21 @@ for chan = chans
 
                 [Lval,Dval] = projectToMesh(Xval,Yval,thisbacmesh);
                 varval = sqrt(spotxy(3)^2+spotxy(5)^2);
-
+                
+                ThisLnorm = Lval/CellLength(frami);
+                %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+                if ThisLnorm > 0.5
+                    Lval = CellLength(frami) - Lval;
+                    ThisLnorm = Lval/CellLength(frami);
+                end
+                %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+                
                 ld{spoti}(frami,2) = Lval;
                 ld{spoti}(frami,4) = Dval;
                 ld{spoti}(frami,3) = varval;
                 ld{spoti}(frami,5) = varval;
-
-                Lnormsp = [Lnormsp; Lval/CellLength(frami)];
+               
+                Lnormsp = [Lnormsp; ThisLnorm];
             end
             Lnorm = [Lnorm; Lnormsp];
         end
