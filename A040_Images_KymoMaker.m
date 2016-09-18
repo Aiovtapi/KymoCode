@@ -132,8 +132,9 @@ for i=1:initval.channelno;
     if FolderExistence == 0
         mkdir(strcat(initval.basepath,initval.FiguresFolder,'Kymographs/',initval.viewchan{I}))
     end
-
-    mkdir(strcat(initval.basepath,'/Kymographs/',initval.viewchan{I}));
+    if ~ exist(strcat(initval.basepath,'/Kymographs/',initval.viewchan{I}),'dir')
+        mkdir(strcat(initval.basepath,'/Kymographs/',initval.viewchan{I}));
+    end
     lbl3=strcat(initval.basepath,'/Kymographs/',initval.viewchan{I},'/Kymograph_FL',initval.WorkspaceOutName(1:end-4),'.tif'); %kymograph
     lbl4=strcat(initval.basepath,'/Kymographs/',initval.viewchan{I},'/Kymograph_BF',initval.WorkspaceOutName(1:end-4),'.tif'); %kymograph
     %For writing Kymos to the Figures folder.

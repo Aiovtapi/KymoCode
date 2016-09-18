@@ -1,10 +1,10 @@
-clear all 
+clear
 clc
 
 %% Define experiment and user
 
 exp ='Exp001_DnaN_TUS_dif_01092016_M';
-user = 'Mark';
+user = 'MarkPC';
 
 %% Prepare raw images (roicotrasca)
 
@@ -34,5 +34,10 @@ close all
 A100_Processing_ReplicationAutoShell(user,exp)
 
 %% Lionfit
+
+initval=A001_Images_Set_Experiment(user,exp);
+initval.Lionpath = strcat(initval.Kymopath,initval.OSslash,'LionFit',initval.OSslash);
+addpath(genpath(strcat(initval.Lionpath,'150917V')));
+addpath(genpath(strcat(initval.Lionpath,'gaussmlev2')));
 
 GaussFitSimedit(user,exp)
