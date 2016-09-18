@@ -26,7 +26,7 @@ function y = nanstd(x,dim,flag)
 %    See also STD
 
 % -------------------------------------------------------------------------
-%    author:      Jan Gläscher
+%    author:      Jan Glscher
 %    affiliation: Neuroimage Nord, University of Hamburg, Germany
 %    email:       glaescher@uke.uni-hamburg.de
 %    
@@ -76,5 +76,4 @@ else
 	y = sqrt(sum(x.*x,dim)./max(count,1));
 end
 y(i) = i + NaN;
-
-% $Id: nanstd.m,v 1.1 2004/07/15 22:42:15 glaescher Exp glaescher $
+end
