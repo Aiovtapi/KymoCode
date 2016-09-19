@@ -100,7 +100,7 @@ for chan = chans
 
     for celli = 1:cells
         for frami = 1:frames;
-            thismesh = Bettermesh{celli,frami} + init.Extrabound;
+            thismesh = Bettermesh{celli,frami};
             thiscellbox = BCellbox(celli,frami,:);
 
             Bacmesh{chan}{celli,frami}(:,1) = thismesh(:,1) - thiscellbox(1);
@@ -195,7 +195,7 @@ for chan = chans
         spotxy varval Xval Yval Meshdata thismesh ld Lnorm Lnormsp meshlength...
         spots thiscellbox thisfigure thismatpath AllLnorm thisbacmesh
     
-    fprintf('\nProjected to Mesh')
+    fprintf('\nProjected to Mesh \n')
     
     save(strcat(init.datapath,init.OSslash,'Results.mat'),'DataStruct','fcelli')
 end
@@ -214,7 +214,7 @@ f = figure('Name','Agarolysis','NumberTitle','off',...
 while celli <= cells;
     
     if skip == 0;
-        [skip,fault,previous,Rspot,Nspot] = ViewbacUI2(init,chans,f,Bacpics,Bacmesh,DataStruct,cells,celli,init.flimgname);
+        [skip,fault,previous,Rspot,Nspot] = ViewbacUI2(init,chans,f,Bacpics,Bacmesh,Bacmask,DataStruct,cells,celli,init.flimgname);
     end
     
     % Remove clicked spots, new bx and ld are saved as rbx and rld

@@ -1,17 +1,18 @@
 function init = AgarDefine
 
-%% Load UI
-[init, ddata, dtrans, dbeam] = AgarUI;
-
 %% Other parameters
 
 init.maxfile = 421;         % max amount of pictures allowed in stack
 init.lioncropindex = 0;     % whether bacpics are cropped in lionfit
 init.Extrabound = 4;        % extra boudaries added to bacpics
-init.strelval = 8;          % disk radius for imdilate of bacpic mask
+init.strelval = 4;          % disk radius for imdilate of bacpic mask
 init.IPTP = 1;              % Intensity Peak threshold parameter
 init.difchan = 'CFP';
-init.channels = {'CFP', 'YFP', 'RFP'};
+init.channels = {'CFP', 'YFP', 'RFP'}; % maximum of 3
+
+%% Load UI
+
+[init, ddata, dtrans, dbeam] = AgarUI(init);
 
 %% Add paths
 

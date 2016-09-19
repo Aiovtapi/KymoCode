@@ -1,14 +1,13 @@
 function [mmask, nmask,bacpic,croppedimg] = Createbac(init,imageframe,thismesh,thisBbox,thisbacsize,bacpath,frami)
             
     bound = init.Extrabound;
-    framesize = size(imageframe);
     thisRbox = round(thisBbox);
     Rbacsize = thisbacsize;
-    thismsize = round(thisbacsize/init.pcresize);
+    thismsize = thisbacsize;
 
     % Create mask from mesh
-    thismeshl = [thismesh(:,1:2);thismesh(:,3:4)] + bound;
-    thiscropmesh = round([thismeshl(:,1)-thisBbox(1), thismeshl(:,2)-thisBbox(3)]/init.pcresize);
+    thismeshl = [thismesh(:,1:2);thismesh(:,3:4)];
+    thiscropmesh = round([thismeshl(:,1)-thisBbox(1), thismeshl(:,2)-thisBbox(3)]);
     mask = poly2mask(thiscropmesh(:,1)',thiscropmesh(:,2)',thismsize(2),thismsize(1));
     
     % Dilate mask to get entire spot
@@ -32,5 +31,4 @@ function [mmask, nmask,bacpic,croppedimg] = Createbac(init,imageframe,thismesh,t
     bacpic = uint16(nmask.*croppedimg);
     thisbacpath = strcat(num2str(frami,'%03.0f'),'.tif');
     imwrite(bacpic,strcat(bacpath,thisbacpath));
-
 end

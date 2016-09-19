@@ -1,4 +1,4 @@
-function [BCellbox,Bacsize] = Findbound(Cellbox,cells,frames,bound)
+function [BCellbox,Bacsize, Bettermesh] = Findbound(Bettermesh,Cellbox,cells,frames,bound)
 
     framesize = zeros(cells,frames,2);
     BCellbox = zeros(cells,frames,4);
@@ -22,7 +22,7 @@ function [BCellbox,Bacsize] = Findbound(Cellbox,cells,frames,bound)
             BCellbox(celli,frami,3) = (Cellbox(celli,frami,4) + Cellbox(celli,frami,3) - (Bacsize(celli,2)-1))/2 + bound;
             BCellbox(celli,frami,4) = (Cellbox(celli,frami,4) + Cellbox(celli,frami,3) + (Bacsize(celli,2)-1))/2 + bound;
             
-            %Bettermesh{celli,frami} = Bettermesh{celli,frami} - bound;
+            Bettermesh{celli,frami} = Bettermesh{celli,frami} + bound;
         end 
     end
 end

@@ -22,7 +22,7 @@ function varargout = AgarUI(varargin)
 
 % Edit the above text to modify the response to help AgarUI
 
-% Last Modified by GUIDE v2.5 19-Sep-2016 13:08:11
+% Last Modified by GUIDE v2.5 19-Sep-2016 16:32:14
 
 % Begin initialization code - DO NOT EDIT
 gui_Singleton = 1;
@@ -54,6 +54,8 @@ end
 function AgarUI_OpeningFcn(hObject, eventdata, handles, varargin)
 % This function has no output args, see OutputFcn.
 
+handles.init = varargin{1};
+
 if exist('Users.dat','file')
     handles.userinfo = table2cell(readtable('Users.dat'));
     handles.popup_selectuser.String = handles.userinfo(:,1);
@@ -74,7 +76,39 @@ else
 end
 set(handles.edit_beampath,'String','');
 
+channels = size(handles.init.channels,2);
 
+if channels < 3
+    set(handles.edit_RFP,'visible','off')
+    set(handles.select_RFP,'visible','off')
+    set(handles.edit_rfpbeam,'visible','off')
+    set(handles.select_rfpbeam,'visible','off')
+    set(handles.checkbox_RFP,'visible','off')
+end
+
+if channels < 2
+    set(handles.edit_YFP,'visible','off')
+    set(handles.select_YFP,'visible','off')
+    set(handles.edit_rfpbeam,'visible','off')
+    set(handles.select_rfpbeam,'visible','off')
+    set(handles.checkbox_YFP,'visible','off')
+end
+
+set(handles.select_CFP,'String',['Select ',handles.init.channels{1}])
+set(handles.checkbox_CFP,'String',handles.init.channels{1})
+set(handles.select_cfpbeam,'String',['Select ',handles.init.channels{1}])
+
+if channels > 1
+    set(handles.select_YFP,'String',['Select ',handles.init.channels{2}])
+    set(handles.checkbox_YFP,'String',handles.init.channels{2})
+    set(handles.select_yfpbeam,'String',['Select ',handles.init.channels{2}])
+end
+
+if channels > 2
+    set(handles.select_RFP,'String',['Select ',handles.init.channels{3}])
+    set(handles.checkbox_RFP,'String',handles.init.channels{3})
+    set(handles.select_rfpbeam,'String',['Select ',handles.init.channels{3}])
+end
 % Choose default command line output for AgarUI
 handles.output = hObject;
 
@@ -96,6 +130,8 @@ function varargout = AgarUI_OutputFcn(hObject, eventdata, handles)
 if handles.nouserfile
     msgbox('No user defined, add new user','Error','error')
 end
+
+init = handles.init;
 
 % Get default command line output from handles structure
 
@@ -414,8 +450,8 @@ set(handles.edit_PC,'String',name);
 guidata(hObject,handles)
 
 
-% --- Executes on button press in pushbutton10.
-function pushbutton10_Callback(hObject, eventdata, handles)
+% --- Executes on button press in select_CFP.
+function select_CFP_Callback(hObject, eventdata, handles)
 cd(handles.datapath)
 [name,~] = uigetfile('*.tif','Select CFP image');
 cd(handles.agarpath)
@@ -423,13 +459,14 @@ set(handles.edit_CFP,'String',name);
 guidata(hObject,handles)
 
 
-% --- Executes on button press in pushbutton11.
-function pushbutton11_Callback(hObject, eventdata, handles)
+% --- Executes on button press in select_YFP.
+function select_YFP_Callback(hObject, eventdata, handles)
 cd(handles.datapath)
 [name,~] = uigetfile('*.tif','Select YFP image');
 cd(handles.agarpath)
 set(handles.edit_YFP,'String',name);
 guidata(hObject,handles)
+
 
 % --- Executes on button press in select_RFP.
 function select_RFP_Callback(hObject, eventdata, handles)
@@ -906,37 +943,6 @@ function checkbox_RFP_Callback(hObject, eventdata, handles)
 % 
 % % --- Executes on button press in radio_data_no.
 % function radio_data_no_Callback(hObject, eventdata, handles)
-
-
-
-% % --- Executes on button press in pushbutton16.
-% function pushbutton16_Callback(hObject, eventdata, handles)
-% % hObject    handle to pushbutton16 (see GCBO)
-% % eventdata  reserved - to be defined in a future version of MATLAB
-% % handles    structure with handles and user data (see GUIDATA)
-% 
-% 
-% 
-% function edit17_Callback(hObject, eventdata, handles)
-% % hObject    handle to edit17 (see GCBO)
-% % eventdata  reserved - to be defined in a future version of MATLAB
-% % handles    structure with handles and user data (see GUIDATA)
-% % Hints: get(hObject,'String') returns contents of edit17 as text
-% %        str2double(get(hObject,'String')) returns contents of edit17 as a double
-% 
-% 
-% % --- Executes during object creation, after setting all properties.
-% function edit17_CreateFcn(hObject, eventdata, handles)
-% % hObject    handle to edit17 (see GCBO)
-% % eventdata  reserved - to be defined in a future version of MATLAB
-% % handles    empty - handles not created until after all CreateFcns called
-% 
-% % Hint: edit controls usually have a white background on Windows.
-% %       See ISPC and COMPUTER.
-% if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
-%     set(hObject,'BackgroundColor','white');
-% end
-
 
 
 function edit_beampath_Callback(hObject, eventdata, handles)

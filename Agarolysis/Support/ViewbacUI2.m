@@ -1,4 +1,4 @@
-function [skip,fault,previous,Rspot,Nspot] = ViewbacUI2(init,chans,f,Bacpics,Bacmesh,DataStruct,cells,celli,Title)
+function [skip,fault,previous,Rspot,Nspot] = ViewbacUI2(init,chans,f,Bacpics,Bacmesh,Bacmask,DataStruct,cells,celli,Title)
 
 frames = size(Bacmesh{1},2);
 skip = 0;
@@ -240,7 +240,11 @@ uiwait(f)                                       % Wait for button click
                 newx = newx{1,1};
                 newx(2) = newx(2) + Rxy(1) - bound - 1;
                 newx(4) = newx(4) + Rxy(2) - bound - 1;
-                newx(7) = thisx{1}(frami,7);
+                if ~isempty(thisx)
+                    newx(7) = thisx{1};
+                else
+                    newx(7) = sum(thisbac(logical(Bacmask{celli,frami})));
+                end
                 hold on
                 plot(newx(2),newx(4),'kx','LineWidth',2)
                 hold off

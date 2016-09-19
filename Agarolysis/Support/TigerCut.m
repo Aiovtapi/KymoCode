@@ -60,7 +60,7 @@ function [Bettermesh,BCellbox,Bacsize,Bacmask,CBacmask,Bacpics,NMBacpics,nflimg]
     end
 
     % Find size of bacpic and the boundary indeces for each frame
-    [BCellbox,Bacsize] = Findbound(Cellbox,cells,frames,init.Extrabound);
+    [BCellbox,Bacsize, Bettermesh] = Findbound(Bettermesh,Cellbox,cells,frames,init.Extrabound);
 
     % Remove cells that move out of the immage
     [BCellbox,Bacsize,Bettermesh] = Removeoutbound(BCellbox,Bacsize,Bettermesh,flimgsize,frames);
@@ -150,7 +150,7 @@ function [Bettermesh,BCellbox,Bacsize,Bacmask,CBacmask,Bacpics,NMBacpics,nflimg]
             totalmask = false(flimgsize(1),flimgsize(2));
             
             for celli = 1:ncells
-                thismesh = Bettermesh{celli,frami};
+                thismesh = Bettermesh{celli,frami} - init.Extrabound;
                 thisrmesh = round([thismesh(:,1:2);thismesh(:,3:4)]);
                 mask = poly2mask(thisrmesh(:,1)',thisrmesh(:,2)',flimgsize(2),flimgsize(1));
                 totalmask = totalmask | mask;
