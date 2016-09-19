@@ -1,10 +1,29 @@
-function [Bettermesh,BCellbox,Bacsize,Bacmask,CBacmask,Bacpics,NMBacpics] = TigerCut(init,chan,Meshdata,flimg)
-    disp(sprintf('-----\nOperating TigerCut'))
+function [Bettermesh,BCellbox,Bacsize,Bacmask,CBacmask,Bacpics,NMBacpics,nflimg] = TigerCut(init,chan,Meshdata,flimg)
+    fprintf('-----\nOperating TigerCut')
 
-    Bettermesh = Removeemptymesh(Meshdata);
-    frames = size(Bettermesh,2);
-    cells = size(Bettermesh,1);
     flimgsize = size(flimg);
+    Bettermesh = Removeemptymesh(Meshdata);
+    cells = size(Bettermesh,1);
+    meshframes = size(Bettermesh,2);
+    
+    if numel(flimgsize) == 3;
+        if ~meshframes==flimgsize(3)
+            disp('Warning: number of frames in FL images does not correspond with number of frames in meshes')
+        end
+        frames = flimgsize(3);
+        if meshframes == 1;
+            NBettermesh = cell(cells,frames);
+            for celli = 1:cells;
+                NBettermesh(celli,:) = repmat(Bettermesh(celli,1),[1,frames]);
+            end
+            Bettermesh = NBettermesh;
+        end
+    else
+        frames = 1;
+    end
+    
+    nflimg = uint16(zeros(flimgsize(1),flimgsize(2),frames));
+
 
     Cellbox = zeros(cells,frames,4);
 
@@ -49,37 +68,98 @@ function [Bettermesh,BCellbox,Bacsize,Bacmask,CBacmask,Bacpics,NMBacpics] = Tige
     ncells = size(Bettermesh,1);
     [Bacmask,CBacmask,Bacpics,NMBacpics] = deal(cell(ncells,frames));
 
-    disp('Creating Bacpics')
+    
+    if isfield(init,'Writebac')
+        Writebac = init.Writebac;
+    else
+        Writebac = 1;
+    end
 
-    for celli = 1:ncells;
-        bacpath=strcat(bacfolder,init.OSslash,'Cell_',num2str(celli,'%03.0f'),init.OSslash);
+    if isfield(init,'TigerCutSR')
+        TigerCutSR = init.TigerCutSR;
+    else
+        TigerCutSR = 0;
+    end
+
+    if Writebac == 1 ;
         
-        if ~exist(bacpath,'dir')
-            mkdir(bacpath)
+        fprintf('\nCreating Bacpics')
+        fprintf('\nCell: ')
+        
+        for celli = 1:ncells;
+            bacpath=strcat(bacfolder,init.OSslash,'Cell_',num2str(celli,'%03.0f'),init.OSslash);
+
+            if ~exist(bacpath,'dir')
+                mkdir(bacpath)
+            end
+            
+            % Display celli number
+            if celli>1
+                for j=0:log10(celli-1)
+                    fprintf('\b');
+                end
+            end
+            fprintf(num2str(celli))
+
+            for frami = 1:frames;
+
+                % dip_image stack handeling
+                if numel(flimgsize) == 2
+                    imageframe = double(flimg(:,:)); % ,frami-1));
+                else
+                    imageframe = double(flimg(:,:,frami-1));
+                end
+
+
+                % Set values for current cell and frame
+                thismesh = Bettermesh{celli,frami};
+                thisBbox = squeeze(BCellbox(celli,frami,:));
+                thisbacsize = Bacsize(celli,:);  
+
+                % create bacpic and save mask
+                [mmask, nmask, bacpic,croppedimg] = Createbac(init,imageframe,thismesh,thisBbox,thisbacsize,bacpath,frami);          
+                Bacmask{celli,frami} = nmask;
+                CBacmask{celli,frami} = mmask;
+                Bacpics{celli,frami} = bacpic;
+                NMBacpics{celli,frami} = croppedimg;
+            end
         end
+    end
+    
+    if TigerCutSR == 1;
         
-        for frami = 1:frames;
+        disp('TigerCutSR...')
+        fprintf('\nFrame: ')
+        
+        for frami = 1:frames
+            
+            if frami>1
+                for j=0:log10(frami-1)
+                    fprintf('\b');
+                end
+            end
+            fprintf('%d', frami);
             
             % dip_image stack handeling
             if numel(flimgsize) == 2
-                imageframe = double(flimg(:,:)); % ,frami-1));
+                imageframe = double(flimg(:,:));
             else
                 imageframe = double(flimg(:,:,frami-1));
             end
             
-            % Set values for current cell and frame
-            thismesh = Bettermesh{celli,frami};
-            thisBbox = squeeze(BCellbox(celli,frami,:));
-            thisbacsize = Bacsize(celli,:);
+            totalmask = false(flimgsize(1),flimgsize(2));
             
-            % create bacpic and save mask
-            [mmask, nmask, bacpic,croppedimg] = Createbac(init,imageframe,thismesh,thisBbox,thisbacsize,bacpath,frami);          
-            Bacmask{celli,frami} = nmask;
-            CBacmask{celli,frami} = mmask;
-            Bacpics{celli,frami} = bacpic;
-            NMBacpics{celli,frami} = croppedimg;
-        end    
+            for celli = 1:ncells
+                thismesh = Bettermesh{celli,frami};
+                thisrmesh = round([thismesh(:,1:2);thismesh(:,3:4)]);
+                mask = poly2mask(thisrmesh(:,1)',thisrmesh(:,2)',flimgsize(2),flimgsize(1));
+                totalmask = totalmask | mask;
+            end
+ 
+            nflimg(:,:,frami) = uint16(double(totalmask).*imageframe);
+
+        end
     end
     
-    disp(sprintf('TigerCut done \n-----'))
+	fprintf('\nTigerCut done')
 end

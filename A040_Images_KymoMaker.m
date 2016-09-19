@@ -13,7 +13,7 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %Below, you can define your own paths and files-------------------------
 
-function A040_Images_KymoMaker(user,exp)
+function initval = A040_Images_KymoMaker(user,exp)
 
 if nargin<2
     exp='Exp001_DnaN_TUS_dif_01092016_M';
@@ -123,23 +123,24 @@ for i=1:initval.channelno;
     figure; pcolor(kymo_FL); shading flat; colormap hot;
 
     %Savefiles----------------------------------------------------------------
-    initval.WorkspaceOutName=strcat(exp,'Chan_x',num2str(ceil(presets.twopoints(1,1))),initval.viewchan{I},'.mat'); %channel data base
-    lbl1=strcat(initval.basepath,initval.WorkspaceOutName);  %path+channel database
+    initval.WorkspaceOutName{i}{I}=strcat(exp,'Chan_x',num2str(ceil(presets.twopoints(1,1))),initval.viewchan{I}); %channel data base
+    MatOutname = strcat(initval.WorkspaceOutName{i}{I},'.mat');
+    lbl1=strcat(initval.basepath,MatOutname);  %path+channel database
     save(lbl1, 'endpoints', 'presets' ,'initval', 'kymo_FL','kymo_BF','chanstk_BF','chanstk_FL');
 
     %Here we first verify whether we need to create the folder
-    FolderExistence = exist(strcat(initval.basepath,initval.FiguresFolder,'Kymographs/',initval.viewchan{I}));
+    FolderExistence = exist(strcat(initval.basepath,initval.FiguresFolder,'Kymographs/',initval.viewchan{I}),'dir');
     if FolderExistence == 0
         mkdir(strcat(initval.basepath,initval.FiguresFolder,'Kymographs/',initval.viewchan{I}))
     end
     if ~ exist(strcat(initval.basepath,'/Kymographs/',initval.viewchan{I}),'dir')
         mkdir(strcat(initval.basepath,'/Kymographs/',initval.viewchan{I}));
     end
-    lbl3=strcat(initval.basepath,'/Kymographs/',initval.viewchan{I},'/Kymograph_FL',initval.WorkspaceOutName(1:end-4),'.tif'); %kymograph
-    lbl4=strcat(initval.basepath,'/Kymographs/',initval.viewchan{I},'/Kymograph_BF',initval.WorkspaceOutName(1:end-4),'.tif'); %kymograph
+    lbl3=strcat(initval.basepath,'/Kymographs/',initval.viewchan{I},'/Kymograph_FL',initval.WorkspaceOutName{i}{I},'.tif'); %kymograph
+    lbl4=strcat(initval.basepath,'/Kymographs/',initval.viewchan{I},'/Kymograph_BF',initval.WorkspaceOutName{i}{I},'.tif'); %kymograph
     %For writing Kymos to the Figures folder.
-    lbl3_Fig=strcat(initval.basepath,initval.FiguresFolder,'Kymographs/',initval.viewchan{I},'/Kymograph_FL',initval.WorkspaceOutName(1:end-4),'.tif'); %kymograph
-    lbl4_Fig=strcat(initval.basepath,initval.FiguresFolder,'Kymographs/',initval.viewchan{I},'/Kymograph_BF',initval.WorkspaceOutName(1:end-4),'.tif'); %kymograph
+    lbl3_Fig=strcat(initval.basepath,initval.FiguresFolder,'Kymographs/',initval.viewchan{I},'/Kymograph_FL',initval.WorkspaceOutName{i}{I},'.tif'); %kymograph
+    lbl4_Fig=strcat(initval.basepath,initval.FiguresFolder,'Kymographs/',initval.viewchan{I},'/Kymograph_BF',initval.WorkspaceOutName{i}{I},'.tif'); %kymograph
 
     kymim1 = uint8(round(kymo_FL/max(kymo_FL(:))*255 - 1));
     imwrite(kymim1,lbl3,'tif');

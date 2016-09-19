@@ -19,7 +19,6 @@
 %% 
 function DataStruct = GaussFitSimedit_Agarolysis(init,chan,Bacpics,Bacmask,cells,frames,IPTP)
 
-tic
 
 %% Inputs 
 
@@ -33,6 +32,8 @@ fittype=4;
 if exist(strcat(lionval.datapath,lionval.OSslash,'Results.mat'),'file')
     load(strcat(lionval.datapath,lionval.OSslash,'Results.mat'));
 end
+
+fprintf('\nTigerCut analyzed cell:')
     
 for Cell=lionval.viewbac;
     
@@ -410,8 +411,15 @@ for Cell=lionval.viewbac;
 
 
     %% Save results
-
-            display(strcat('Cell ',num2str(Cell),' analyzed'));
+    
+        % Display celli number
+        if Cell>1
+            for j=0:log10(Cell-1)
+                fprintf('\b');
+            end
+        end
+        fprintf(num2str(Cell))
+        
 %             display('Saving..');
 %         if ~exist(strcat(lionval.Mainfolder,lionval.OSslash,'Results'),'dir')
 %             mkdir(strcat(lionval.Mainfolder,lionval.OSslash,'Results'));
@@ -432,9 +440,6 @@ for Cell=lionval.viewbac;
 
 end
 
-
 save(strcat(lionval.datapath,lionval.OSslash,'Results.mat'),'DataStruct')
 
-
-toc
 end

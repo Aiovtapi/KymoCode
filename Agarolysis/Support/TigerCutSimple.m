@@ -11,9 +11,19 @@ function [Bacpics,NMBacpics] = TigerCutSimple(init,chan,Bettermesh,BCellbox,Bacs
     
     [Bacmask,CBacmask,Bacpics,NMBacpics] = deal(cell(ncells,frames));
 
-    disp('Creating Bacpics')
+    fprintf('\nCreating Bacpics')
+    fprintf('\nCell: ')
 
     for celli = 1:ncells;
+        
+        % Display celli number
+        if celli>1
+            for j=0:log10(celli-1)
+                fprintf('\b');
+            end
+        end
+        fprintf(num2str(celli))
+        
         bacpath=strcat(bacfolder,init.OSslash,'Cell_',num2str(celli,'%03.0f'),init.OSslash);
         
         if ~exist(bacpath,'dir')
@@ -43,5 +53,5 @@ function [Bacpics,NMBacpics] = TigerCutSimple(init,chan,Bettermesh,BCellbox,Bacs
         end    
     end
     
-    disp(sprintf('TigerCut done \n-----'))
+    fprintf('\nTigerCut done')
 end

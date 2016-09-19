@@ -114,7 +114,11 @@ for chan = chans
 
     Lionresultspath = strcat(init.bacpath,init.flimgname{chan},init.OSslash,'Results',init.OSslash);
     AllLnorm = [];
-
+    
+    if strcmp(init.difchan,init.channels(init.viewchannels(chan)))
+        fcelli = zeros(1,cells);
+    end
+    
     for celli = 1:cells;
 
 %         thismatpath = strcat(Lionresultspath,'Cell_',num2str(celli,'%03.0f'));
@@ -150,10 +154,19 @@ for chan = chans
                 varval = sqrt(spotxy(3)^2+spotxy(5)^2);
                 
                 ThisLnorm = Lval/CellLength(frami);
+                
                 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-                if ThisLnorm > 0.5
-                    Lval = CellLength(frami) - Lval;
-                    ThisLnorm = Lval/CellLength(frami);
+                if strcmp(init.difchan,init.channels(init.viewchannels(chan))) && frami == 1 && spoti == 1
+                    if ThisLnorm > 0.5
+                        Lval = CellLength(frami) - Lval;
+                        ThisLnorm = Lval/CellLength(frami);
+                        fcelli(celli) = 1;
+                    end
+                else
+                    if fcelli(celli) == 1
+                        Lval = CellLength(frami) - Lval;
+                        ThisLnorm = Lval/CellLength(frami);
+                    end
                 end
                 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
                 
@@ -182,9 +195,9 @@ for chan = chans
         spotxy varval Xval Yval Meshdata thismesh ld Lnorm Lnormsp meshlength...
         spots thiscellbox thisfigure thismatpath AllLnorm thisbacmesh
     
-    disp('Projected to Mesh')
+    fprintf('\nProjected to Mesh')
     
-    save(strcat(init.datapath,init.OSslash,'Results.mat'),'DataStruct')
+    save(strcat(init.datapath,init.OSslash,'Results.mat'),'DataStruct','fcelli')
 end
 init.IPTP = IPTPvalue;
 
@@ -201,7 +214,7 @@ f = figure('Name','Agarolysis','NumberTitle','off',...
 while celli <= cells;
     
     if skip == 0;
-        [skip,fault,previous,Rspot,Nspot] = ViewbacUI2(init,chans,f,Bacpics,Bacmesh,X,BX,celli,init.flimgname);
+        [skip,fault,previous,Rspot,Nspot] = ViewbacUI2(init,chans,f,Bacpics,Bacmesh,DataStruct,cells,celli,init.flimgname);
     end
     
     % Remove clicked spots, new bx and ld are saved as rbx and rld
@@ -243,16 +256,16 @@ close(f)
 
 faultycells = unique(fcelli);
 fpath = strcat(init.bacpath,'fcells.mat');
-fremoved = 0;
 save(fpath,'faultycells','fremoved')
-save(strcat(init.datapath,init.OSslash,'Results.mat'),'DataStruct')
+save(strcat(init.datapath,init.OSslash,'Results.mat'),'DataStruct','fcelli')
 
 %% Remove faulty cells
 
 if ~isempty(faultycells)
     DataStruct = RemoveCells(init, DataStruct, cells, faultycells, fpath);
 end
-save(strcat(init.datapath,init.OSslash,'Results.mat'),'DataStruct')
+
+save(strcat(init.datapath,init.OSslash,'Results.mat'),'DataStruct','fcelli')
 disp('Operation done')
 
 clear chan chans celli done previous skip frames fremoved fault fclii

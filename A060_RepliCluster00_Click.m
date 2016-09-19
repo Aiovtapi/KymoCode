@@ -1,4 +1,4 @@
-function A060_RepliCluster00_Click(user,exp)
+function A060_RepliCluster00_Click(user,exp,WorkspaceOutname)
 
 if nargin<2
     exp='Exp001_DnaN_TUS_dif_01092016_M';
@@ -23,6 +23,10 @@ actions.eliminate_growth=1;
 peak_tol=0;   %sensitivity for detecting peaks
 
 initval=A001_Images_Set_Experiment(user,exp);
+
+if nargin == 3;
+    initval.nms = WorkspaceOutname;
+end
 
 chans=initval.channelno;
 for ch=1:chans

@@ -4,7 +4,7 @@ clc
 %% Define experiment and user
 
 exp ='Exp001_DnaN_TUS_dif_01092016_M';
-user = 'MarkPC';
+user = 'Mark';
 
 %% Prepare raw images (roicotrasca)
 
@@ -21,17 +21,18 @@ close all
 
 %% Kymomaker
 
-A040_Images_KymoMaker(user,exp)
+initval = A040_Images_KymoMaker(user,exp);
+WorkspaceOutName = initval.WorkspaceOutName;
 close all
 
 %% Click through cell cycles
 
-A060_RepliCluster00_Click(user,exp)
+A060_RepliCluster00_Click(user,exp,WorkspaceOutName)
 close all
 
 %% Processing
 
-A100_Processing_ReplicationAutoShell(user,exp)
+A100_Processing_ReplicationAutoShell(user,exp,WorkspaceOutName)
 
 %% Lionfit
 

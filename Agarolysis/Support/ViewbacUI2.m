@@ -1,7 +1,6 @@
-function [skip,fault,previous,Rspot,Nspot] = ViewbacUI2(init,chans,f,Bacpics,Bacmesh,X,BX,celli,Title)
+function [skip,fault,previous,Rspot,Nspot] = ViewbacUI2(init,chans,f,Bacpics,Bacmesh,DataStruct,cells,celli,Title)
 
 frames = size(Bacmesh{1},2);
-[~, cells] = size(X);
 skip = 0;
 fault = 0;
 previous = 0;
@@ -46,9 +45,9 @@ for chan = chans;
     set(gca,'tag',num2str(chan))
 
     title(Title{chan})
-
-    x = X{chan,celli};
-    bx = BX{chan,celli};
+    
+    x = DataStruct(chan,celli).x;
+    bx = DataStruct(chan,celli).bx;
 
     hold on
     imagesc(Bacpics{chan}{celli,1});
@@ -101,8 +100,8 @@ uiwait(f)                                       % Wait for button click
             ax(Nchans)=subplot(1,Nchans,chan);
             title(Title{chan})
             
-            x = X{chan,celli};
-            bx = BX{chan,celli};
+            x = DataStruct(chan,celli).x;
+            bx = DataStruct(chan,celli).bx;
             
             hold on                             % Plot the bacpic, mesh and spots
             imagesc(Bacpics{chan}{celli,frami})
@@ -122,7 +121,8 @@ uiwait(f)                                       % Wait for button click
         end
         
         for respot = 1:size(Rspot,1)                    % plot clicked spots
-            thisx = BX{Rspot(respot,1),celli}{Rspot(respot,2)}(frami,:);
+
+            thisx = DataStruct(Rspot(respot,1),celli).bx{Rspot(respot,2)}(frami,:);
             subplot(1,Nchans,Rspot(respot,1))
             hold on
             plot(thisx(2),thisx(4),'rx','LineWidth',2)
@@ -164,8 +164,8 @@ uiwait(f)                                       % Wait for button click
         else
             frami = 1;
         end
-        
-        thisx = BX{clickchan,celli};                     % get spots information
+
+        thisx = DataStruct(clickchan,celli).bx;         % get spots information
         rspots = size(thisx,2);
         nspots = size(Nspot,1);
                 
@@ -279,8 +279,8 @@ uiwait(f)                                       % Wait for button click
             ax(Nchans)=subplot(1,Nchans,chan);
             title(Title{chan})
             
-            x = X{chan,celli};
-            bx = BX{chan,celli};
+            x = DataStruct(chan,celli).x;
+            bx = DataStruct(chan,celli).bx;
             
             hold on                             % Plot the bacpic, mesh and spots
             imagesc(Bacpics{chan}{celli,frami})

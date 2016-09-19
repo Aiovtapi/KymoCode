@@ -2,7 +2,7 @@
 %This script collects a series of automatic analysis steps
 %JacobKers 2013----------------------------------------------------
 
-function A100_Processing_ReplicationAutoShell(user,exp)
+function A100_Processing_ReplicationAutoShell(user,exp,WorkspaceOutname)
 
 if nargin<2
     exp='Exp001_DnaN_TUS_dif_01092016_M';
@@ -15,6 +15,10 @@ tic
 
 initval=A001_Images_Set_Experiment(user,exp);
 
+if nargin == 3;
+    initval.nms = WorkspaceOutname;
+end
+
 DnaNIdx=find(ismember(initval.viewchan,initval.DnaNchan));
 ChanNum=size(initval.viewchan,2);
 Dummy=linspace(1,ChanNum,ChanNum);
@@ -25,7 +29,7 @@ Dummy(Dummy==DnaNIdx)=[];
 %First, perform Center-off mass tracking on clusters starting at time
 %points indicated by users 
 disp('cleaning, quick tracking...');
-if 1, RepliCluster00_TrackandcleanQuick(exp,user,DnaNIdx); end
+if 1, RepliCluster00_TrackandcleanQuick(exp,user,DnaNIdx,WorkspaceOutname); end
 
 %%-----------------------------------------------------------
 %Next, Collect all channel data in one big database (just an administrative
@@ -33,7 +37,7 @@ if 1, RepliCluster00_TrackandcleanQuick(exp,user,DnaNIdx); end
 
 
 disp('collecting...');
-if 1, Processing_Collect_DataBases(exp,user,DnaNIdx,DnaNIdx); end
+if 1, Processing_Collect_DataBases(exp,user,DnaNIdx,DnaNIdx,WorkspaceOutname); end
 
 %%------------------------------------------------------------
 %In this step, the moments of birth and division are detected (from the brightfield data)  associated 
@@ -67,7 +71,7 @@ end
 
 
 for N=Dummy;
-    Processing_Collect_DataBases(exp,user,N,DnaNIdx);
+    Processing_Collect_DataBases(exp,user,N,DnaNIdx,WorkspaceOutname);
     Processing00_TwoDSpot_ImageAnalyzerAuto(exp,user,N,DnaNIdx);
 end
 

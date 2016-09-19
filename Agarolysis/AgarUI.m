@@ -22,7 +22,7 @@ function varargout = AgarUI(varargin)
 
 % Edit the above text to modify the response to help AgarUI
 
-% Last Modified by GUIDE v2.5 17-Jun-2016 21:12:42
+% Last Modified by GUIDE v2.5 19-Sep-2016 13:08:11
 
 % Begin initialization code - DO NOT EDIT
 gui_Singleton = 1;
@@ -72,7 +72,7 @@ else
     handles.agarpath = '';
     handles.OSslash = '\';
 end
-handles.beampath = '';
+set(handles.edit_beampath,'String','');
 
 
 % Choose default command line output for AgarUI
@@ -347,7 +347,7 @@ data{1,15} = num2str(handles.checkbox_CFP.Value);
 data{1,16} = num2str(handles.checkbox_YFP.Value);
 data{1,17} = num2str(handles.checkbox_RFP.Value);
 data{1,18} = handles.datapath;
-data{1,19} = handles.beampath; 
+data{1,19} = handles.edit_beampath.String;
 
 filename = inputdlg('Set preset name','');
 savename = strcat(filename{1},'.dat');
@@ -381,7 +381,7 @@ set(handles.checkbox_YFP,'Value',data{1,16});
 set(handles.checkbox_RFP,'Value',data{1,17});
 set(handles.edit_folder,'String',data{1,18});
 handles.datapath = data{1,18};
-handles.beampath = data{1,19};
+set(handles.edit_beampath,'String',data{1,19});
 
 cd(handles.agarpath)
 guidata(hObject, handles);
@@ -770,42 +770,45 @@ end
 
 % --- Executes on button press in select_cfpbeam.
 function select_cfpbeam_Callback(hObject, eventdata, handles)
-if ~strcmp(handles.beampath,'');
-    cd(handles.beampath)
+beampath = handles.edit_beampath.String;
+if ~isempty(beampath);
+    cd(beampath)
 end
 [name,beampath] = uigetfile('*.tif','Select CFP beamshape');
 cd(handles.agarpath)
 set(handles.edit_cfpbeam,'String',name);
 if ~strcmp(name,'0')
-    handles.beampath = beampath;
+    set(handles.edit_beampath,'String',beampath)
 end
-guidata(hObject,handles)
+
 
 % --- Executes on button press in select_yfpbeam
 function select_yfpbeam_Callback(hObject, eventdata, handles)
-if ~strcmp(handles.beampath,'');
-    cd(handles.beampath)
+beampath = handles.edit_beampath.String;
+if ~isempty(beampath);
+    cd(beampath)
 end
 [name,beampath] = uigetfile('*.tif','Select YFP beamshape');
 cd(handles.agarpath)
 set(handles.edit_yfpbeam,'String',name);
 if ~strcmp(name,'0')
-    handles.beampath = beampath;
+    set(handles.edit_beampath,'String',beampath)
 end
-guidata(hObject,handles)
+
 
 % --- Executes on button press in select_rfpbeam.
 function select_rfpbeam_Callback(hObject, eventdata, handles)
-if ~strcmp(handles.beampath,'');
-    cd(handles.beampath)
+beampath = handles.edit_beampath.String;
+if ~isempty(beampath);
+    cd(beampath)
 end
 [name,beampath] = uigetfile('*.tif','Select RFP beamshape');
-cd(handles.beampath)
+cd(handles.agarpath)
 set(handles.edit_rfpbeam,'String',name);
 if ~strcmp(name,'0')
-    handles.beampath = beampath;
+    set(handles.edit_beampath,'String',beampath)
 end
-guidata(hObject,handles)
+
 
 
 
@@ -933,3 +936,26 @@ function checkbox_RFP_Callback(hObject, eventdata, handles)
 % if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
 %     set(hObject,'BackgroundColor','white');
 % end
+
+
+
+function edit_beampath_Callback(hObject, eventdata, handles)
+% hObject    handle to edit_beampath (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+
+% Hints: get(hObject,'String') returns contents of edit_beampath as text
+%        str2double(get(hObject,'String')) returns contents of edit_beampath as a double
+
+
+% --- Executes during object creation, after setting all properties.
+function edit_beampath_CreateFcn(hObject, eventdata, handles)
+% hObject    handle to edit_beampath (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    empty - handles not created until after all CreateFcns called
+
+% Hint: edit controls usually have a white background on Windows.
+%       See ISPC and COMPUTER.
+if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
+    set(hObject,'BackgroundColor','white');
+end

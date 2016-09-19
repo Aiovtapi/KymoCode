@@ -1,9 +1,14 @@
-function RepliCluster00_TrackandcleanQuick(exp,user,ColourIdx)
+function RepliCluster00_TrackandcleanQuick(exp,user,ColourIdx,WorkspaceOutname)
 %ReplicationCluster
 %-------------------------------------------------------------------------
 if nargin<1, exp='001_DnaN_TUS_dif_30122014_TUSsignal';end 
 
 initval=A001_Images_Set_Experiment(user,exp);
+
+if nargin == 4;
+    initval.nms = WorkspaceOutname;
+end
+
 chans=initval.channelno;
 for ch=1:chans
 close all

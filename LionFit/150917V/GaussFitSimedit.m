@@ -67,7 +67,7 @@ end
 
 
 for mdchan = 1:MDchans
-    disp(strcat('----- Multifluidic Device channel ',num2str(mdchan),' out of ',m2str(MDchans),' -----'))
+    disp(strcat('----- Multifluidic Device channel ',num2str(mdchan),' out of ',num2str(MDchans),' -----'))
     MDChanMainfolder=strcat(BacMainfolder,'Channel_0',num2str(mdchan),initval.OSslash);
     for flchan = 1:FLchans
         disp(strcat('----- LionFit on ',viewFLchans{flchan},' Channel -----'))
