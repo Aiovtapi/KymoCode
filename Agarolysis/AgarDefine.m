@@ -6,9 +6,9 @@ init.maxfile = 421;         % max amount of pictures allowed in stack
 init.lioncropindex = 0;     % whether bacpics are cropped in lionfit
 init.Extrabound = 4;        % extra boudaries added to bacpics
 init.strelval = 4;          % disk radius for imdilate of bacpic mask
-init.IPTP = 1;              % Intensity Peak threshold parameter
 init.difchan = 'CFP';
 init.channels = {'CFP', 'YFP', 'RFP'}; % maximum of 3
+init.IPTP = 1.5;  % Intensity Peak threshold parameter
 
 %% Load UI
 

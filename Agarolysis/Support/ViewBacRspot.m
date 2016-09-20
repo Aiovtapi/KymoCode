@@ -2,7 +2,7 @@ function DataStruct = ViewBacRspot(DataStruct,celli,Rspot)
 
     rspots = size(Rspot,1);
 
-    for spoti = 1:rspots;
+    for spoti = fliplr(1:rspots);
         thischan = Rspot(spoti,1);
         
         bx = DataStruct(thischan,celli).bx;

@@ -17,7 +17,7 @@
 % sy : std in y of the spot.
 
 %% 
-function Xout = GaussFitSimedit_AgarControl(init,Bacpics,Bacmask,cells,IPTP)
+function Xout = GaussFitSimedit_AgarControl(init,Bacpics,cells,IPTP)
 
 
 %% Inputs 

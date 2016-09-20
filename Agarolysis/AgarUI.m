@@ -22,7 +22,7 @@ function varargout = AgarUI(varargin)
 
 % Edit the above text to modify the response to help AgarUI
 
-% Last Modified by GUIDE v2.5 19-Sep-2016 16:32:14
+% Last Modified by GUIDE v2.5 20-Sep-2016 15:03:09
 
 % Begin initialization code - DO NOT EDIT
 gui_Singleton = 1;
@@ -155,9 +155,9 @@ init.pctrans = [str2double(handles.edit_pc_x.String),...
     str2double(handles.edit_pc_y.String)];
 
 if ~handles.radio_dbeam_yes.Value
-    init.CFPbeampath = strcat(handles.beampath,handles.edit_cfpbeam.String);
-    init.YFPbeampath = strcat(handles.beampath,handles.edit_yfpbeam.String);
-    init.RFPbeampath = strcat(handles.beampath,handles.edit_rfpbeam.String);
+    init.CFPbeampath = strcat(handles.edit_beampath.String,handles.edit_cfpbeam.String);
+    init.YFPbeampath = strcat(handles.edit_beampath.String,handles.edit_yfpbeam.String);
+    init.RFPbeampath = strcat(handles.edit_beampath.String,handles.edit_rfpbeam.String);
 end
 
 viewchanbool(1) = handles.checkbox_CFP.Value;
@@ -384,6 +384,10 @@ data{1,16} = num2str(handles.checkbox_YFP.Value);
 data{1,17} = num2str(handles.checkbox_RFP.Value);
 data{1,18} = handles.datapath;
 data{1,19} = handles.edit_beampath.String;
+data{1,20} = handles.radio_dtrans_yes.Value;
+data{1,21} = handles.radio_dbeam_yes.Value;
+data{1,22} = handles.radio_dtrans_no.Value;
+data{1,23} = handles.radio_dbeam_no.Value;
 
 filename = inputdlg('Set preset name','');
 savename = strcat(filename{1},'.dat');
@@ -418,6 +422,20 @@ set(handles.checkbox_RFP,'Value',data{1,17});
 set(handles.edit_folder,'String',data{1,18});
 handles.datapath = data{1,18};
 set(handles.edit_beampath,'String',data{1,19});
+
+if ~size(data,2) == 19
+set(handles.radio_dtrans_yes,'Value',data{1,20});
+set(handles.radio_dbeam_yes,'Value',data{1,21});
+set(handles.radio_dtrans_no,'Value',data{1,22});
+set(handles.radio_dbeam_no,'Value',data{1,23});
+
+if data{1,22} == 1 ;
+    set(handles.box_translations,'visible','on');
+end
+if data{1,23} == 1;
+    set(handles.box_selectbeam,'visible','on');
+end
+end
 
 cd(handles.agarpath)
 guidata(hObject, handles);
