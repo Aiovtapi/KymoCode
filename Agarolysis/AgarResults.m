@@ -2,8 +2,9 @@ clear all
 close
 clc
 
-folder='/Users/rleeuw/Work/Data/160205_BN2384_and_Beam_Profiles';
-exps=[1 4 5 7];
+folder='D:\Users\water_000\Documents\GitHub\Data\Target Data\Agar Data';
+slash = '\';
+exps=[1 2  3 4 5 7 8 9];
 
 Acfp=[];    Ayfp=[];    Arfp=[];
 Bcfp=[];    Byfp=[];    Brfp=[];
@@ -12,8 +13,8 @@ Ccfp=[];    Cyfp=[];    Crfp=[];
     j=1;
     
 for i=exps;
-    E{j}=load(strcat(folder,'/',num2str(i),'/Results.mat')); 
-    imflip{j}=load(strcat(folder,'/',num2str(i),'/imgflip.mat'));
+    E{j}=load(strcat(folder,slash,num2str(i),slash,'Results.mat')); 
+%     imflip{j}=load(strcat(folder,slash,num2str(i),slash,'imgflip.mat'));
     j=j+1;
 end
 

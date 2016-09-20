@@ -423,7 +423,7 @@ set(handles.edit_folder,'String',data{1,18});
 handles.datapath = data{1,18};
 set(handles.edit_beampath,'String',data{1,19});
 
-if ~size(data,2) == 19
+if size(data,2) == 23
 set(handles.radio_dtrans_yes,'Value',data{1,20});
 set(handles.radio_dbeam_yes,'Value',data{1,21});
 set(handles.radio_dtrans_no,'Value',data{1,22});
