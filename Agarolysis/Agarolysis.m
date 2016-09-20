@@ -50,7 +50,8 @@ for chan = chans
     %% Lionfit
     [cells,frames]=size(Bacpics{chan});
     
-    IPTPvalue(chan) = LionfitcontrolUI(init,Bacpics{chan},Bacmask,cells,chan);
+    
+    IPTPvalue(chan) = LionfitcontrolUI(init,Bacpics{chan},cells,chan);
     close all
     
 %     % Check if rotation information already exists. If not, rotation
@@ -214,7 +215,8 @@ f = figure('Name','Agarolysis','NumberTitle','off',...
 while celli <= cells;
     
     if skip == 0;
-        [skip,fault,previous,Rspot,Nspot] = ViewbacUI2(init,chans,f,Bacpics,Bacmesh,Bacmask,DataStruct,cells,celli,init.flimgname);
+        [skip,fault,previous,Rspot,Nspot] = ...
+            ViewbacUI2(init,chans,f,Bacpics,Bacmesh,Bacmask,DataStruct,cells,celli,init.flimgname);
     end
     
     % Remove clicked spots, new bx and ld are saved as rbx and rld
@@ -254,8 +256,11 @@ while celli <= cells;
 end
 close(f)
 
+%%
+
 faultycells = unique(fcelli);
 fpath = strcat(init.bacpath,'fcells.mat');
+fremoved = 0;
 save(fpath,'faultycells','fremoved')
 save(strcat(init.datapath,init.OSslash,'Results.mat'),'DataStruct','fcelli')
 

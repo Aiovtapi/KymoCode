@@ -11,7 +11,7 @@ Nchans = numel(chans);
 currentbac = ['Bacpic ',num2str(celli),'/',num2str(cells)];
 
 %% Create push buttons and indicators
-Skip = uicontrol('Style', 'pushbutton', 'String', 'Skip all',...
+Skip = uicontrol('Style', 'pushbutton', 'String', 'Skip all (S)',...
     'Position', [10 10 50 30],...
     'Callback',@Skipall);    
 
@@ -19,15 +19,15 @@ bac = uicontrol('Style','text',...
     'Position',[150 15 120 15],...
     'String',currentbac);
 
-Prev = uicontrol('Style', 'pushbutton', 'String', 'Previous Cell',...
+Prev = uicontrol('Style', 'pushbutton', 'String', 'Previous Cell (J)',...
     'Position', [280 10 100 30],...
     'Callback', @GoPrev);
 
-Disr = uicontrol('Style', 'pushbutton', 'String', 'Disregard Cell',...
+Disr = uicontrol('Style', 'pushbutton', 'String', 'Disregard Cell (D)',...
     'Position', [400 10 100 30],'BackgroundColor',[1 0.6 0.6],...
     'Callback', @Savefault);
 
-Next = uicontrol('Style', 'pushbutton', 'String', 'Next Cell',...
+Next = uicontrol('Style', 'pushbutton', 'String', 'Next Cell (K)',...
     'Position', [520 10 100 30],...
     'Callback',@Closefigure);
 
@@ -35,9 +35,9 @@ clcr = uicontrol('Style','text',...
     'Position',[1000 15 100 15],...
     'String','Click spot to remove');
 
-clr = uicontrol('Style', 'pushbutton', 'String', 'Clear clicks',...
+clr = uicontrol('Style', 'pushbutton', 'String', 'Clear clicks (C)',...
     'Position', [1110 10 80 30],...
-    'Callback',@Clearclick);    
+    'Callback',@Clearclick);
 
 %% Plot first frame of bacpic, mesh and spots
 for chan = chans;
@@ -53,9 +53,9 @@ for chan = chans;
     imagesc(Bacpics{chan}{celli,1});
     plot(Bacmesh{chan}{celli,1}(:,1),Bacmesh{chan}{celli,1}(:,2),'w',...
         Bacmesh{chan}{celli,1}(:,3),Bacmesh{chan}{celli,1}(:,4),'w','LineWidth',2)
-    for spoti = 1:length(x)
-        plot(x{spoti}(1,2),x{spoti}(1,4),'rx','LineWidth',2)
-    end
+%     for spoti = 1:length(x)
+%         plot(x{spoti}(1,2),x{spoti}(1,4),'rx','LineWidth',2)
+%     end
     for spoti = 1:length(bx)
         plot(bx{spoti}(1,2),bx{spoti}(1,4),'kx','LineWidth',2)
     end
@@ -63,8 +63,6 @@ for chan = chans;
     hold off
     clear x bx
 end
-
-
 
 %% Add slider if theres more than 1 frame        
 if frames > 1
@@ -81,10 +79,13 @@ end
 %%
 Rspots = [];
 
+figure(f)
 set(f,'HitTest','off')                          % Necessary for clicking on plot
 set(f,'WindowButtonDownFcn',@clicky)            % Action for clicks
+set(f,'KeyPressFcn',@shortcuts);
 
 uiwait(f)                                       % Wait for button click
+
 
 %% functions for the buttons and sliders
 
@@ -109,9 +110,9 @@ uiwait(f)                                       % Wait for button click
                 Bacmesh{chan}{celli,frami}(:,2),'w',...
                 Bacmesh{chan}{celli,frami}(:,3),...
                 Bacmesh{chan}{celli,frami}(:,4),'w','LineWidth',2)
-            for spoti = 1:length(x)
-                plot(x{spoti}(frami,2),x{spoti}(frami,4),'rx','LineWidth',2)
-            end
+%             for spoti = 1:length(x)
+%                 plot(x{spoti}(frami,2),x{spoti}(frami,4),'rx','LineWidth',2)
+%             end
             for spoti = 1:length(bx)
                 plot(bx{spoti}(frami,2),bx{spoti}(frami,4),'kx','LineWidth',2)
             end
@@ -152,6 +153,21 @@ uiwait(f)                                       % Wait for button click
         previous = 1;
         uiresume(f);
         clf(f)
+    end
+
+    function shortcuts(gcbo,eventdata,handles)
+        switch eventdata.Key
+            case 'j'
+                GoPrev
+            case 'k'
+                Closefigure
+            case 'd'
+                Savefault
+            case 's'
+                Skipall
+            case 'c'
+                Clearclick
+        end
     end
 
     function clicky(gcbo,eventdata,handles)
@@ -241,7 +257,7 @@ uiwait(f)                                       % Wait for button click
                 newx(2) = newx(2) + Rxy(1) - bound - 1;
                 newx(4) = newx(4) + Rxy(2) - bound - 1;
                 if ~isempty(thisx)
-                    newx(7) = thisx{1};
+                    newx(7) = thisx{1}(frami,7);
                 else
                     newx(7) = sum(thisbac(logical(Bacmask{celli,frami})));
                 end

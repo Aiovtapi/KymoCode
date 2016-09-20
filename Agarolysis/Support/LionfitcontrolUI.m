@@ -56,20 +56,19 @@ handles=guidata(hObject);
 
 handles.init = varargin{1};
 handles.Bacpics = varargin{2};
-handles.Bacmask = varargin{3};
-handles.cells = varargin{4};
-handles.chan = varargin{5};
+handles.cells = varargin{3};
+handles.chan = varargin{4};
+
 handles.IPTP = handles.init.IPTP;
 
-Xout = GaussFitSimedit_AgarControl(handles.init,handles.Bacpics,...
-    handles.Bacmask,1,handles.init.IPTP);
+Xout = GaussFitSimedit_AgarControl(handles.init,handles.Bacpics,1,handles.init.IPTP);
 
 title = strcat('Tweak Intensity Peak Threshold for ',handles.init.flimgname{handles.chan});
 set(handles.text_title,'String',title);
 
+set(handles.edit_IPT,'String',num2str(handles.IPTP))
 handles.ScaleValue = 0.1;
 handles.Cellnumber = 1;
-
 
 imagesc(handles.Bacpics{1,1},'parent',handles.axes1)
 axes(handles.axes1);
@@ -156,8 +155,7 @@ C1 = handles.Cellnumber;
 C2 = C1 + 1; 
 C3 = C1 + 2;
 
-Xout = GaussFitSimedit_AgarControl(handles.init,handles.Bacpics,...
-    handles.Bacmask,C1,handles.IPTP);
+Xout = GaussFitSimedit_AgarControl(handles.init,handles.Bacpics,C1,handles.IPTP);
 
 imagesc(handles.Bacpics{C1,1},'parent',handles.axes1)
 axes(handles.axes1);
@@ -197,8 +195,7 @@ C1 = handles.Cellnumber;
 C2 = C1 + 1; 
 C3 = C1 + 2;
 
-Xout = GaussFitSimedit_AgarControl(handles.init,handles.Bacpics,...
-    handles.Bacmask,C1,handles.IPTP);
+Xout = GaussFitSimedit_AgarControl(handles.init,handles.Bacpics,C1,handles.IPTP);
 
 imagesc(handles.Bacpics{C1,1},'parent',handles.axes1)
 axes(handles.axes1);
@@ -265,8 +262,7 @@ C1 = handles.Cellnumber;
 C2 = C1 + 1; 
 C3 = C1 + 2;
 
-Xout = GaussFitSimedit_AgarControl(handles.init,handles.Bacpics,...
-    handles.Bacmask,C1,handles.IPTP);
+Xout = GaussFitSimedit_AgarControl(handles.init,handles.Bacpics,C1,handles.IPTP);
 
 imagesc(handles.Bacpics{C1,1},'parent',handles.axes1)
 axes(handles.axes1);
@@ -311,8 +307,7 @@ C1 = handles.Cellnumber;
 C2 = C1 + 1; 
 C3 = C1 + 2;
 
-Xout = GaussFitSimedit_AgarControl(handles.init,handles.Bacpics,...
-    handles.Bacmask,C1,handles.IPTP);
+Xout = GaussFitSimedit_AgarControl(handles.init,handles.Bacpics,C1,handles.IPTP);
 
 imagesc(handles.Bacpics{C1,1},'parent',handles.axes1)
 axes(handles.axes1);
