@@ -2,15 +2,10 @@ clc
 clear all
 
 %%
-fprintf('Select Data Folder');
+
 init.datapath = uigetdir(pwd,'Select Data Folder');
 init.OSslash = '/';
-
-fprintf('\nSelect Stack Folder');
-init.stackpath = uigetdir(init.datapath,'Select Stack Folder');
-
-Listing=dir(init.stackpath);
-init.FLimg=Listing(3).name;
+[init.flimg, init.stackpath] = uigetfile(init.datapath,'Select Tif Stack');
 
 [init.meshname,init.meshpath] = uigetfile(init.datapath,'Select Oufti Mesh');
 
@@ -36,7 +31,7 @@ MIJ.closeAllWindows
 MIJ.exit
 
 %%
-flimg = readtimeseries(strcat(init.datapath,init.OSslash,init.flimg));
+flimg = readtimeseries(strcat(init.datapath,init.flimg));
 
 Ouftiout = load(strcat(init.meshpath,init.meshname),'cellList');
 Meshdata = Ouftiout.cellList.meshData;
@@ -49,7 +44,7 @@ chan = 1;
 %%
 
 frames = size(nflimg,3);
-nimgpath = strcat(init.datapath,'/TigerCut_',init.flimg);
+nimgpath = strcat(init.datapath,'TigerCut_',init.flimg);
 
 fprintf('\nWriting frame ')
 
