@@ -10,8 +10,9 @@ fprintf('\nSelect Stack Folder');
 init.stackpath = uigetdir(init.datapath,'Select Stack Folder');
 
 Listing=dir(init.stackpath);
-init.FLimg=Listing(3).name;
+init.flimg=Listing(3).name;
 
+fprintf('\nSelect Oufti Mesh');
 [init.meshname,init.meshpath] = uigetfile(init.datapath,'Select Oufti Mesh');
 
 init.pcresize = 1;
@@ -36,7 +37,7 @@ MIJ.closeAllWindows
 MIJ.exit
 
 %%
-flimg = readtimeseries(strcat(init.datapath,init.OSslash,init.flimg));
+flimg = readtimeseries(strcat(init.stackpath,init.OSslash,init.flimg));
 
 Ouftiout = load(strcat(init.meshpath,init.meshname),'cellList');
 Meshdata = Ouftiout.cellList.meshData;
