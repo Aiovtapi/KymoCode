@@ -1,6 +1,6 @@
 function initval=Exp001_DnaN_TUS_dif_01092016_M(initval, user) 
 
-initval.viewchan={'RFP','YFP','CFP'}; 
+initval.viewchan={'CFP','YFP','RFP'}; 
 initval.DnaNchan='RFP';
 initval.difchan = 'CFP';
 nmspath ={'Exp001_DnaN_TUS_dif_01092016_MChan_x217','Exp001_DnaN_TUS_dif_01092016_MChan_x238'};
