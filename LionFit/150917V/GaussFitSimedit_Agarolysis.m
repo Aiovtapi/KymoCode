@@ -17,7 +17,7 @@
 % sy : std in y of the spot.
 
 %% 
-function DataStruct = GaussFitSimedit_Agarolysis(init,chan,Bacpics,Bacmask,cells,frames,IPTP)
+function DataStruct = GaussFitSimedit_Agarolysis(init,chan,Bacpics,CBacmask,cells,frames,IPTP)
 
 
 %% Inputs 
@@ -328,7 +328,7 @@ for Cell=lionval.viewbac;
     for i=1:Tsize
 
          % Full Cell Integrated Intensity
-         Cellidx = find(Bacmask{Cell,i});
+         Cellidx = find(CBacmask{Cell,i});
          
          FCII{i}=ydatacrpd{i}; %%%(lowerboundchannel:higherboundchannel,:);
 

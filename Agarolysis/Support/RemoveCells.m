@@ -19,7 +19,7 @@ function DataStruct = RemoveCells(init, DataStruct, cells,faultycells,fpath)
                     
                     disp(['Deleting faulty bacpics and results for ',init.flimgname{chan}]);
                     % Delete faulty bacpics and results
-                    for fcelli = faultycells;
+                    for fcelli = fliplr(faultycells);
                         bacdir = strcat(bacfolder,'Cell_',num2str(fcelli,'%03.0f'));
                         rmdir(bacdir,'s');
                         
