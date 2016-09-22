@@ -34,9 +34,18 @@ close all
 
 A100_Processing_ReplicationAutoShell(user,exp,WorkspaceOutName)
 
+%% Save Bacpics to workspace
+
+[Bacpics, MDchans, FLchans, Cells] = A110_Get_Bacpics(user,exp);
+initval=A001_Images_Set_Experiment(user,exp);
+
+for chan = 1:FLchans;
+    IPTPvalue(chan) = LionfitcontrolUI_Kymo(initval,Bacpics{1,chan},Cells(chan),chan);
+end
+
+
 %% Lionfit
 
-initval=A001_Images_Set_Experiment(user,exp);
 initval.Lionpath = strcat(initval.Kymopath,initval.OSslash,'LionFit',initval.OSslash);
 addpath(genpath(strcat(initval.Lionpath,'150917V')));
 addpath(genpath(strcat(initval.Lionpath,'gaussmlev2')));

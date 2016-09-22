@@ -346,7 +346,7 @@ for mdchan = 1:MDchans
                 XNorm{j}=[XNorm{j};zeros(LXNormOne-size(XNorm{j},1),4)];
             end
             
-                        % Full Cell Intensity
+            % Full Cell Intensity
             for i=1:Tsize;
                  FCII{i}=ydatacrpd{i}(lowerboundchannel:higherboundchannel,:);
                 for j=1:NSpots
