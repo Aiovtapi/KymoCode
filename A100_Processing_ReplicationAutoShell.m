@@ -29,7 +29,7 @@ Dummy(Dummy==DnaNIdx)=[];
 %First, perform Center-off mass tracking on clusters starting at time
 %points indicated by users 
 disp('cleaning, quick tracking...');
-if 1, RepliCluster00_TrackandcleanQuick(exp,user,DnaNIdx,WorkspaceOutname); end
+if 1, RepliCluster00_TrackandcleanQuick(exp,user,DnaNIdx,initval.nms); end
 
 %%-----------------------------------------------------------
 %Next, Collect all channel data in one big database (just an administrative
@@ -37,7 +37,7 @@ if 1, RepliCluster00_TrackandcleanQuick(exp,user,DnaNIdx,WorkspaceOutname); end
 
 
 disp('collecting...');
-if 1, Processing_Collect_DataBases(exp,user,DnaNIdx,DnaNIdx,WorkspaceOutname); end
+if 1, Processing_Collect_DataBases(exp,user,DnaNIdx,DnaNIdx,initval.nms); end
 
 %%------------------------------------------------------------
 %In this step, the moments of birth and division are detected (from the brightfield data)  associated 
@@ -71,7 +71,7 @@ end
 
 
 for N=Dummy;
-    Processing_Collect_DataBases(exp,user,N,DnaNIdx,WorkspaceOutname);
+    Processing_Collect_DataBases(exp,user,N,DnaNIdx,initval.nms);
     Processing00_TwoDSpot_ImageAnalyzerAuto(exp,user,N,DnaNIdx);
 end
 

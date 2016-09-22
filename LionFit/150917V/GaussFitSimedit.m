@@ -335,6 +335,7 @@ for mdchan = 1:MDchans
             NSpots=size(x,2);
             LXNormOne=size(XNorm{1},1);
             LxOne=size(x{1},1);
+            
 
             % make sure that each spot data is same length
             % because some spots will be there for just a few frames
@@ -343,6 +344,14 @@ for mdchan = 1:MDchans
             for j=2:NSpots;
                 x{j}=[x{j};zeros(LxOne-size(x{j},1),5)];
                 XNorm{j}=[XNorm{j};zeros(LXNormOne-size(XNorm{j},1),4)];
+            end
+            
+                        % Full Cell Intensity
+            for i=1:Tsize;
+                 FCII{i}=ydatacrpd{i}(lowerboundchannel:higherboundchannel,:);
+                for j=1:NSpots
+                    x{j}(i,7) = sum(sum(FCII{i}));
+                end
             end
 
             %% plot
