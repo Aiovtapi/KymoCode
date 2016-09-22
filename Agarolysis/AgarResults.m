@@ -2,16 +2,18 @@ clear all
 close
 clc
 
-folder='D:\Users\water_000\Documents\GitHub\Data\Target Data\Agar Data';
+folder='C:\Users\water\Documents\GitHub\Data\Target Data\Agar Data';
 slash = '\';
 exps=[1 2  3 4 5 7 8 9];
+Intensityval = [700, 300, 700];
 
 Acfp=[];    Ayfp=[];    Arfp=[];
 Bcfp=[];    Byfp=[];    Brfp=[];
 Ccfp=[];    Cyfp=[];    Crfp=[];
 
-    j=1;
+
     
+j=1; 
 for i=exps;
     E{j}=load(strcat(folder,slash,num2str(i),slash,'Results.mat')); 
 %     imflip{j}=load(strcat(folder,slash,num2str(i),slash,'imgflip.mat'));
@@ -31,9 +33,9 @@ for i=1:Nexp
     for j=1:Ncells{i} 
         
         if ~isempty(E{i}.DataStruct(1,j).Lnorm)        
-        LNormCFP{i,j}=E{i}.DataStruct(1,j).Lnorm;
+            LNormCFP{i,j}=E{i}.DataStruct(1,j).Lnorm;
         else
-        LNormCFP{i,j}=0;
+            LNormCFP{i,j}=0;
         end
         
         CellLength{i,j}=E{i}.DataStruct(1,j).CellLength;
@@ -47,106 +49,42 @@ for i=1:Nexp
         NspotsYFP=size(YFPld{i,j},2);
         NspotsRFP=size(RFPld{i,j},2);        
      
-if NspotsCFP==0
-    CFP{i,j}{1}=[];
-else
-        for k=1:NspotsCFP
-                if iscell(CFPld{i,j}{k})
-                    
-                    CFP{i,j}{k}=CFPld{i,j}{k}{k};
-                    if LNormCFP{i,j}(1)>0.5
-                        CFP{i,j}{k}=CellLength{i,j}-CFP{i,j}{k};
-                    end
-                else
-                    
-                    CFP{i,j}{k}=CFPld{i,j}{k}; 
-                    if LNormCFP{i,j}(1)>0.5
-                        CFP{i,j}{k}=CellLength{i,j}-CFP{i,j}{k};
-                    end
-                end
-                
-                if ~iscell(CFPld{i,j}{k})
+        if NspotsCFP==0
+            CFPld{i,j}{1}=[];
+        else
+            for k=1:NspotsCFP
                 Acfp=[Acfp CellLength{i,j}];
-                Bcfp=[Bcfp CFP{i,j}{k}(1,2)/CellLength{i,j}];
-                Ccfp=[Ccfp CFPld{i,j}{k}(1,1)/700];
-                end
+                Bcfp=[Bcfp CFPld{i,j}{k}(1,2)/CellLength{i,j}];
+                Ccfp=[Ccfp CFPld{i,j}{k}(1,1)/Intensityval(1)];
+            end
         end
-            
-end
         
-if NspotsYFP==0
-    YFP{i,j}{1}=[];
-else
-        for k=1:NspotsYFP
-                if iscell(YFPld{i,j}{k})
-                    YFP{i,j}{k}=YFPld{i,j}{k}{k};
-                    if LNormCFP{i,j}(1)>0.5 && ~iscell(YFP{i,j}{k})
-                        YFP{i,j}{k}=CellLength{i,j}-YFP{i,j}{k};
-                    end
-                else
-                    YFP{i,j}{k}=YFPld{i,j}{k}; 
-                        if LNormCFP{i,j}(1)>0.5
-                            YFP{i,j}{k}=CellLength{i,j}-YFP{i,j}{k};
-                        end
-                end
-                
-                if ~iscell(YFPld{i,j}{k})
+        if NspotsYFP==0
+            YFPld{i,j}{1}=[];
+        else
+            for k=1:NspotsYFP
                 Ayfp=[Ayfp CellLength{i,j}];
-                Byfp=[Byfp YFP{i,j}{k}(1,2)/CellLength{i,j}];
-                Cyfp=[Cyfp YFPld{i,j}{k}(1,1)/300];
-                end
+                Byfp=[Byfp YFPld{i,j}{k}(1,2)/CellLength{i,j}];
+                Cyfp=[Cyfp YFPld{i,j}{k}(1,1)/Intensityval(2)];
+            end
         end
-            
-end
-
-if NspotsRFP==0
-    RFP{i,j}{1}=[];
-else
-        for k=1:NspotsRFP
-                if iscell(RFPld{i,j}{k})
-                    
-                    RFP{i,j}{k}=RFPld{i,j}{k}{k};
-                    if LNormCFP{i,j}(1)>0.5
-                        RFP{i,j}{k}=CellLength{i,j}-RFP{i,j}{k};
-                    end
-                else
-                    
-                    RFP{i,j}{k}=RFPld{i,j}{k}; 
-                    if LNormCFP{i,j}(1)>0.5
-                        RFP{i,j}{k}=CellLength{i,j}-RFP{i,j}{k};
-                    end
-                end
-                
-                if ~iscell(RFPld{i,j}{k})
+        
+        if NspotsRFP==0
+            RFPld{i,j}{1}=[];
+        else
+            for k=1:NspotsRFP            
                 Arfp=[Arfp CellLength{i,j}];
-                Brfp=[Brfp RFP{i,j}{k}(1,2)/CellLength{i,j}];
-                Crfp=[Crfp RFPld{i,j}{k}(1,1)/700];
-                end
+                Brfp=[Brfp RFPld{i,j}{k}(1,2)/CellLength{i,j}];
+                Crfp=[Crfp RFPld{i,j}{k}(1,1)/Intensityval(3)];
+            end
         end
-            
-end
-
-%         for k=1:NspotsYFP
-%             if iscell(YFPld{i,j}{k});
-%                YFP{i,j}{k}=YFPld{i,j}{k}{k};
-%             else
-%                YFP{i,j}{k}=YFPld{i,j}{k}; 
-%             end
-%         end
-%         
-%         for k=1:NspotsRFP
-%             if iscell(RFPld{i,j}{k});
-%                RFP{i,j}{k}=RFPld{i,j}{k}{k};
-%             else
-%                RFP{i,j}{k}=RFPld{i,j}{k}; 
-%             end
-%         end
-
     end
 end
-    
 
-
+remove = Crfp<70;
+Cyfp(remove) = [];
+Ayfp(remove) = [];
+Byfp(remove) = [];
 %% CFP
 
 figure(1)
