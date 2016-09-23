@@ -1,4 +1,4 @@
-function GaussFitSimedit(user,exp)
+function GaussFitSimedit(user,exp,IPTPvalue)
 
 %% Fit to spot 
 %
@@ -45,6 +45,9 @@ MDchans = initval.channelno;
 finddif = strcmp(initval.difchan,initval.viewchan);
 viewFLchans = {initval.viewchan{finddif},initval.viewchan{~finddif}};
 difselected = any(finddif);
+if nargin<3
+    IPTPvalue = ones(1,FLchans);
+end
 
 if ~difselected
     choice = questdlg('Difchannel not selected. Rotation will not be calculated. Do you wish to continue?',...
@@ -197,7 +200,7 @@ for mdchan = 1:MDchans
 
                    %still needs background level to be mediated from within the channel.   
 
-                    while x0{j}(i,1)>IntensityPeakThreshold && j<4 && Size{i,j}(1)>0
+                    while x0{j}(i,1)>IPTPvalue(flchan)*IntensityPeakThreshold && j<4 && Size{i,j}(1)>0
 
                         Fitdata=mat2im(Ydata{i,j});
 

@@ -51,7 +51,7 @@ for chan = chans
     [cells,frames]=size(Bacpics{chan});
     
     
-    IPTPvalue(chan) = LionfitcontrolUI(init,Bacpics{chan},cells,chan);
+    IPTPvalue(chan) = LionfitcontrolUI(init.IPTP,Bacpics{chan},init.flimgname,cells,chan,'Agar');
     close all
        
     DataStruct = GaussFitSimedit_Agarolysis(init,chan,Bacpics{chan},CBacmask,cells,frames,IPTPvalue(chan));

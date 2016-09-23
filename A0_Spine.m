@@ -36,11 +36,17 @@ A100_Processing_ReplicationAutoShell(user,exp,WorkspaceOutName)
 
 %% Save Bacpics to workspace
 
-[Bacpics, MDchans, FLchans, Cells] = A110_Get_Bacpics(user,exp);
+[Bacpics, MDchans, FLchans, Cells] = Get_Bacpics(user,exp);
 initval=A001_Images_Set_Experiment(user,exp);
 
+%%
+
+finddif = strcmp(initval.difchan,initval.viewchan);
+viewFLchans = {initval.viewchan{finddif},initval.viewchan{~finddif}};
+IPTP = 1;
+
 for chan = 1:FLchans;
-    IPTPvalue(chan) = LionfitcontrolUI_Kymo(initval,Bacpics{1,chan},Cells(chan),chan);
+    IPTPvalue(chan) = LionfitcontrolUI(1,Bacpics{1,chan},viewFLchans,Cells(1),chan,'Kymo');
 end
 
 

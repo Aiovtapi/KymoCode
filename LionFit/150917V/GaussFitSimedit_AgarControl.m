@@ -17,15 +17,14 @@
 % sy : std in y of the spot.
 
 %% 
-function Xout = GaussFitSimedit_AgarControl(init,Bacpics,cells,IPTP)
+function Xout = GaussFitSimedit_AgarControl(Bacpics,cells,IPTP,lioncropindex)
 
 
 %% Inputs 
 
-lionval.cropindx = init.lioncropindex;
-lionval.OSslash = init.OSslash;
 
-lionval.viewbac = cells:cells+2;
+
+viewbac = cells:cells+2;
 
 PSFSigma=1;
 iterations=10;
@@ -34,7 +33,7 @@ Xout = cell(1,3);
     
 for cellnumber=1:3;
         
-        Cell = lionval.viewbac(cellnumber);
+        Cell = viewbac(cellnumber);
         
         clear XNorm x NSpots SNR ydatacrpd pixels
 
@@ -96,7 +95,7 @@ for cellnumber=1:3;
             ydata{i}=double(data(:,:,i));
 
         %   Noticed that cropping causes shift in simulations!!
-        if lionval.cropindx==1;
+        if lioncropindex==1;
            [ydatacrpd{i},~]=Crop_Image(ydata{i});
         else 
             ydatacrpd{i}=ydata{i};

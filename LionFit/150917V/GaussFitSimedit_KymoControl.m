@@ -1,4 +1,4 @@
-function Xout = GaussFitSimedit_KymoControl(Bacpics,cells,IPTP)
+function Xout = GaussFitSimedit_KymoControl(Bacpics,cells,IPTP,cropindx)
 
 %% Fit to spot 
 %
@@ -21,10 +21,9 @@ function Xout = GaussFitSimedit_KymoControl(Bacpics,cells,IPTP)
 
 %% 
 
-tic
 
 %% Inputs 
-cropindx=1;
+
 PSFSigma=1;
 iterations=10;
 fittype=4;
@@ -221,17 +220,20 @@ for cellnumber=1:3;
     end
 
     NSpots=size(x,2);
-    LXNormOne=size(XNorm{1},1);
-    LxOne=size(x{1},1);
+    if isempty(x{1})
+        NSpots = 0;
+    end
+%     LXNormOne=size(XNorm{1},1);
+%     LxOne=size(x{1},1);
 
     % make sure that each spot data is same length
     % because some spots will be there for just a few frames
     % and their last will be the length of the array.
 
-    for j=2:NSpots;
-        x{j}=[x{j};zeros(LxOne-size(x{j},1),5)];
-        XNorm{j}=[XNorm{j};zeros(LXNormOne-size(XNorm{j},1),4)];
-    end
+%     for j=2:NSpots;
+%         x{j}=[x{j};zeros(LxOne-size(x{j},1),5)];
+%         XNorm{j}=[XNorm{j};zeros(LXNormOne-size(XNorm{j},1),4)];
+%     end
 
     %% Save results
 
@@ -244,5 +246,4 @@ for cellnumber=1:3;
     clear x XNorm NSpots ydatacrpdR1 pixels imgflipped fliploop
 end   
 
-toc
 end

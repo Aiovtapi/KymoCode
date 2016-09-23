@@ -54,16 +54,24 @@ function LionfitcontrolUI_OpeningFcn(hObject, eventdata, handles, varargin)
 
 handles=guidata(hObject); 
 
-handles.init = varargin{1};
+handles.IPTP = varargin{1};
 handles.Bacpics = varargin{2};
-handles.cells = varargin{3};
-handles.chan = varargin{4};
+handles.flimgname = varargin{3};
+handles.cells = varargin{4};
+handles.chan = varargin{5};
+handles.exp = varargin{6};
 
-handles.IPTP = handles.init.IPTP;
 
-Xout = GaussFitSimedit_AgarControl(handles.init,handles.Bacpics,1,handles.init.IPTP);
+handles.lioncropindex = 0;
 
-title = strcat('Tweak Intensity Peak Threshold for ',handles.init.flimgname{handles.chan});
+switch handles.exp
+    case 'Agar'
+        Xout = GaussFitSimedit_AgarControl(handles.Bacpics,1,handles.IPTP,handles.lioncropindex);
+    case 'Kymo'
+        Xout = GaussFitSimedit_KymoControl(handles.Bacpics,1,handles.IPTP,handles.lioncropindex);
+end
+
+title = strcat('Tweak Intensity Peak Threshold for ',handles.flimgname{handles.chan});
 set(handles.text_title,'String',title);
 
 set(handles.edit_IPT,'String',num2str(handles.IPTP))
@@ -155,7 +163,12 @@ C1 = handles.Cellnumber;
 C2 = C1 + 1; 
 C3 = C1 + 2;
 
-Xout = GaussFitSimedit_AgarControl(handles.init,handles.Bacpics,C1,handles.IPTP);
+switch handles.exp
+    case 'Agar'
+        Xout = GaussFitSimedit_AgarControl(handles.Bacpics,C1,handles.IPTP,handles.lioncropindex);
+    case 'Kymo'
+        Xout = GaussFitSimedit_KymoControl(handles.Bacpics,C1,handles.IPTP,handles.lioncropindex);
+end
 
 imagesc(handles.Bacpics{C1,1},'parent',handles.axes1)
 axes(handles.axes1);
@@ -195,7 +208,12 @@ C1 = handles.Cellnumber;
 C2 = C1 + 1; 
 C3 = C1 + 2;
 
-Xout = GaussFitSimedit_AgarControl(handles.init,handles.Bacpics,C1,handles.IPTP);
+switch handles.exp
+    case 'Agar'
+        Xout = GaussFitSimedit_AgarControl(handles.Bacpics,C1,handles.IPTP,handles.lioncropindex);
+    case 'Kymo'
+        Xout = GaussFitSimedit_KymoControl(handles.Bacpics,C1,handles.IPTP,handles.lioncropindex);
+end
 
 imagesc(handles.Bacpics{C1,1},'parent',handles.axes1)
 axes(handles.axes1);
@@ -262,7 +280,12 @@ C1 = handles.Cellnumber;
 C2 = C1 + 1; 
 C3 = C1 + 2;
 
-Xout = GaussFitSimedit_AgarControl(handles.init,handles.Bacpics,C1,handles.IPTP);
+switch handles.exp
+    case 'Agar'
+        Xout = GaussFitSimedit_AgarControl(handles.Bacpics,C1,handles.IPTP,handles.lioncropindex);
+    case 'Kymo'
+        Xout = GaussFitSimedit_KymoControl(handles.Bacpics,C1,handles.IPTP,handles.lioncropindex);
+end
 
 imagesc(handles.Bacpics{C1,1},'parent',handles.axes1)
 axes(handles.axes1);
@@ -307,7 +330,12 @@ C1 = handles.Cellnumber;
 C2 = C1 + 1; 
 C3 = C1 + 2;
 
-Xout = GaussFitSimedit_AgarControl(handles.init,handles.Bacpics,C1,handles.IPTP);
+switch handles.exp
+    case 'Agar'
+        Xout = GaussFitSimedit_AgarControl(handles.Bacpics,C1,handles.IPTP,handles.lioncropindex);
+    case 'Kymo'
+        Xout = GaussFitSimedit_KymoControl(handles.Bacpics,C1,handles.IPTP,handles.lioncropindex);
+end
 
 imagesc(handles.Bacpics{C1,1},'parent',handles.axes1)
 axes(handles.axes1);
