@@ -24,7 +24,7 @@ ini.tog_merging = 1;
 ini.tog_split = 1;
 ini.tog_spotdis = 1;
 ini.tog_spotapp = 1;
-ini.tog_blinking = 0;
+ini.tog_blinking = 1;
 ini.tog_dimer = 1;
 ini.Tigfolder = uigetdir(pwd);
 

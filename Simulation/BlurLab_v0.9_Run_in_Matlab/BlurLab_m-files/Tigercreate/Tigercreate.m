@@ -9,29 +9,63 @@ function Tigercreate(nframes,pts,meanI,D,Lx,Ly,Lz,ini)
 
 
     %% Set initial values
+    SigmaDperc = 0.10;
+    
+    
+    OLx = Lx / 2; 
+    Nblink2 = round(pts*ini.Nblink/100);
 
-    D0(:,1) = round(pts*rand(ini.Nblink,1));
-    D0(:,2) = round(rand(ini.Nblink,1));
-    D0(:,3) = round(ini.Tblink*rand(ini.Nblink,1));
-    D0(:,4) = raylrnd(ini.Tblink,ini.Nblink,1);
+    % D0 Matrix contains only the blinking spots with in...
+    %   colum 1: The index of the spot.
+    %   colum 2: The current state of the spot (on/off)
+    %   colum 3: The time spent the this state
+    %   colum 4: The target time the spot will stay in its current state
+    
+    D0(:,1) = ceil(pts*rand(Nblink2,1));
+    D0(:,2) = round(rand(Nblink2,1));
+    D0(:,3) = round(ini.Tblink*rand(Nblink2,1));
+    D0(:,4) = raylrnd(ini.Tblink,Nblink2,1);
+    
+    % Sort D0 to the indices of the spots
     [~, sortD] = sort(D0(:,1));
     D0 = D0(sortD,:);
-
-    X0 = Lx*rand(pts,1);
+    
+    % Create initial values of position, intensity and movement
+    X0 = OLx*rand(pts,1);
     Y0 = Ly*rand(pts,1);
     Z0 = Lz*rand(pts,1);
+    
     I0 = poissrnd(meanI,pts,1);
     L0 = (1:pts)';
     A0 = 2*pi*rand(pts,1);
     R0 = normrnd(0,sqrt(2*D),pts,1);
     npts = pts + 1;
     J0 = I0;
-
+    
+    Dim = 0;
+    if Lx > 1; Dim = Dim + 1; end
+    if Ly > 1; Dim = Dim + 1; end
+    if Lz > 1; Dim = Dim + 1; end
+    Dac = sqrt(D^2/Dim);
+    SigmaD = Dac/SigmaDperc;
+    % Create empty output variables
+    %   Xout: X position
+    %   Yout: Y position
+    %   Zout: Z position
+    %   Iout: Intensity value
+    %   Fout: Frame number
+    %   Lout: Label; spot number
+    
     [Xout,Yout,Zout,Iout,Fout,Lout] = deal([]);
 
     %% 
+    
+    dLx = OLx / nframes;
+    TLx = OLx;
 
     for i_fr = 1:nframes
+        
+        TLx = TLx + dLx;
 
         NewL = [];
         Xout = [Xout; X0];
@@ -41,12 +75,53 @@ function Tigercreate(nframes,pts,meanI,D,Lx,Ly,Lz,ini)
         Fout = [Fout; ones(pts,1)*i_fr];
         Lout = [Lout; L0];
 
-        X0 = X0 + R0.*sin(A0);
-        Y0 = Y0 + R0.*cos(A0);
+%         % Compute new XY position
+%         X0 = X0 + R0.*sin(A0);
+%         Y0 = Y0 + R0.*cos(A0);
+%         
+%         % Find out-of-bound spots
+%         Xstay = X0<0 | X0>TLx;
+%         Ystay = Y0<0 | Y0>Ly;
+%         
+%         % Limit Movement of out-of-bound spots
+%         X0(Xstay) = X0(Xstay) - R0(Xstay).*sin(A0(Xstay));
+%         Y0(Ystay) = Y0(Ystay) - R0(Ystay).*cos(A0(Ystay));
+%         
+%         % Calculate new angles after wall collision for out-of-bound spots
+%         A0 = wrapTo2Pi(A0);
+%         A0 = Tig_wallcol(Xstay,Ystay,A0);
+%         Allstay = Xstay | Ystay;
+%         
+%         % Compute new YX position after wall collision
+%         X0(Allstay) = X0(Allstay) + R0(Allstay).*sin(A0(Allstay));
+%         Y0(Allstay) = Y0(Allstay) + R0(Allstay).*cos(A0(Allstay));
 
-        [~,blinkspots] = histc(D0(:,1),L0);
-        blinkI = I0(blinkspots).*D0(:,2);
-        J0(blinkspots) = blinkI;
+        
+        Xchange = normrnd(Dac,SigmaD,pts,1);
+        Ychange = normrnd(Dac,SigmaD,pts,1);
+        Zchange = normrnd(Dac,SigmaD,pts,1);
+
+        X0 = X0 + Xchange;
+        Y0 = Y0 + Ychange;
+        Z0 = Z0 + Zchange;
+        
+        Xstay = X0<0 | X0>TLx;
+        Ystay = Y0<0 | Y0>Ly;
+        Zstay = Z0<0 | Z0>Lz;
+        
+        % Limit Movement of out-of-bound spots
+        X0(Xstay) = X0(Xstay) - Xchange(Xstay);
+        Y0(Ystay) = Y0(Ystay) - Ychange(Ystay);
+        Z0(Zstay) = Z0(Zstay) - Zchange(Zstay);
+        
+        % Compute real intensity (with blinking) (using histc to take into
+        % account the appearence and dissapearence of spots
+        if numel(D0)>0
+            [~,blinkspots] = histc(D0(:,1),L0);
+            blinkI = I0(blinkspots).*D0(:,2);
+            J0(blinkspots) = blinkI;        
+        end
+
 
         %% Merging
         if ini.tog_merging == 1;
@@ -57,9 +132,9 @@ function Tigercreate(nframes,pts,meanI,D,Lx,Ly,Lz,ini)
         %% Splitting
         if ini.tog_split == 1;
             [X0,Y0,Z0,I0,L0,A0,R0,pts,npts,NewL] = ...
-                Tig_splitting(X0,Y0,Z0,I0,L0,A0,R0,pts,npts,NewL,ini.CSplit,ini.DSplit,i_fr,meanI);
-
+                Tig_splitting(X0,Y0,Z0,I0,L0,A0,R0,pts,npts,NewL,ini.CSplit,ini.DSplit,ini.tog_dimer,i_fr,meanI);
         end
+
 
         %% Spot Disappearence
         if ini.tog_spotdis == 1;
@@ -67,10 +142,11 @@ function Tigercreate(nframes,pts,meanI,D,Lx,Ly,Lz,ini)
                 Tig_Dissappearance(X0,Y0,Z0,I0,L0,A0,R0,pts,ini.CDis);
         end
 
+
         %% Spot Appearence
         if ini.tog_spotapp == 1; 
             [X0,Y0,Z0,I0,L0,A0,R0,pts,npts,NewL] = ...
-                Tig_Appearance(X0,Y0,Z0,I0,L0,A0,R0,npts,meanI,NewL,ini.Apois,Lx,Ly,Lz,D);
+                Tig_Appearance(X0,Y0,Z0,I0,L0,A0,R0,npts,meanI,NewL,ini.Apois,TLx,Ly,Lz,D);
         end
 
         %% Blinking
@@ -83,12 +159,16 @@ function Tigercreate(nframes,pts,meanI,D,Lx,Ly,Lz,ini)
             Nnspots = length(NewL);
             if ~Nnspots == 0;
                 Newidx = find(rand(Nnspots,1) < ini.Cblink1);
-                Dnew(:,1) = NewL(Newidx);
-                Dnew(:,2) = round(rand(numel(Newidx),1));
-                Dnew(:,3) = round(ini.Tblink*rand(numel(Newidx),1));
-                Dnew(:,4) = raylrnd(ini.Tblink,numel(Newidx),1);
+                if numel(Newidx)>0
+                    
+                    Dnew(:,1) = NewL(Newidx);
+                    Dnew(:,2) = round(rand(numel(Newidx),1));
+                    Dnew(:,3) = round(ini.Tblink*rand(numel(Newidx),1));
+                    Dnew(:,4) = raylrnd(ini.Tblink,numel(Newidx),1);
 
-                D0 = [D0; Dnew];
+                    D0 = [D0; Dnew];
+                    clear Dnew
+                end
             end
 
             % Add frame to blinkcounter
@@ -118,8 +198,6 @@ function Tigercreate(nframes,pts,meanI,D,Lx,Ly,Lz,ini)
             D0 = D0(sortd,:);
         end
 
-        J0 = I0;
-
         Rchange = normrnd(1,ini.SigmaR,pts,1);
         Achange = normrnd(1,ini.SigmaA,pts,1);
         Ichange = normrnd(1,ini.SigmaI,pts,1);
@@ -127,21 +205,48 @@ function Tigercreate(nframes,pts,meanI,D,Lx,Ly,Lz,ini)
         R0 = R0.*Rchange;
         A0 = A0.*Achange;
         I0 = I0.*Ichange;
-
+        
+%       Remove low intensity spots      
+        [X0,Y0,Z0,I0,L0,A0,R0,pts] = ...
+            Tig_MinIntensity(X0,Y0,Z0,I0,L0,A0,R0,ini.MinI);
+        J0 = I0;
 
         clear NewL sortd 
     end
 
-    %I know this isn't quite right
-    Xout(Xout<0)=0;
-    Xout(Xout>Lx)=Lx;
-    Yout(Yout<0)=0;
-    Yout(Yout>Ly)=Ly;
-    Zout(Zout<0)=0;
-    Zout(Zout>Lz)=Lz;
-
     % write output file
+    oldfolder = pwd;
+    cd(ini.Tigfolder)
     BlurLab_text(Xout,Yout,Zout,Iout,Fout,Lout,fname)
+    cd(oldfolder);
+end
+
+function A0 = Tig_wallcol(Xstay,Ystay,A0)
+    
+    XYstay = Xstay & Ystay;
+    Xstay = logical(Xstay - XYstay);
+    Ystay = logical(Ystay - XYstay); 
+    
+    XA = A0(Xstay);
+    YA = A0(Ystay);
+    XYA = A0(XYstay);
+    
+    for i = 1:numel(XA);
+        ag = XA(i);
+        if ag <= pi
+            ag = pi - ag; 
+        else
+            ag = 3*pi - ag; 
+        end
+        XA(i) = ag;         
+    end
+    
+    YA = 2*pi - YA; 
+    XYA = XYA - pi;
+    
+    A0(Xstay) = XA;
+    A0(Ystay) = YA;
+    A0(XYstay) = XYA;
 end
 
 function [X0,Y0,Z0,I0,L0,A0,R0,pts,npts,NewL] = ...
@@ -169,14 +274,14 @@ function [X0,Y0,Z0,I0,L0,A0,R0,pts,npts,NewL] = ...
     Colidx(Dupidx) = [];
     Rowidx(Dupidx) = [];
     Cont_merge = find(rand(length(Colidx),1) < CMerge);
-    Merge_cells = [Rowidx(Cont_merge), Colidx(Cont_merge)];
+    Merge_spots = [Rowidx(Cont_merge), Colidx(Cont_merge)];
 
-    N_merge = size(Merge_cells,1);
+    N_merge = size(Merge_spots,1);
     [X_new,Y_new,Z_new,I_new,F_new,L_new,R_new,A_new] = deal(zeros(N_merge,1));
 
     for i_mrg = 1:N_merge;
-        cell_a = Merge_cells(i_mrg,1);
-        cell_b = Merge_cells(i_mrg,2);
+        cell_a = Merge_spots(i_mrg,1);
+        cell_b = Merge_spots(i_mrg,2);
 
         X_new(i_mrg) = (X0(cell_a)+X0(cell_b))/2;
         Y_new(i_mrg) = (Y0(cell_a)+Y0(cell_b))/2;
@@ -198,39 +303,46 @@ function [X0,Y0,Z0,I0,L0,A0,R0,pts,npts,NewL] = ...
         npts = npts + 1;
     end
 
-    Rcells = Merge_cells(:);
-    X0(Rcells) = [];    X0 = [X0; X_new];
-    Y0(Rcells) = [];    Y0 = [Y0; Y_new];
-    Z0(Rcells) = [];    Z0 = [Z0; Z_new];
-    I0(Rcells) = [];    I0 = [I0; I_new];
-    L0(Rcells) = [];    L0 = [L0; L_new];
-    A0(Rcells) = [];    A0 = [A0; A_new];
-    R0(Rcells) = [];    R0 = [R0; R_new];
+    Rspots = Merge_spots(:);
+    X0(Rspots) = [];    X0 = [X0; X_new];
+    Y0(Rspots) = [];    Y0 = [Y0; Y_new];
+    Z0(Rspots) = [];    Z0 = [Z0; Z_new];
+    I0(Rspots) = [];    I0 = [I0; I_new];
+    L0(Rspots) = [];    L0 = [L0; L_new];
+    A0(Rspots) = [];    A0 = [A0; A_new];
+    R0(Rspots) = [];    R0 = [R0; R_new];
 
     pts = length(X0);
     NewL = [NewL; L_new];
 end
 
 function [X0,Y0,Z0,I0,L0,A0,R0,pts,npts,NewL] = ...
-    Tig_splitting(X0,Y0,Z0,I0,L0,A0,R0,pts,npts,NewL,CSplit,DSplit,i_fr,meanI)
+    Tig_splitting(X0,Y0,Z0,I0,L0,A0,R0,pts,npts,NewL,CSplit,DSplit,tog_dimer,i_fr,meanI)
 
-    Split_cells = find(rand(pts,1) < CSplit);
+    Split_spots = find(rand(pts,1) < CSplit);
 
-    N_split = size(Split_cells,1);
+    N_split = size(Split_spots,1);
     [X_new,Y_new,Z_new,I_new,F_new,L_new,R_new,A_new] = deal(zeros(N_split*2,1));
 
     for i_splt = 1:N_split;
-        cell_old = Split_cells(i_splt);
+        cell_old = Split_spots(i_splt);
 
         I_old = I0(cell_old);            
         Mx_old = R0(cell_old)*sin(A0(cell_old))*I0(cell_old);
         My_old = R0(cell_old)*cos(A0(cell_old))*I0(cell_old);
 
-        Mx_a = normrnd(Mx_old,sqrt(2*DSplit)*meanI);
-        My_a = normrnd(My_old,sqrt(2*DSplit)*meanI);
+        if tog_dimer == 0
+            Mx_a = normrnd(Mx_old/2,sqrt(2*DSplit)*sqrt(meanI));
+            My_a = normrnd(My_old/2,sqrt(2*DSplit)*sqrt(meanI));
+            I_a = poissrnd(I_old/2);
+        else
+            Mx_a = Mx_old/2;
+            My_a = My_old/2;
+            I_a = I_old/2;
+        end
+        
         Mx_b = Mx_old - Mx_a;
         My_b = My_old - My_a;
-        I_a = poissrnd(I_old);
         I_b = I_old - I_a;
 
         Rx_a = Mx_a/I_a;
@@ -262,13 +374,13 @@ function [X0,Y0,Z0,I0,L0,A0,R0,pts,npts,NewL] = ...
         npts = npts + 2;
     end
 
-    X0(Split_cells) = [];    X0 = [X0; X_new];
-    Y0(Split_cells) = [];    Y0 = [Y0; Y_new];
-    Z0(Split_cells) = [];    Z0 = [Z0; Z_new];
-    I0(Split_cells) = [];    I0 = [I0; I_new];
-    L0(Split_cells) = [];    L0 = [L0; L_new];
-    A0(Split_cells) = [];    A0 = [A0; A_new];
-    R0(Split_cells) = [];    R0 = [R0; R_new];
+    X0(Split_spots) = [];    X0 = [X0; X_new];
+    Y0(Split_spots) = [];    Y0 = [Y0; Y_new];
+    Z0(Split_spots) = [];    Z0 = [Z0; Z_new];
+    I0(Split_spots) = [];    I0 = [I0; I_new];
+    L0(Split_spots) = [];    L0 = [L0; L_new];
+    A0(Split_spots) = [];    A0 = [A0; A_new];
+    R0(Split_spots) = [];    R0 = [R0; R_new];
 
     pts = length(X0);
     NewL = [NewL; L_new];
@@ -298,15 +410,31 @@ end
 function [X0,Y0,Z0,I0,L0,A0,R0,pts] = ...
     Tig_Dissappearance(X0,Y0,Z0,I0,L0,A0,R0,pts,CDis)
 
-    Diss_cells = find(rand(pts,1) < CDis);
+    Diss_spots = find(rand(pts,1) < CDis);
 
-    X0(Diss_cells) = [];
-    Y0(Diss_cells) = [];
-    Z0(Diss_cells) = [];
-    I0(Diss_cells) = [];
-    L0(Diss_cells) = [];
-    A0(Diss_cells) = [];
-    R0(Diss_cells) = [];
+    X0(Diss_spots) = [];
+    Y0(Diss_spots) = [];
+    Z0(Diss_spots) = [];
+    I0(Diss_spots) = [];
+    L0(Diss_spots) = [];
+    A0(Diss_spots) = [];
+    R0(Diss_spots) = [];
+
+    pts = length(X0);
+end
+
+function [X0,Y0,Z0,I0,L0,A0,R0,pts] = ...
+    Tig_MinIntensity(X0,Y0,Z0,I0,L0,A0,R0,MinI)
+
+    Diss_spots = find(I0 < MinI);
+
+    X0(Diss_spots) = [];
+    Y0(Diss_spots) = [];
+    Z0(Diss_spots) = [];
+    I0(Diss_spots) = [];
+    L0(Diss_spots) = [];
+    A0(Diss_spots) = [];
+    R0(Diss_spots) = [];
 
     pts = length(X0);
 end
