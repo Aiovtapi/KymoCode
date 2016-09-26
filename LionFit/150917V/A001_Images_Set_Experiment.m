@@ -30,16 +30,22 @@ switch user
           projectpath='D:\Users\water_000\Documents\GitHub\';
           versionpath='KymoCode\';
           toolspath='SupportingFunctions\';
+          lionpath = 'Lionfit\';
       case 'Mark'
           projectpath='C:\Users\water\Documents\GitHub\';
           versionpath='KymoCode\';
           toolspath='SupportingFunctions\';
+          lionpath = 'Lionfit\';
 end
 
 initval.Kymopath = strcat(projectpath,versionpath);
 initval.Supportpath = strcat(projectpath,versionpath,toolspath);
+addpath(strcat(projectpath,versionpath,lionpath,'15917V'))
+addpath(strcat(projectpath,versionpath,lionpath,'gaussmlev2'))
 addpath(strcat(initval.Kymopath));
 addpath(strcat(initval.Supportpath));
+
+
 
 
 initval.plotintermediateresults=0;
