@@ -1,5 +1,5 @@
-function [X0,Y0,Z0,I0,L0,A0,R0,pts,npts,NewL] = ...
-    Tig_merging(X0,Y0,Z0,I0,L0,A0,R0,pts,npts,NewL,MergeD,CMerge,i_fr)
+function [X0,Y0,Z0,I0,L0,A0,R0,D0,pts,npts,NewL] = ...
+    Tig_merging(X0,Y0,Z0,I0,L0,A0,R0,D0,pts,npts,NewL,MergeD,CMerge,i_fr)
 
     [Xa,Xb] = meshgrid(X0);
     [Ya,Yb] = meshgrid(Y0);
@@ -23,14 +23,15 @@ function [X0,Y0,Z0,I0,L0,A0,R0,pts,npts,NewL] = ...
     Colidx(Dupidx) = [];
     Rowidx(Dupidx) = [];
     Cont_merge = find(rand(length(Colidx),1) < CMerge);
-    Merge_cells = [Rowidx(Cont_merge), Colidx(Cont_merge)];
+    Merge_spots = [Rowidx(Cont_merge), Colidx(Cont_merge)];
 
-    N_merge = size(Merge_cells,1);
+    N_merge = size(Merge_spots,1);
     [X_new,Y_new,Z_new,I_new,F_new,L_new,R_new,A_new] = deal(zeros(N_merge,1));
+    [D_new] = deal(zeros(1,N_merge));
 
     for i_mrg = 1:N_merge;
-        cell_a = Merge_cells(i_mrg,1);
-        cell_b = Merge_cells(i_mrg,2);
+        cell_a = Merge_spots(i_mrg,1);
+        cell_b = Merge_spots(i_mrg,2);
 
         X_new(i_mrg) = (X0(cell_a)+X0(cell_b))/2;
         Y_new(i_mrg) = (Y0(cell_a)+Y0(cell_b))/2;
@@ -48,18 +49,25 @@ function [X0,Y0,Z0,I0,L0,A0,R0,pts,npts,NewL] = ...
         Ry_new = (My_a + My_b)/I_new(i_mrg);
         A_new(i_mrg) = tan(Rx_new/Ry_new);
         R_new(i_mrg) = sqrt(Rx_new^2 + Ry_new^2); 
+        
+        if xor(D0(cell_a),D0(cell_b))
+            D_new(i_mrg) = logical(randi([0,1]));
+        else
+            D_new(i_mrg) = D0(cell_a);
+        end
 
         npts = npts + 1;
     end
 
-    Rcells = Merge_cells(:);
-    X0(Rcells) = [];    X0 = [X0; X_new];
-    Y0(Rcells) = [];    Y0 = [Y0; Y_new];
-    Z0(Rcells) = [];    Z0 = [Z0; Z_new];
-    I0(Rcells) = [];    I0 = [I0; I_new];
-    L0(Rcells) = [];    L0 = [L0; L_new];
-    A0(Rcells) = [];    A0 = [A0; A_new];
-    R0(Rcells) = [];    R0 = [R0; R_new];
+    Rspots = Merge_spots(:);
+    X0(Rspots) = [];    X0 = [X0; X_new];
+    Y0(Rspots) = [];    Y0 = [Y0; Y_new];
+    Z0(Rspots) = [];    Z0 = [Z0; Z_new];
+    I0(Rspots) = [];    I0 = [I0; I_new];
+    L0(Rspots) = [];    L0 = [L0; L_new];
+    A0(Rspots) = [];    A0 = [A0; A_new];
+    R0(Rspots) = [];    R0 = [R0; R_new];
+    D0(Rspots) = [];    D0 = [D0, D_new];
 
     pts = length(X0);
     NewL = [NewL; L_new];

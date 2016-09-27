@@ -1,23 +1,31 @@
-function [X0,Y0,Z0,I0,L0,A0,R0,pts,npts,NewL] = ...
-    Tig_splitting(X0,Y0,Z0,I0,L0,A0,R0,pts,npts,NewL,CSplit,DSplit,i_fr,meanI)
+function [X0,Y0,Z0,I0,L0,A0,R0,D0,pts,npts,NewL] = ...
+    Tig_splitting(X0,Y0,Z0,I0,L0,A0,R0,D0,pts,npts,NewL,CSplit,DSplit,tog_dimer,i_fr,meanI)
 
-    Split_cells = find(rand(pts,1) < CSplit);
+    Split_spots = find(rand(pts,1) < CSplit);
 
-    N_split = size(Split_cells,1);
-    [X_new,Y_new,Z_new,I_new,F_new,L_new,R_new,A_new] = deal(zeros(N_split*2,1));
+    N_split = size(Split_spots,1);
+    [X_new,Y_new,Z_new,I_new,F_new,L_new,A_new,R_new] = deal(zeros(N_split*2,1));
+    [D_new] = deal(zeros(1,N_split*2));
 
     for i_splt = 1:N_split;
-        cell_old = Split_cells(i_splt);
+        cell_old = Split_spots(i_splt);
 
         I_old = I0(cell_old);            
         Mx_old = R0(cell_old)*sin(A0(cell_old))*I0(cell_old);
         My_old = R0(cell_old)*cos(A0(cell_old))*I0(cell_old);
 
-        Mx_a = normrnd(Mx_old,sqrt(2*DSplit)*meanI);
-        My_a = normrnd(My_old,sqrt(2*DSplit)*meanI);
+        if tog_dimer == 0
+            Mx_a = normrnd(Mx_old/2,sqrt(2*DSplit)*sqrt(meanI));
+            My_a = normrnd(My_old/2,sqrt(2*DSplit)*sqrt(meanI));
+            I_a = poissrnd(I_old/2);
+        else
+            Mx_a = Mx_old/2;
+            My_a = My_old/2;
+            I_a = I_old/2;
+        end
+        
         Mx_b = Mx_old - Mx_a;
         My_b = My_old - My_a;
-        I_a = poissrnd(I_old);
         I_b = I_old - I_a;
 
         Rx_a = Mx_a/I_a;
@@ -45,18 +53,23 @@ function [X0,Y0,Z0,I0,L0,A0,R0,pts,npts,NewL] = ...
         R_new(2*i_splt) = R_b;
         A_new(2*i_splt-1) = A_a;
         A_new(2*i_splt) = A_b;
+        
+        D_new(2*i_splt-1:2*i_splt) = D0(cell_old);
 
         npts = npts + 2;
     end
+    D_new = logical(D_new);
 
-    X0(Split_cells) = [];    X0 = [X0; X_new];
-    Y0(Split_cells) = [];    Y0 = [Y0; Y_new];
-    Z0(Split_cells) = [];    Z0 = [Z0; Z_new];
-    I0(Split_cells) = [];    I0 = [I0; I_new];
-    L0(Split_cells) = [];    L0 = [L0; L_new];
-    A0(Split_cells) = [];    A0 = [A0; A_new];
-    R0(Split_cells) = [];    R0 = [R0; R_new];
-
+    X0(Split_spots) = [];    X0 = [X0; X_new];
+    Y0(Split_spots) = [];    Y0 = [Y0; Y_new];
+    Z0(Split_spots) = [];    Z0 = [Z0; Z_new];
+    I0(Split_spots) = [];    I0 = [I0; I_new];
+    L0(Split_spots) = [];    L0 = [L0; L_new];
+    A0(Split_spots) = [];    A0 = [A0; A_new];
+    R0(Split_spots) = [];    R0 = [R0; R_new];
+    D0(Split_spots) = [];    D0 = [D0, D_new];
+    
     pts = length(X0);
     NewL = [NewL; L_new];
 end
+

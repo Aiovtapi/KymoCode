@@ -1,8 +1,8 @@
 
 function [X0,Y0,Z0,I0,L0,A0,R0,D0,pts] = ...
-    Tig_Dissappearance(X0,Y0,Z0,I0,L0,A0,R0,D0,pts,CDis)
+    Tig_MinIntensity(X0,Y0,Z0,I0,L0,A0,R0,D0,MinI)
 
-    Diss_spots = find(rand(pts,1) < CDis);
+    Diss_spots = find(I0 < MinI);
 
     X0(Diss_spots) = [];
     Y0(Diss_spots) = [];
