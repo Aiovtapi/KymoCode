@@ -31,10 +31,9 @@ ini.Tigfolder = uigetdir(pwd);
 nframes = 50;
 pts = 50;
 meanI = 100;
-D = 0.2;
 Lx = 100;
 Ly = 100;
 Lz = 1;
+tif = 0.2;
 
-
-Tigercreate(nframes,pts,meanI,D,Lx,Ly,Lz,ini)
+Tigercreate(nframes,tif,pts,meanI,Lx,Ly,Lz,ini)

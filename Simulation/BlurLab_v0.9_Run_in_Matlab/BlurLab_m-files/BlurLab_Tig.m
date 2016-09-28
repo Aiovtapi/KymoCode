@@ -3317,13 +3317,13 @@ ini.Tigfolder = uigetdir(pwd);
 nframes = str2double(get(handles.Tedit_frames,'String'));
 pts = str2double(get(handles.Tedit_points,'String'));
 meanI = str2double(get(handles.Tedit_meanI,'String'));
-D = str2double(get(handles.Tedit_D,'String'));
+tif = str2double(get(handles.Tedit_D,'String'));
 Lx = str2double(get(handles.Tedit_Lx,'String'));
 Ly = str2double(get(handles.Tedit_Ly,'String'));
 Lz = str2double(get(handles.Tedit_Lz,'String'));
 
 
-Tigercreate(nframes,pts,meanI,D,Lx,Ly,Lz,ini)
+Tigercreate(nframes,tif,pts,meanI,Lx,Ly,Lz,ini)
 
 set(handles.popupmenu1,'Value',1);
 
