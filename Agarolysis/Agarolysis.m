@@ -145,7 +145,6 @@ for chan = chans
         DataStruct(chan,celli).CellLength = CellLength;
         DataStruct(chan,celli).Lnorm = Lnorm;
         DataStruct(chan,celli).Bacmesh = Bacmesh{chan}{celli,:};
-        Data
         
         AllLnorm = [AllLnorm; Lnorm];
         clear x bx ld

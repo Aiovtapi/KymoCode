@@ -1,4 +1,4 @@
-function DataStruct = RemoveCells(init, DataStruct, cells,faultycells,fpath)
+function DataStruct = RemoveCells(init,DataStruct,cells,faultycells,fpath)
 
     goodcells = 1:cells;
     goodcells(faultycells) = [];
@@ -13,6 +13,10 @@ function DataStruct = RemoveCells(init, DataStruct, cells,faultycells,fpath)
             if fremoved == 0; % Check if faulty cells are already removed
                 renumber = questdlg('Renumber bacpics and results?','Menu','Yes','No','Yes');
 
+                for fcelli = fliplr(faultycells)
+                    DataStruct(:,fcelli) = [];
+                end
+                
                 for chan = 1:chans
                     bacfolder = strcat(init.bacpath,init.flimgname{chan},init.OSslash);
 %                     resultfolder = strcat(bacfolder,'Results',init.OSslash);
@@ -22,11 +26,6 @@ function DataStruct = RemoveCells(init, DataStruct, cells,faultycells,fpath)
                     for fcelli = fliplr(faultycells);
                         bacdir = strcat(bacfolder,'Cell_',num2str(fcelli,'%03.0f'));
                         rmdir(bacdir,'s');
-                        
-                        DataStruct(:,fcelli) = [];
-
-%                         matpath = strcat(resultfolder,'Cell_',num2str(fcelli,'%03.0f'),'.mat');
-%                         delete(matpath);
                     end
 
                     % Relabel folders and results if requested
@@ -37,15 +36,9 @@ function DataStruct = RemoveCells(init, DataStruct, cells,faultycells,fpath)
                             for celli = newlabel;
                                 obacdir = strcat(bacfolder,'Cell_',num2str(goodcells(celli),'%03.0f'));
                                 nbacdir = strcat(bacfolder,'Cell_',num2str(celli,'%03.0f'));
-%                                 omatpath = strcat(resultfolder,'Cell_',num2str(goodcells(celli),'%03.0f'),'.mat');
-%                                 nmatpath = strcat(resultfolder,'Cell_',num2str(celli,'%03.0f'),'.mat');
-                                
                                 if ~strcmp(obacdir,nbacdir)
                                     movefile(obacdir,nbacdir)
                                 end
-%                                 if ~strcmp(omatpath,nmatpath)
-%                                     movefile(omatpath,nmatpath)
-%                                 end
                             end
                         case 'No'
                     end    
