@@ -1,9 +1,9 @@
 
 function [X0,Y0,Z0,XYC,T0,I0,L0,D0,pts] = ...
-    Tig_MinIntensity(X0,Y0,Z0,XYC,T0,I0,L0,D0,ini)
+    Tig_IntensityBound(X0,Y0,Z0,XYC,T0,I0,L0,D0,ini)
     
     % Find spots that have intensities lower than set threshold
-    Diss_spots = find(I0 < ini.MinI);
+    Diss_spots = find(I0 < ini.MinI | I0 > ini.MaxI);
 
     X0(Diss_spots) = [];
     Y0(Diss_spots) = [];

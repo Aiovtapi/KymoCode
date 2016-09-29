@@ -4,7 +4,7 @@
 function Tigercreate(nframes,tif,pts,meanI,Lx,Ly,Lz,ini)
    
     %% Set initial values
-    SigmaDperc = 0.10;
+    SigmaDperc = 0.5;
     
     % Define Growth of cell
     OLx = Lx / 2; 
@@ -249,15 +249,17 @@ function Tigercreate(nframes,tif,pts,meanI,Lx,Ly,Lz,ini)
         
         % Remove low intensity spots      
         [X0,Y0,Z0,XYC,T0,I0,L0,Dpts,pts] = ...
-            Tig_MinIntensity(X0,Y0,Z0,XYC,T0,I0,L0,Dpts,ini);
+            Tig_IntensityBound(X0,Y0,Z0,XYC,T0,I0,L0,Dpts,ini);
         
         % Compute real intensity (with blinking) (using histc to take into
         % account the appearence and dissapearence of spots
         J0 = I0;
-        if numel(D0)>0
-            [~,blinkspots] = histc(D0(:,1),L0);
-            blinkI = I0(blinkspots).*D0(:,2);
-            J0(blinkspots) = blinkI;        
+        if ini.tog_blinking == 1;
+            if ~isempty(D0)
+                [~,blinkspots] = histc(D0(:,1),L0);
+                blinkI = I0(blinkspots).*D0(:,2);
+                J0(blinkspots) = blinkI;        
+            end
         end
         
         clear NewL sortd 

@@ -32,7 +32,7 @@ function varargout = BlurLab_Tig(varargin)
 % folder 'M-File_Models'.
 %
 
-% Last Modified by GUIDE v2.5 01-Jul-2016 13:36:21
+% Last Modified by GUIDE v2.5 29-Sep-2016 14:58:18
 
 % Skip frame option?
 % only frap certain Z thickness
@@ -2961,13 +2961,9 @@ switch get(hObject,'Value')
     case 1
         set(handles.text_CSplit,'Enable','on')
         set(handles.Tig_CSplit,'Enable','on')
-        set(handles.text_DSplit,'Enable','on')
-        set(handles.Tig_DSplit,'Enable','on')
     case 0
         set(handles.text_CSplit,'Enable','off')
         set(handles.Tig_CSplit,'Enable','off')
-        set(handles.text_DSplit,'Enable','off')
-        set(handles.Tig_DSplit,'Enable','off')
 end
 
 
@@ -2985,53 +2981,6 @@ switch get(hObject,'Value')
         set(handles.text_CDis,'Enable','off')
         set(handles.Tig_CDis,'Enable','off')
 end
-
-
-
-function Tig_SigmaR_Callback(hObject, eventdata, handles)
-% hObject    handle to Tig_SigmaR (see GCBO)
-% eventdata  reserved - to be defined in a future version of MATLAB
-% handles    structure with handles and user data (see GUIDATA)
-
-% Hints: get(hObject,'String') returns contents of Tig_SigmaR as text
-%        str2double(get(hObject,'String')) returns contents of Tig_SigmaR as a double
-
-
-% --- Executes during object creation, after setting all properties.
-function Tig_SigmaR_CreateFcn(hObject, eventdata, handles)
-% hObject    handle to Tig_SigmaR (see GCBO)
-% eventdata  reserved - to be defined in a future version of MATLAB
-% handles    empty - handles not created until after all CreateFcns called
-
-% Hint: edit controls usually have a white background on Windows.
-%       See ISPC and COMPUTER.
-if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
-    set(hObject,'BackgroundColor','white');
-end
-
-
-
-function Tig_SigmaA_Callback(hObject, eventdata, handles)
-% hObject    handle to Tig_SigmaA (see GCBO)
-% eventdata  reserved - to be defined in a future version of MATLAB
-% handles    structure with handles and user data (see GUIDATA)
-
-% Hints: get(hObject,'String') returns contents of Tig_SigmaA as text
-%        str2double(get(hObject,'String')) returns contents of Tig_SigmaA as a double
-
-
-% --- Executes during object creation, after setting all properties.
-function Tig_SigmaA_CreateFcn(hObject, eventdata, handles)
-% hObject    handle to Tig_SigmaA (see GCBO)
-% eventdata  reserved - to be defined in a future version of MATLAB
-% handles    empty - handles not created until after all CreateFcns called
-
-% Hint: edit controls usually have a white background on Windows.
-%       See ISPC and COMPUTER.
-if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
-    set(hObject,'BackgroundColor','white');
-end
-
 
 
 function Tig_SigmaI_Callback(hObject, eventdata, handles)
@@ -3123,30 +3072,6 @@ function Tig_CSplit_CreateFcn(hObject, eventdata, handles)
 if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
     set(hObject,'BackgroundColor','white');
 end
-
-
-
-function Tig_DSplit_Callback(hObject, eventdata, handles)
-% hObject    handle to Tig_DSplit (see GCBO)
-% eventdata  reserved - to be defined in a future version of MATLAB
-% handles    structure with handles and user data (see GUIDATA)
-
-% Hints: get(hObject,'String') returns contents of Tig_DSplit as text
-%        str2double(get(hObject,'String')) returns contents of Tig_DSplit as a double
-
-
-% --- Executes during object creation, after setting all properties.
-function Tig_DSplit_CreateFcn(hObject, eventdata, handles)
-% hObject    handle to Tig_DSplit (see GCBO)
-% eventdata  reserved - to be defined in a future version of MATLAB
-% handles    empty - handles not created until after all CreateFcns called
-
-% Hint: edit controls usually have a white background on Windows.
-%       See ISPC and COMPUTER.
-if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
-    set(hObject,'BackgroundColor','white');
-end
-
 
 
 function Tig_CDis_Callback(hObject, eventdata, handles)
@@ -3291,20 +3216,18 @@ function Tigercreate_Generate_Callback(hObject, eventdata, handles)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
 
-ini.SigmaR = str2double(get(handles.Tig_SigmaR,'String'));   % Variance for normal dis. used for change in R (displacement)
-ini.SigmaA = str2double(get(handles.Tig_SigmaA,'String'));   % Variance for normal dis. used for change in A (angle)
 ini.SigmaI = str2double(get(handles.Tig_SigmaI,'String'));   % Variance for normal dis. used for change in I (Intensity)
 ini.MergeD = str2double(get(handles.Tig_MergeD,'String'));   % Distance between two spots needed for merging
 ini.CMerge = str2double(get(handles.Tig_CMerge,'String'));   % Chance for a merging event (if within distance)
 ini.CSplit = str2double(get(handles.Tig_CSplit,'String'));   % Chance for a splitting event
-ini.DSplit = str2double(get(handles.Tig_DSplit,'String'));   % Change in displacement for one particle
 ini.CDis = str2double(get(handles.Tig_CDis,'String'));       % Chance for a disappearence event
 ini.Apois = str2double(get(handles.Tig_Apois,'String'));     % Number of spots appearences (poisson distribution)
 ini.Nblink = str2double(get(handles.Tig_Nblink,'String'));   % Percentage of blinking spots
 ini.Tblink = str2double(get(handles.Tig_Tblink,'String'));   % Average blinking duration (in frames)
 ini.Cblink1 = str2double(get(handles.Tig_Cblink1,'String')); % Chance of becoming a blinking spot (new spots)
 ini.Cblink2 = str2double(get(handles.Tig_Cblink2,'String')); % Chance of becoming a stable spot (blinking spots)
-ini.MinI = str2double(get(handles.Tig_MinI,'String'));        % Minimal value of intensity
+ini.MinI = str2double(get(handles.Tig_MinI,'String'));       % Minimal value of intensity
+ini.MaxI = str2double(get(handles.Tig_MaxI,'String'));       % Maximal value of intensity
 
 ini.tog_merging = get(handles.Tig_tog_merging,'Value');
 ini.tog_split = get(handles.Tig_tog_splitting,'Value');
@@ -3358,3 +3281,26 @@ function Tig_tog_dimer_Callback(hObject, eventdata, handles)
 % handles    structure with handles and user data (see GUIDATA)
 
 % Hint: get(hObject,'Value') returns toggle state of Tig_tog_dimer
+
+
+
+function Tig_MaxI_Callback(hObject, eventdata, handles)
+% hObject    handle to Tig_MaxI (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+
+% Hints: get(hObject,'String') returns contents of Tig_MaxI as text
+%        str2double(get(hObject,'String')) returns contents of Tig_MaxI as a double
+
+
+% --- Executes during object creation, after setting all properties.
+function Tig_MaxI_CreateFcn(hObject, eventdata, handles)
+% hObject    handle to Tig_MaxI (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    empty - handles not created until after all CreateFcns called
+
+% Hint: edit controls usually have a white background on Windows.
+%       See ISPC and COMPUTER.
+if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
+    set(hObject,'BackgroundColor','white');
+end
