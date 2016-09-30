@@ -18,7 +18,7 @@ fprintf('\nSelect Oufti Mesh');
 init.pcresize = 1;
 init.pctrans = [0,0];
 
-init.Extrabound = 4;
+init.Extrabound = 10;
 init.strelval = 6;
 init.Writebac = 0;
 init.TigerCutSR = 1;
