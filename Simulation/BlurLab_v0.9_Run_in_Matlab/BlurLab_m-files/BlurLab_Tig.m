@@ -32,7 +32,7 @@ function varargout = BlurLab_Tig(varargin)
 % folder 'M-File_Models'.
 %
 
-% Last Modified by GUIDE v2.5 29-Sep-2016 14:58:18
+% Last Modified by GUIDE v2.5 30-Sep-2016 11:47:10
 
 % Skip frame option?
 % only frap certain Z thickness
@@ -3236,6 +3236,7 @@ ini.tog_spotapp = get(handles.Tig_tog_spotapp,'Value');
 ini.tog_blinking = get(handles.Tig_tog_blinking,'Value');
 ini.tog_dimer = get(handles.Tig_tog_dimer,'Value');
 ini.Tigfolder = uigetdir(pwd);
+ini.Cellgrowth = get(handles.Tig_tog_Cellgrowth,'Value');
 
 nframes = str2double(get(handles.Tedit_frames,'String'));
 pts = str2double(get(handles.Tedit_points,'String'));
@@ -3304,3 +3305,12 @@ function Tig_MaxI_CreateFcn(hObject, eventdata, handles)
 if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
     set(hObject,'BackgroundColor','white');
 end
+
+
+% --- Executes on button press in Tig_tog_Cellgrowth.
+function Tig_tog_Cellgrowth_Callback(hObject, eventdata, handles)
+% hObject    handle to Tig_tog_Cellgrowth (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+
+% Hint: get(hObject,'Value') returns toggle state of Tig_tog_Cellgrowth

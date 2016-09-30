@@ -7,7 +7,11 @@ function Tigercreate(nframes,tif,pts,meanI,Lx,Ly,Lz,ini)
     SigmaDperc = 0.5;
     
     % Define Growth of cell
-    OLx = Lx / 2; 
+    if ini.Cellgrowth
+        OLx = Lx / 2;
+    else
+        OLx = Lx;
+    end
     
     % Set initial number of blinking cells
     Nblink2 = round(pts*ini.Nblink/100);
@@ -100,8 +104,9 @@ function Tigercreate(nframes,tif,pts,meanI,Lx,Ly,Lz,ini)
     ini.Framesec = Framesec;
 %%
     for i_fr = 1:nframes
-        
-        TLx = TLx + dLx;
+        if ini.Cellgrowth
+            TLx = TLx + dLx;
+        end
         
         % Save outputs after each frame has passed for the output file
         NewL = [];
