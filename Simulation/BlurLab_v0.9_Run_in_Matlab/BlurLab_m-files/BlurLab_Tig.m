@@ -32,7 +32,7 @@ function varargout = BlurLab_Tig(varargin)
 % folder 'M-File_Models'.
 %
 
-% Last Modified by GUIDE v2.5 30-Sep-2016 17:59:55
+% Last Modified by GUIDE v2.5 01-Oct-2016 21:16:38
 
 % Skip frame option?
 % only frap certain Z thickness
@@ -96,6 +96,56 @@ set(handles.uipanel_randinput,'Visible','off')
 set(handles.uipanel_frap,'Visible','off')
 set(handles.uipanel_noise,'Visible','off')
 set(handles.uipanel_subnoise,'Visible','off')
+set(handles.panel_TDDC,'Visible','off')
+
+handles.DCcolor = {[0.8, 1, 1],[1, 0.8, 1],[1, 1, 0.8]};
+set(handles.TDDC_edit_DC1,'BackgroundColor',handles.DCcolor{1});
+set(handles.TDDC_edit_DC2,'BackgroundColor',handles.DCcolor{2});
+set(handles.TDDC_edit_DC3,'BackgroundColor',handles.DCcolor{3});
+set(handles.TDDC_slider_L1,'BackgroundColor',handles.DCcolor{2});
+set(handles.TDDC_slider_R1,'BackgroundColor',handles.DCcolor{2});
+set(handles.TDDC_slider_L2,'BackgroundColor',handles.DCcolor{3});
+set(handles.TDDC_slider_R2,'BackgroundColor',handles.DCcolor{3});
+set(handles.TDDC_toggle_DIV,'BackgroundColor',handles.DCcolor{2});
+
+% Initial plot TDDC
+handles.plotx1 = [0, 1];
+handles.plotx2 = [0, 1];
+handles.ploty1 = [handles.TDDC_slider_L1.Value,handles.TDDC_slider_R1.Value];
+handles.ploty2 = [handles.TDDC_slider_L2.Value,handles.TDDC_slider_R2.Value];
+
+frames = str2double(handles.Tedit_frames.String);
+handles.Y1 = TDDC_createvec(handles.plotx1,handles.ploty1,frames);
+handles.Y2 = TDDC_createvec(handles.plotx2,handles.ploty2,frames);
+
+StringvalL2 = strcat(num2str(handles.TDDC_slider_L2.Value,'%0.f'),'%');
+StringvalR2 = strcat(num2str(handles.TDDC_slider_R2.Value,'%0.f'),'%');
+
+StringvalL1 = strcat(num2str(handles.TDDC_slider_L1.Value - ...
+    handles.TDDC_slider_L2.Value,'%0.f'),'%');
+StringvalR1 = strcat(num2str(handles.TDDC_slider_R1.Value - ...
+    handles.TDDC_slider_R2.Value,'%0.f'),'%');
+
+set(handles.TDDC_sliderval_L1,'String',StringvalL1)
+set(handles.TDDC_sliderval_R1,'String',StringvalR1)
+set(handles.TDDC_sliderval_L2,'String',StringvalL2)
+set(handles.TDDC_sliderval_R2,'String',StringvalR2)
+
+axes(handles.axes4);
+axis([0, 1, 0, 100]);
+hold on
+set(gca,'Color',handles.DCcolor{1})
+area(handles.plotx1,handles.ploty1,'FaceColor',handles.DCcolor{2},'EdgeColor','none')
+area(handles.plotx2,handles.ploty2,'FaceColor',handles.DCcolor{3},'EdgeColor','none')
+plot(handles.plotx1,handles.ploty1,'k--')
+plot(handles.plotx2,handles.ploty2,'k--')
+hold off
+
+% Save slider values
+handles.sliderL1 = handles.TDDC_slider_L1.Value;
+handles.sliderR1 = handles.TDDC_slider_R1.Value;
+handles.sliderL2 = handles.TDDC_slider_L2.Value;
+handles.sliderR2 = handles.TDDC_slider_R2.Value;
 
 %clear temp image file
 if ~isempty(dir('BlurLab_temp.tif'))
@@ -589,6 +639,8 @@ if str2num(get(handles.edit_sfc,'String'))~=1
     set(handles.uipanel_frames,'Visible','off')
     set(handles.uipanel_zstacking,'Visible','off')
     set(handles.uipanel_randinput,'Visible','off')
+    set(handles.uipanel_tigercreate,'Visible','off')
+    set(handles.panel_TDDC,'Visible','off')
     set(handles.uipanel_frap,'Visible','off')
     set(handles.uipanel_noise,'Visible','on')
     set(handles.uipanel_subnoise,'Visible','on')
@@ -616,6 +668,9 @@ if str2num(get(handles.edit_sfc,'String'))~=1
             set(handles.uipanel_frap,'Visible','on')
         case 7
             set(handles.uipanel_randinput,'Visible','on')
+        case 8
+            set(handles.uipanel_tigercreate,'Visible','on')
+            set(handles.panel_TDDC,'Visible','on')
     end
 end
 
@@ -2683,6 +2738,7 @@ set(handles.uipanel_frap,'Visible','off')
 set(handles.uipanel_noise,'Visible','off')
 set(handles.uipanel_subnoise,'Visible','off')
 set(handles.uipanel_tigercreate,'Visible','off')
+set(handles.panel_TDDC,'Visible','off')
 val1=get(handles.popupmenu1,'Value');
 switch val1
     case 1
@@ -2702,6 +2758,7 @@ switch val1
         set(handles.uipanel_randinput,'Visible','on')
     case 8
         set(handles.uipanel_tigercreate,'Visible','on')
+        set(handles.panel_TDDC,'Visible','on')
 end
 % --- Executes during object creation, after setting all properties.
 function popupmenu1_CreateFcn(hObject, eventdata, handles)
@@ -3236,7 +3293,23 @@ Lx = str2double(get(handles.Tedit_Lx,'String'));
 Ly = str2double(get(handles.Tedit_Ly,'String'));
 Lz = str2double(get(handles.Tedit_Lz,'String'));
 
-
+if handles.TDDC_radioDC1.Value == 1;
+    ini.numDC = 1;
+    ini.DC = str2double(handles.TDDC_edit_DC1.Value);
+    ini.DCY = [];
+elseif handles.TDDC_radioDC2.Value == 1;
+    ini.numDC = 2;
+    ini.DC(1) = str2double(handles.TDDC_edit_DC1.Value);
+    ini.DC(2) = str2double(handles.TDDC_edit_DC2.Value);
+    ini.DCY = TDDC_createvec(handles.plotx1,handles.ploty1,nframes);
+elseif handles.TDDC_radioDC3.Value == 1;
+    ini.numDC = 3;
+    ini.DC(1) = str2double(handles.TDDC_edit_DC1.Value);
+    ini.DC(2) = str2double(handles.TDDC_edit_DC2.Value);
+    ini.DC(3) = str2double(handles.TDDC_edit_DC3.Value);
+    ini.DCY(1,:) = TDDC_createvec(handles.plotx1,handles.ploty1,nframes);
+    ini.DCY(2,:) = TDDC_createvec(handles.plotx2,handles.ploty2,nframes);
+end
 Tigercreate(nframes,tif,pts,meanI,Lx,Ly,Lz,ini)
 
 set(handles.popupmenu1,'Value',1);
@@ -3308,29 +3381,6 @@ function Tig_tog_Cellgrowth_Callback(hObject, eventdata, handles)
 % Hint: get(hObject,'Value') returns toggle state of Tig_tog_Cellgrowth
 
 
-% --- Executes on slider movement.
-function TDDC_slider_R1_Callback(hObject, eventdata, handles)
-% hObject    handle to TDDC_slider_R1 (see GCBO)
-% eventdata  reserved - to be defined in a future version of MATLAB
-% handles    structure with handles and user data (see GUIDATA)
-
-% Hints: get(hObject,'Value') returns position of slider
-%        get(hObject,'Min') and get(hObject,'Max') to determine range of slider
-
-
-% --- Executes during object creation, after setting all properties.
-function TDDC_slider_R1_CreateFcn(hObject, eventdata, handles)
-% hObject    handle to TDDC_slider_R1 (see GCBO)
-% eventdata  reserved - to be defined in a future version of MATLAB
-% handles    empty - handles not created until after all CreateFcns called
-
-% Hint: slider controls usually have a light gray background.
-if isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
-    set(hObject,'BackgroundColor',[.9 .9 .9]);
-end
-
-
-
 function TDDC_edit_DC1_Callback(hObject, eventdata, handles)
 % hObject    handle to TDDC_edit_DC1 (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
@@ -3351,14 +3401,6 @@ function TDDC_edit_DC1_CreateFcn(hObject, eventdata, handles)
 if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
     set(hObject,'BackgroundColor','white');
 end
-
-
-% --- Executes on button press in TDDC_clear.
-function TDDC_clear_Callback(hObject, eventdata, handles)
-% hObject    handle to TDDC_clear (see GCBO)
-% eventdata  reserved - to be defined in a future version of MATLAB
-% handles    structure with handles and user data (see GUIDATA)
-
 
 
 function TDDC_edit_DC2_Callback(hObject, eventdata, handles)
@@ -3408,26 +3450,124 @@ end
 
 % --- Executes on button press in TDDC_toggle_DIV.
 function TDDC_toggle_DIV_Callback(hObject, eventdata, handles)
-% hObject    handle to TDDC_toggle_DIV (see GCBO)
-% eventdata  reserved - to be defined in a future version of MATLAB
-% handles    structure with handles and user data (see GUIDATA)
+pressed = handles.TDDC_toggle_DIV.Value;
 
-% Hint: get(hObject,'Value') returns toggle state of TDDC_toggle_DIV
+if pressed == 0
+    set(handles.TDDC_toggle_DIV,'BackgroundColor',handles.DCcolor{2});
+else
+    set(handles.TDDC_toggle_DIV,'BackgroundColor',handles.DCcolor{3});
+end
 
 
 % --- Executes on slider movement.
-function TDDC_slider_R2_Callback(hObject, eventdata, handles)
-% hObject    handle to TDDC_slider_R2 (see GCBO)
-% eventdata  reserved - to be defined in a future version of MATLAB
-% handles    structure with handles and user data (see GUIDATA)
+function TDDC_slider_L1_Callback(hObject, eventdata, handles)
 
-% Hints: get(hObject,'Value') returns position of slider
-%        get(hObject,'Min') and get(hObject,'Max') to determine range of slider
+handles.ploty1(1) = handles.TDDC_slider_L1.Value;
+frames = str2double(handles.Tedit_frames.String);
+Y1 = TDDC_createvec(handles.plotx1,handles.ploty1,frames);
+
+if handles.TDDC_radioDC3.Value == 1
+    nocrossing = ~any(Y1 < handles.Y2);
+
+    if nocrossing
+        handles.Y1 = Y1;
+        handles.sliderL1 = handles.TDDC_slider_L1.Value;
+        Stringval = strcat(num2str(handles.TDDC_slider_L1.Value - ...
+            handles.TDDC_slider_L2.Value,'%0.f'),'%');
+        set(handles.TDDC_sliderval_L1,'String',Stringval)
+
+        axes(handles.axes4); 
+        cla(handles.axes4);
+
+        hold on
+        area(handles.plotx1,handles.ploty1,'FaceColor',handles.DCcolor{2},'EdgeColor','none')
+        area(handles.plotx2,handles.ploty2,'FaceColor',handles.DCcolor{3},'EdgeColor','none')
+        plot(handles.plotx1,handles.ploty1,'k--')
+        plot(handles.plotx2,handles.ploty2,'k--')
+        hold off
+    else
+        handles.ploty1(1) = handles.sliderL1;
+        set(handles.TDDC_slider_L1,'Value',handles.sliderL1);
+    end
+else
+    handles.Y1 = Y1;
+    Stringval = strcat(num2str(handles.TDDC_slider_L1.Value,'%0.f'),'%');
+    set(handles.TDDC_sliderval_L1,'String',Stringval)
+    
+    axes(handles.axes4); 
+    cla(handles.axes4);
+    
+    hold on
+    area(handles.plotx1,handles.ploty1,'FaceColor',handles.DCcolor{2},'EdgeColor','none')
+    plot(handles.plotx1,handles.ploty1,'k--')
+    hold off
+end
+
+% Update handles structure
+guidata(hObject, handles);
 
 
 % --- Executes during object creation, after setting all properties.
-function TDDC_slider_R2_CreateFcn(hObject, eventdata, handles)
-% hObject    handle to TDDC_slider_R2 (see GCBO)
+function TDDC_slider_L1_CreateFcn(hObject, eventdata, handles)
+% hObject    handle to TDDC_slider_L1 (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    empty - handles not created until after all CreateFcns called
+
+% Hint: slider controls usually have a light gray background.
+if isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
+    set(hObject,'BackgroundColor',[.9 .9 .9]);
+end
+
+% --- Executes on slider movement.
+function TDDC_slider_R1_Callback(hObject, eventdata, handles)
+handles.ploty1(end) = handles.TDDC_slider_R1.Value;
+frames = str2double(handles.Tedit_frames.String);
+Y1 = TDDC_createvec(handles.plotx1,handles.ploty1,frames);
+
+if handles.TDDC_radioDC3.Value == 1
+nocrossing = ~any(Y1 < handles.Y2);
+
+    if nocrossing
+        handles.Y1 = Y1;
+        handles.sliderR1 = handles.TDDC_slider_R1.Value;
+        Stringval = strcat(num2str(handles.TDDC_slider_R1.Value - ...
+            handles.TDDC_slider_R2.Value,'%0.f'),'%');
+        set(handles.TDDC_sliderval_R1,'String',Stringval)
+
+        axes(handles.axes4); 
+        cla(handles.axes4);
+
+        hold on
+        area(handles.plotx1,handles.ploty1,'FaceColor',handles.DCcolor{2},'EdgeColor','none')
+        area(handles.plotx2,handles.ploty2,'FaceColor',handles.DCcolor{3},'EdgeColor','none')
+        plot(handles.plotx1,handles.ploty1,'k--')
+        plot(handles.plotx2,handles.ploty2,'k--')
+        hold off
+    else
+        handles.ploty1(end) = handles.sliderR1;
+        set(handles.TDDC_slider_R1,'Value',handles.sliderR1);
+    end
+else
+    handles.Y1 = Y1;
+    Stringval = strcat(num2str(handles.TDDC_slider_R1.Value,'%0.f'),'%');
+    set(handles.TDDC_sliderval_R1,'String',Stringval)
+    
+    axes(handles.axes4); 
+    cla(handles.axes4);
+    
+    hold on
+    area(handles.plotx1,handles.ploty1,'FaceColor',handles.DCcolor{2},'EdgeColor','none')
+    plot(handles.plotx1,handles.ploty1,'k--')
+    hold off
+end
+
+% Update handles structure
+guidata(hObject, handles);
+
+
+% --- Executes during object creation, after setting all properties.
+function TDDC_slider_R1_CreateFcn(hObject, eventdata, handles)
+% hObject    handle to TDDC_slider_R1 (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    empty - handles not created until after all CreateFcns called
 
@@ -3439,12 +3579,38 @@ end
 
 % --- Executes on slider movement.
 function TDDC_slider_L2_Callback(hObject, eventdata, handles)
-% hObject    handle to TDDC_slider_L2 (see GCBO)
-% eventdata  reserved - to be defined in a future version of MATLAB
-% handles    structure with handles and user data (see GUIDATA)
+handles.ploty2(1) = handles.TDDC_slider_L2.Value;
 
-% Hints: get(hObject,'Value') returns position of slider
-%        get(hObject,'Min') and get(hObject,'Max') to determine range of slider
+% 3 DC
+frames = str2double(handles.Tedit_frames.String);
+Y2 = TDDC_createvec(handles.plotx2,handles.ploty2,frames);
+nocrossing = ~any(handles.Y1 < Y2);
+
+if nocrossing
+    handles.Y2 = Y2;
+    handles.sliderL2 = handles.TDDC_slider_L2.Value;
+    Stringval = strcat(num2str(handles.TDDC_slider_L2.Value,'%0.f'),'%');
+    set(handles.TDDC_sliderval_L2,'String',Stringval)
+    Stringval2 = strcat(num2str(handles.TDDC_slider_L1.Value - ...
+        handles.TDDC_slider_L2.Value,'%0.f'),'%');
+    set(handles.TDDC_sliderval_L1,'String',Stringval2)
+
+    axes(handles.axes4); 
+    cla(handles.axes4);
+
+    hold on
+    area(handles.plotx1,handles.ploty1,'FaceColor',handles.DCcolor{2},'EdgeColor','none')
+    area(handles.plotx2,handles.ploty2,'FaceColor',handles.DCcolor{3},'EdgeColor','none')
+    plot(handles.plotx1,handles.ploty1,'k--')
+    plot(handles.plotx2,handles.ploty2,'k--')
+    hold off
+else
+    handles.ploty2(1) = handles.sliderL2;
+    set(handles.TDDC_slider_L2,'Value',handles.sliderL2);
+end
+
+% Update handles structure
+guidata(hObject, handles);
 
 
 % --- Executes during object creation, after setting all properties.
@@ -3460,18 +3626,44 @@ end
 
 
 % --- Executes on slider movement.
-function TDDC_slider_L1_Callback(hObject, eventdata, handles)
-% hObject    handle to TDDC_slider_L1 (see GCBO)
-% eventdata  reserved - to be defined in a future version of MATLAB
-% handles    structure with handles and user data (see GUIDATA)
+function TDDC_slider_R2_Callback(hObject, eventdata, handles)
+handles.ploty2(end) = handles.TDDC_slider_R2.Value;
 
-% Hints: get(hObject,'Value') returns position of slider
-%        get(hObject,'Min') and get(hObject,'Max') to determine range of slider
+% 3 DC
+frames = str2double(handles.Tedit_frames.String);
+Y2 = TDDC_createvec(handles.plotx2,handles.ploty2,frames);
+nocrossing = ~any(handles.Y1 < Y2);
+
+if nocrossing
+    handles.Y2 = Y2;
+    handles.sliderR2 = handles.TDDC_slider_R2.Value;
+    Stringval = strcat(num2str(handles.TDDC_slider_R2.Value,'%0.f'),'%');
+    set(handles.TDDC_sliderval_R2,'String',Stringval)
+    Stringval2 = strcat(num2str(handles.TDDC_slider_R1.Value - ...
+        handles.TDDC_slider_R2.Value,'%0.f'),'%');
+    set(handles.TDDC_sliderval_R1,'String',Stringval2)
+
+    axes(handles.axes4); 
+    cla(handles.axes4);
+
+    hold on
+    area(handles.plotx1,handles.ploty1,'FaceColor',handles.DCcolor{2},'EdgeColor','none')
+    area(handles.plotx2,handles.ploty2,'FaceColor',handles.DCcolor{3},'EdgeColor','none')
+    plot(handles.plotx1,handles.ploty1,'k--')
+    plot(handles.plotx2,handles.ploty2,'k--')
+    hold off
+else
+    handles.ploty2(end) = handles.sliderR2;
+    set(handles.TDDC_slider_R2,'Value',handles.sliderR2);
+end
+
+% Update handles structure
+guidata(hObject, handles);
 
 
 % --- Executes during object creation, after setting all properties.
-function TDDC_slider_L1_CreateFcn(hObject, eventdata, handles)
-% hObject    handle to TDDC_slider_L1 (see GCBO)
+function TDDC_slider_R2_CreateFcn(hObject, eventdata, handles)
+% hObject    handle to TDDC_slider_R2 (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    empty - handles not created until after all CreateFcns called
 
@@ -3479,3 +3671,223 @@ function TDDC_slider_L1_CreateFcn(hObject, eventdata, handles)
 if isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
     set(hObject,'BackgroundColor',[.9 .9 .9]);
 end
+
+
+% --- Executes when selected object is changed in TDDC_button_DC.
+function TDDC_button_DC_SelectionChangedFcn(hObject, eventdata, handles)
+selection = [handles.TDDC_radioDC1.Value, handles.TDDC_radioDC2.Value,...
+    handles.TDDC_radioDC3.Value];
+NDC = find(selection);
+switch NDC
+    case 1
+        set(handles.TDDC_edit_DC2,'Enable','off');
+        set(handles.TDDC_text_DC2,'Enable','off');
+        set(handles.TDDC_slider_L1,'Visible','off');
+        set(handles.TDDC_sliderval_L1,'Visible','off');
+        set(handles.TDDC_slider_R1,'Visible','off');
+        set(handles.TDDC_sliderval_R1,'Visible','off');
+        set(handles.TDDC_edit_DC3,'Enable','off');
+        set(handles.TDDC_text_DC3,'Enable','off');
+        set(handles.TDDC_slider_L2,'Visible','off');
+        set(handles.TDDC_sliderval_L2,'Visible','off');
+        set(handles.TDDC_slider_R2,'Visible','off');
+        set(handles.TDDC_sliderval_R2,'Visible','off');
+        set(handles.TDDC_text_DIV,'Visible','off');
+        set(handles.TDDC_toggle_DIV,'Visible','off');
+        set(handles.TDDC_toggle_DIV,'Value',0);
+        set(handles.TDDC_toggle_DIV,'BackgroundColor',handles.DCcolor{2});
+        cla(handles.axes4);
+    case 2
+        set(handles.TDDC_edit_DC2,'Enable','on');
+        set(handles.TDDC_text_DC2,'Enable','on');
+        set(handles.TDDC_slider_L1,'Visible','on');
+        set(handles.TDDC_sliderval_L1,'Visible','on');
+        set(handles.TDDC_slider_R1,'Visible','on');
+        set(handles.TDDC_sliderval_R1,'Visible','on');
+        set(handles.TDDC_edit_DC3,'Enable','off');
+        set(handles.TDDC_text_DC3,'Enable','off');
+        set(handles.TDDC_slider_L2,'Visible','off');
+        set(handles.TDDC_sliderval_L2,'Visible','off');
+        set(handles.TDDC_slider_R2,'Visible','off');
+        set(handles.TDDC_sliderval_R2,'Visible','off');
+        set(handles.TDDC_text_DIV,'Visible','off');
+        set(handles.TDDC_toggle_DIV,'Visible','off');
+        set(handles.TDDC_toggle_DIV,'Value',0);
+        set(handles.TDDC_toggle_DIV,'BackgroundColor',handles.DCcolor{2});
+        
+        handles.plotx1 = [0, 1];
+        handles.ploty1 = [50,50];
+        
+        set(handles.TDDC_slider_L1,'Value',handles.ploty1(1))
+        set(handles.TDDC_slider_R1,'Value',handles.ploty1(2))
+
+        frames = str2double(handles.Tedit_frames.String);
+        handles.Y1 = TDDC_createvec(handles.plotx1,handles.ploty1,frames);
+        
+        StringvalL1 = strcat(num2str(handles.TDDC_slider_L1.Value,'%0.f'),'%');
+        StringvalR1 = strcat(num2str(handles.TDDC_slider_R1.Value,'%0.f'),'%');
+        set(handles.TDDC_sliderval_L1,'String',StringvalL1)
+        set(handles.TDDC_sliderval_R1,'String',StringvalR1)
+        
+        cla(handles.axes4);
+        axes(handles.axes4);
+        hold on
+        area(handles.plotx1,handles.ploty1,'FaceColor',handles.DCcolor{2},'EdgeColor','none')
+        plot(handles.plotx1,handles.ploty1,'k--')
+        hold off
+    case 3
+        set(handles.TDDC_edit_DC2,'Enable','on');
+        set(handles.TDDC_text_DC2,'Enable','on');
+        set(handles.TDDC_slider_L1,'Visible','on');
+        set(handles.TDDC_sliderval_L1,'Visible','on');
+        set(handles.TDDC_slider_R1,'Visible','on');
+        set(handles.TDDC_sliderval_R1,'Visible','on');
+        set(handles.TDDC_edit_DC3,'Enable','on');
+        set(handles.TDDC_text_DC3,'Enable','on');
+        set(handles.TDDC_slider_L2,'Visible','on');
+        set(handles.TDDC_sliderval_L2,'Visible','on');
+        set(handles.TDDC_slider_R2,'Visible','on');
+        set(handles.TDDC_sliderval_R2,'Visible','on');
+        set(handles.TDDC_text_DIV,'Visible','on');
+        set(handles.TDDC_toggle_DIV,'Visible','on');      
+        
+        handles.plotx1 = [0, 1];
+        handles.plotx2 = [0, 1];
+        handles.ploty1 = [67,67];
+        handles.ploty2 = [33,33];
+        
+        set(handles.TDDC_slider_L1,'Value',handles.ploty1(1))
+        set(handles.TDDC_slider_R1,'Value',handles.ploty1(2))
+        set(handles.TDDC_slider_L2,'Value',handles.ploty2(1))
+        set(handles.TDDC_slider_R2,'Value',handles.ploty2(2))
+
+        frames = str2double(handles.Tedit_frames.String);
+        handles.Y1 = TDDC_createvec(handles.plotx1,handles.ploty1,frames);
+        handles.Y2 = TDDC_createvec(handles.plotx2,handles.ploty2,frames);
+        
+        StringvalL2 = strcat(num2str(handles.TDDC_slider_L2.Value,'%0.f'),'%');
+        StringvalR2 = strcat(num2str(handles.TDDC_slider_R2.Value,'%0.f'),'%');
+        StringvalL1 = strcat(num2str(handles.TDDC_slider_L1.Value - ...
+            handles.TDDC_slider_L2.Value,'%0.f'),'%');
+        StringvalR1 = strcat(num2str(handles.TDDC_slider_R1.Value - ...
+            handles.TDDC_slider_R2.Value,'%0.f'),'%');
+        set(handles.TDDC_sliderval_L1,'String',StringvalL1)
+        set(handles.TDDC_sliderval_R1,'String',StringvalR1)
+        set(handles.TDDC_sliderval_L2,'String',StringvalL2)
+        set(handles.TDDC_sliderval_R2,'String',StringvalR2)
+
+        axes(handles.axes4);
+        cla(handles.axes4);
+        hold on
+        area(handles.plotx1,handles.ploty1,'FaceColor',handles.DCcolor{2},'EdgeColor','none')
+        area(handles.plotx2,handles.ploty2,'FaceColor',handles.DCcolor{3},'EdgeColor','none')
+        plot(handles.plotx1,handles.ploty1,'k--')
+        plot(handles.plotx2,handles.ploty2,'k--')
+        hold off
+end
+
+% Update handles structure
+guidata(hObject, handles);
+ 
+
+
+% --- Executes on mouse press over axes background.
+function axes4_ButtonDownFcn(hObject, eventdata, handles)
+axes(handles.axes4);
+[x,y] = ginput(1);
+frames = str2double(handles.Tedit_frames.String);
+
+pressed = handles.TDDC_toggle_DIV.Value;
+switch pressed
+    case 0
+        idx = find(x<handles.plotx1,1) - 1;
+        plotx = [handles.plotx1(1:idx),x,handles.plotx1(idx+1:end)];
+        ploty = [handles.ploty1(1:idx),y,handles.ploty1(idx+1:end)];
+
+        Y1 = TDDC_createvec(plotx,ploty,frames);
+        
+        if handles.TDDC_radioDC3.Value == 1
+            nocrossing = ~any(Y1 < handles.Y2); 
+
+            if nocrossing
+                handles.plotx1 = plotx;
+                handles.ploty1 = ploty;
+                handles.Y1 = Y1;
+
+                cla(handles.axes4);
+                hold on
+                area(handles.plotx1,handles.ploty1,'FaceColor',handles.DCcolor{2},'EdgeColor','none')
+                area(handles.plotx2,handles.ploty2,'FaceColor',handles.DCcolor{3},'EdgeColor','none')
+                plot(handles.plotx1,handles.ploty1,'k--')
+                plot(handles.plotx2,handles.ploty2,'k--')
+                hold off
+            end
+        else
+            handles.plotx1 = plotx;
+            handles.ploty1 = ploty;
+            handles.Y1 = Y1;
+            
+            cla(handles.axes4);
+            hold on
+            area(handles.plotx1,handles.ploty1,'FaceColor',handles.DCcolor{2},'EdgeColor','none')
+            plot(handles.plotx1,handles.ploty1,'k--')
+            hold off
+        end
+    case 1
+        idx = find(x<handles.plotx2,1) - 1;
+        plotx = [handles.plotx2(1:idx),x,handles.plotx2(idx+1:end)];
+        ploty = [handles.ploty2(1:idx),y,handles.ploty2(idx+1:end)];
+
+        Y2 = TDDC_createvec(plotx,ploty,frames);
+        nocrossing = ~any(handles.Y1 < Y2); 
+
+        if nocrossing
+            handles.plotx2 = plotx;
+            handles.ploty2 = ploty;
+            handles.Y2 = Y2;
+
+            cla(handles.axes4);
+            hold on
+            area(handles.plotx1,handles.ploty1,'FaceColor',handles.DCcolor{2},'EdgeColor','none')
+            area(handles.plotx2,handles.ploty2,'FaceColor',handles.DCcolor{3},'EdgeColor','none')
+            plot(handles.plotx1,handles.ploty1,'k--')
+            plot(handles.plotx2,handles.ploty2,'k--')
+            hold off
+        end
+end
+
+% Update handles structure
+guidata(hObject, handles);
+
+
+% --- Executes on button press in TDDC_clear.
+function TDDC_clear_Callback(hObject, eventdata, handles)
+        
+if handles.TDDC_radioDC3.Value == 1
+    handles.plotx1 = [handles.plotx1(1), handles.plotx1(end)];
+    handles.plotx2 = [handles.plotx2(1), handles.plotx2(end)];
+    handles.ploty1 = [handles.ploty1(1), handles.ploty1(end)];
+    handles.ploty2 = [handles.ploty2(1), handles.ploty2(end)];
+
+    axes(handles.axes4);
+    cla(handles.axes4);
+    hold on
+    area(handles.plotx1,handles.ploty1,'FaceColor',handles.DCcolor{2},'EdgeColor','none')
+    area(handles.plotx2,handles.ploty2,'FaceColor',handles.DCcolor{3},'EdgeColor','none')
+    plot(handles.plotx1,handles.ploty1,'k--')
+    plot(handles.plotx2,handles.ploty2,'k--')
+    hold off
+else
+    handles.plotx1 = [handles.plotx1(1), handles.plotx1(end)];
+    handles.ploty1 = [handles.ploty1(1), handles.ploty1(end)];
+
+    cla(handles.axes4);
+    axes(handles.axes4);
+    hold on
+    area(handles.plotx1,handles.ploty1,'FaceColor',handles.DCcolor{2},'EdgeColor','none')
+    plot(handles.plotx1,handles.ploty1,'k--')
+    hold off
+end
+
+% Update handles structure
+guidata(hObject, handles);
