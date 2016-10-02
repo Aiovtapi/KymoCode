@@ -34,17 +34,12 @@ function [X0,Y0,Z0,XYC,T0,I0,L0,D0,pts,npts,NewL] = ...
         F_new(2*i_splt-1:2*i_splt) = i_fr;
         L_new(2*i_splt-1) = npts;
         L_new(2*i_splt) = npts + 1;
-        D_new(2*i_splt-1:2*i_splt) = logical(D0(spot_old));
+        D_new(2*i_splt-1:2*i_splt) = D0(spot_old);
         T_new(2*i_splt-1:2*i_splt) = T0(spot_old);
         
         % Set new direction
-        if D0(spot_old)
-            Daci = 1;
-        else
-            Daci = 2;
-        end
         XYC_new(2*i_splt-1:2*i_splt,:) = 2*(randi([0,1],2,2)-1/2) .* ...
-            normrnd(ini.Dac(Daci),ini.SigmaD(Daci),2,2);
+            normrnd(ini.Dac(D0(spot_old)),ini.SigmaD(D0(spot_old)),2,2);
 
         npts = npts + 2;
     end

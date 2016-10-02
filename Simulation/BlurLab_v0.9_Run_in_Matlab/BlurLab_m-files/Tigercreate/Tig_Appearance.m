@@ -13,18 +13,13 @@ function [X0,Y0,Z0,XYC,T0,I0,L0,D0,pts,npts,NewL] = ...
     T0 = [T0; ini.Framesec*rand(N_app,1)];
     
     L_new = (npts:npts+N_app-1)';
-    D_new = logical(randi([0,1],N_app,1));
+    D_new = randi([1,ini.numDC],N_app,1);
     XYC_new = zeros(N_app,2);
     
     % Get new directions
     for i_new = 1:N_app
-        if D_new(i_new)
-            Daci = 1;
-        else
-            Daci = 2;
-        end
         XYC_new(i_new,:) = 2*(randi([0,1],1,2)-1/2) .* ...
-            normrnd(ini.Dac(Daci),ini.SigmaD(Daci),1,2);
+            normrnd(ini.Dac(D_new(i_new)),ini.SigmaD(D_new(i_new)),1,2);
     end
     
     % Save values

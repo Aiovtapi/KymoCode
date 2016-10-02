@@ -107,6 +107,14 @@ set(handles.TDDC_slider_R1,'BackgroundColor',handles.DCcolor{2});
 set(handles.TDDC_slider_L2,'BackgroundColor',handles.DCcolor{3});
 set(handles.TDDC_slider_R2,'BackgroundColor',handles.DCcolor{3});
 set(handles.TDDC_toggle_DIV,'BackgroundColor',handles.DCcolor{2});
+handles.numDC = 3;
+DC(1) = str2double(handles.TDDC_edit_DC1.String);
+DC(2) = str2double(handles.TDDC_edit_DC2.String);
+DC(3) = str2double(handles.TDDC_edit_DC3.String);
+maxDC = max(DC(1:handles.numDC));
+minTI = 1/(4*maxDC);
+thistext = ['Mininum Time Interval = ',num2str(minTI)];
+set(handles.TDDC_text_minTI,'String',thistext)
 
 % Initial plot TDDC
 handles.plotx1 = [0, 1];
@@ -3293,27 +3301,35 @@ Lx = str2double(get(handles.Tedit_Lx,'String'));
 Ly = str2double(get(handles.Tedit_Ly,'String'));
 Lz = str2double(get(handles.Tedit_Lz,'String'));
 
+ini.DC = zeros(1,3);
+ini.DCY = zeros(pts,3);
+
 if handles.TDDC_radioDC1.Value == 1;
     ini.numDC = 1;
-    ini.DC = str2double(handles.TDDC_edit_DC1.Value);
-    ini.DCY = [];
+    ini.DC(1) = str2double(handles.TDDC_edit_DC1.String);
+    ini.DCY(:,1) = 1;
 elseif handles.TDDC_radioDC2.Value == 1;
     ini.numDC = 2;
-    ini.DC(1) = str2double(handles.TDDC_edit_DC1.Value);
-    ini.DC(2) = str2double(handles.TDDC_edit_DC2.Value);
-    ini.DCY = TDDC_createvec(handles.plotx1,handles.ploty1,nframes);
+    ini.DC(1) = str2double(handles.TDDC_edit_DC1.String);
+    ini.DC(2) = str2double(handles.TDDC_edit_DC2.String);
+    ini.DCY(:,2) = TDDC_createvec(handles.plotx1,handles.ploty1,nframes)';
+    ini.DCY(:,1) = 1 - ini.DCY(:,2);
 elseif handles.TDDC_radioDC3.Value == 1;
     ini.numDC = 3;
-    ini.DC(1) = str2double(handles.TDDC_edit_DC1.Value);
-    ini.DC(2) = str2double(handles.TDDC_edit_DC2.Value);
-    ini.DC(3) = str2double(handles.TDDC_edit_DC3.Value);
-    ini.DCY(1,:) = TDDC_createvec(handles.plotx1,handles.ploty1,nframes);
-    ini.DCY(2,:) = TDDC_createvec(handles.plotx2,handles.ploty2,nframes);
+    ini.DC(1) = str2double(handles.TDDC_edit_DC1.String);
+    ini.DC(2) = str2double(handles.TDDC_edit_DC2.String);
+    ini.DC(3) = str2double(handles.TDDC_edit_DC3.String);
+    ini.DCY(:,2) = TDDC_createvec(handles.plotx1,handles.ploty1,nframes)';
+    ini.DCY(:,3) = TDDC_createvec(handles.plotx2,handles.ploty2,nframes)';
+    ini.DCY(:,2) = ini.DCY(:,2) - ini.DCY(:,3);
+    ini.DCY(:,1) = 1 - ini.DCY(:,2) - ini.DCY(:,3);
+    ini.DCY = ini.DCY/100;
 end
 Tigercreate(nframes,tif,pts,meanI,Lx,Ly,Lz,ini)
 
 set(handles.popupmenu1,'Value',1);
 set(handles.uipanel_tigercreate,'Visible','off')
+set(handles.panel_TDDC,'Visible','off')
 set(handles.uipanel_frames,'Visible','on')
 
 
@@ -3382,12 +3398,17 @@ function Tig_tog_Cellgrowth_Callback(hObject, eventdata, handles)
 
 
 function TDDC_edit_DC1_Callback(hObject, eventdata, handles)
-% hObject    handle to TDDC_edit_DC1 (see GCBO)
-% eventdata  reserved - to be defined in a future version of MATLAB
-% handles    structure with handles and user data (see GUIDATA)
-
-% Hints: get(hObject,'String') returns contents of TDDC_edit_DC1 as text
-%        str2double(get(hObject,'String')) returns contents of TDDC_edit_DC1 as a double
+DC(1) = str2double(handles.TDDC_edit_DC1.String);
+DC(2) = str2double(handles.TDDC_edit_DC2.String);
+DC(3) = str2double(handles.TDDC_edit_DC3.String);
+maxDC = max(DC(1:handles.numDC));
+minTI = 1/(4*maxDC);
+thistext = ['Mininum Time Interval = ',num2str(minTI)];
+set(handles.TDDC_text_minTI,'String',thistext)
+Teditval = str2double(handles.Tedit_D.String);
+if Teditval > minTI
+    set(handles.Tedit_D,'String',num2str(minTI))
+end
 
 
 % --- Executes during object creation, after setting all properties.
@@ -3404,12 +3425,17 @@ end
 
 
 function TDDC_edit_DC2_Callback(hObject, eventdata, handles)
-% hObject    handle to TDDC_edit_DC2 (see GCBO)
-% eventdata  reserved - to be defined in a future version of MATLAB
-% handles    structure with handles and user data (see GUIDATA)
-
-% Hints: get(hObject,'String') returns contents of TDDC_edit_DC2 as text
-%        str2double(get(hObject,'String')) returns contents of TDDC_edit_DC2 as a double
+DC(1) = str2double(handles.TDDC_edit_DC1.String);
+DC(2) = str2double(handles.TDDC_edit_DC2.String);
+DC(3) = str2double(handles.TDDC_edit_DC3.String);
+maxDC = max(DC(1:handles.numDC));
+minTI = 1/(4*maxDC);
+thistext = ['Mininum Time Interval = ',num2str(minTI)];
+set(handles.TDDC_text_minTI,'String',thistext)
+Teditval = str2double(handles.Tedit_D.String);
+if Teditval > minTI
+    set(handles.Tedit_D,'String',num2str(minTI))
+end
 
 
 % --- Executes during object creation, after setting all properties.
@@ -3427,12 +3453,17 @@ end
 
 
 function TDDC_edit_DC3_Callback(hObject, eventdata, handles)
-% hObject    handle to TDDC_edit_DC3 (see GCBO)
-% eventdata  reserved - to be defined in a future version of MATLAB
-% handles    structure with handles and user data (see GUIDATA)
-
-% Hints: get(hObject,'String') returns contents of TDDC_edit_DC3 as text
-%        str2double(get(hObject,'String')) returns contents of TDDC_edit_DC3 as a double
+DC(1) = str2double(handles.TDDC_edit_DC1.String);
+DC(2) = str2double(handles.TDDC_edit_DC2.String);
+DC(3) = str2double(handles.TDDC_edit_DC3.String);
+maxDC = max(DC(1:handles.numDC));
+minTI = 1/(4*maxDC);
+thistext = ['Mininum Time Interval = ',num2str(minTI)];
+set(handles.TDDC_text_minTI,'String',thistext)
+Teditval = str2double(handles.Tedit_D.String);
+if Teditval > minTI
+    set(handles.Tedit_D,'String',num2str(minTI))
+end
 
 
 % --- Executes during object creation, after setting all properties.
@@ -3680,6 +3711,7 @@ selection = [handles.TDDC_radioDC1.Value, handles.TDDC_radioDC2.Value,...
 NDC = find(selection);
 switch NDC
     case 1
+        handles.numDC = 1;
         set(handles.TDDC_edit_DC2,'Enable','off');
         set(handles.TDDC_text_DC2,'Enable','off');
         set(handles.TDDC_slider_L1,'Visible','off');
@@ -3698,6 +3730,7 @@ switch NDC
         set(handles.TDDC_toggle_DIV,'BackgroundColor',handles.DCcolor{2});
         cla(handles.axes4);
     case 2
+        handles.numDC = 2;
         set(handles.TDDC_edit_DC2,'Enable','on');
         set(handles.TDDC_text_DC2,'Enable','on');
         set(handles.TDDC_slider_L1,'Visible','on');
@@ -3736,6 +3769,7 @@ switch NDC
         plot(handles.plotx1,handles.ploty1,'k--')
         hold off
     case 3
+        handles.numDC = 3; 
         set(handles.TDDC_edit_DC2,'Enable','on');
         set(handles.TDDC_text_DC2,'Enable','on');
         set(handles.TDDC_slider_L1,'Visible','on');

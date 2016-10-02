@@ -42,48 +42,51 @@ function Tigercreate(nframes,tif,pts,meanI,Lx,Ly,Lz,ini)
     J0 = I0;
     
     % Find Diffusion constant for each dimension
-    [X, Y, D(1), D(2)] = TDDC;
-    Dframes = round(X*(nframes - 1) + 1)';
-    Dpart = Y'/100;
-    
-    % Get all values between the clicked points form TDDC
-    for i = 1:(numel(Dframes)-1)
-        Co = (Dpart(i+1) - Dpart(i)) / (Dframes(i+1) - Dframes(i));
-        betx = ((Dframes(i) + 1) : (Dframes(i + 1) - 1))';
-        cox = betx - Dframes(i);
-        bety = Dpart(i) + cox * Co;
-        
-        Dframes = [Dframes; betx];
-        Dpart = [Dpart; bety];
-    end
-    [~, sorti] = sort(Dframes);
-    Dpart = Dpart(sorti);
+    numDC = ini.numDC;
+    DC = ini.DC;
+    DCY = ini.DCY;
     
     % Get the mean squared distance per frame for 2D Diffusion
-    Dac = sqrt(4*D*tif); 
+    Dac = sqrt(4*DC*tif); 
     SigmaD = Dac*SigmaDperc;
     
     % Select a part of spots to behave according the the first Diffusion
-    % coefficient
+    % Get initial change in direction
+    % Get number of spots in each DC and get logicals
     Allpts = (1:pts)';
-    Dpts = ismember(Allpts,datasample(Allpts,round(Dpart(1)*pts),'Replace',false));
     
+    d1pts = pts;            d2pts = 0;              d3pts = 0;
+    Dpts1 = true(pts,1);    Dpts2 = false(pts,1);   Dpts3 = false(pts,1);
+    
+    if numDC > 1
+        Dpts2 = ismember(Allpts,datasample(Allpts,round(DCY(1,2)*pts),'Replace',false));
+        d2pts = sum(Dpts2);
+        Dpts1 = xor(Dpts1,Dpts2);
+        d1pts = sum(Dpts1);
+    end
+    if numDC > 2
+        Partpts = Allpts(~Dpts2);
+        ppts = numel(Partpts);
+        if ~isempty(Partpts) && ~(DCY(1,2) == 1)
+            Dpts3 = ismember(Allpts,datasample(Partpts,round(DCY(1,3)/(1-DCY(1,2))*ppts),'Replace',false));
+            d3pts = sum(Dpts3);
+            Dpts1 = xor(Dpts1,Dpts3);
+            d1pts = sum(Dpts1);
+        end
+    end
+    
+    DCpts = double(Dpts1)*1 + double(Dpts2)*2 + double(Dpts3)*3;
+
     % Get times travelled with current direction
     Framesec = 1/tif;
     T0 = Framesec*rand(pts,1);
     
-    % Get initial change in direction
-    % Get number of spots in each DC and get logicals
-    d1pts = numel(find(Dpts));
-    d2pts = pts - d1pts;
-    Dpts = logical(Dpts);
-    Dpts2 = ~Dpts;
-    
     % Get Change in position for each spot
     XYC = zeros(pts,2);
     % Get distance travelled in both X and Y direction
-    XYC(Dpts,:)  = 2*(randi([0,1],d1pts,2)-1/2) .* normrnd(Dac(1),SigmaD(1),d1pts,2);
+    XYC(Dpts1,:) = 2*(randi([0,1],d1pts,2)-1/2) .* normrnd(Dac(1),SigmaD(1),d1pts,2);
     XYC(Dpts2,:) = 2*(randi([0,1],d2pts,2)-1/2) .* normrnd(Dac(2),SigmaD(2),d2pts,2);
+    XYC(Dpts3,:) = 2*(randi([0,1],d3pts,2)-1/2) .* normrnd(Dac(3),SigmaD(3),d3pts,2);
     
     % Create empty output variables
     %   Xout: X position
@@ -120,22 +123,69 @@ function Tigercreate(nframes,tif,pts,meanI,Lx,Ly,Lz,ini)
         % Check whether the porportion of D1/D2 still holds
         % If not, some spots will be selected to change to the other
         % Diffusion constant
-        if (sum(Dpts)/pts - Dpart(i_fr)) > 0.01
-            % Too much in D1
-            num = round((sum(Dpts)/pts - Dpart(i_fr))*pts);
-            turn = datasample(find(Dpts),num);
-            Dpts(turn) = false;
-        elseif (Dpart(i_fr) - sum(Dpts)/pts) > 0.01
-            % Too much in D2
-            num = round((Dpart(i_fr) - sum(Dpts)/pts)*pts);
-            turn = datasample(find(~Dpts),num);
-            Dpts(turn) = true;
-        else
-            turn = [];
+        DC2much = [(DCY(i_fr,1) - sum(DCpts == 1)/pts) > 0.01,...
+                   (DCY(i_fr,2) - sum(DCpts == 2)/pts) > 0.01,...
+                   (DCY(i_fr,3) - sum(DCpts == 3)/pts) > 0.01];
+        
+        totalturn = [];
+        
+        if DC2much(1) % Too little with DC1
+            if      ~DC2much(2) && DC2much(3)
+                Changeops = find(DCpts == 2);
+            elseif  DC2much(2) && ~DC2much(3)
+                Changeops = find(DCpts == 3);
+            elseif  ~DC2much(2) && ~DC2much(3)
+                Changeops = find(DCpts == 2 | DCpts == 3);
+            end
+            Changenum = round(DCY(i_fr,1)*pts - sum(DCpts == 1));
+            turnidx = datasample(Changeops,Changenum);
+            DCpts(turnidx) = 1;
+            
+            DC2much = [(DCY(i_fr,1) - sum(DCpts == 1)/pts) > 0.01,...
+                       (DCY(i_fr,2) - sum(DCpts == 2)/pts) > 0.01,...
+                       (DCY(i_fr,3) - sum(DCpts == 3)/pts) > 0.01];
+            totalturn = [totalturn; turnidx];
         end
-        % find all spots that changed DC
+        
+        if DC2much(2) % Too little with DC2
+            if      ~DC2much(1) && DC2much(3)
+                Changeops = find(DCpts == 1);
+            elseif  DC2much(1) && ~DC2much(3)
+                Changeops = find(DCpts == 3);
+            elseif  ~DC2much(1) && ~DC2much(3)
+                Changeops = find(DCpts == 1 | DCpts == 3);
+            end
+            Changenum = round(DCY(i_fr,2)*pts - sum(DCpts == 2));
+            turnidx = datasample(Changeops,Changenum);
+            DCpts(turnidx) = 2;
+            
+            DC2much = [(DCY(i_fr,1) - sum(DCpts == 1)/pts) > 0.01,...
+                       (DCY(i_fr,2) - sum(DCpts == 2)/pts) > 0.01,...
+                       (DCY(i_fr,3) - sum(DCpts == 3)/pts) > 0.01];
+            totalturn = [totalturn; turnidx];
+        end
+        
+        if DC2much(3) % Too little with DC3
+            if      ~DC2much(1) && DC2much(2)
+                Changeops = find(DCpts == 1);
+            elseif  DC2much(1) && ~DC2much(2)
+                Changeops = find(DCpts == 2);
+            elseif  ~DC2much(1) && ~DC2much(2)
+                Changeops = find(DCpts == 1 | DCpts == 2);
+            end
+            Changenum = round(DCY(i_fr,3)*pts - sum(DCpts == 3));
+            turnidx = datasample(Changeops,Changenum);
+            DCpts(turnidx) = 3;
+            
+            DC2much = [(DCY(i_fr,1) - sum(DCpts == 1)/pts) > 0.01,...
+                       (DCY(i_fr,2) - sum(DCpts == 2)/pts) > 0.01,...
+                       (DCY(i_fr,3) - sum(DCpts == 3)/pts) > 0.01];
+            totalturn = [totalturn; turnidx];
+        end
+        
+        totalturn = unique(totalturn);
         DCchange = false(pts,1);
-        DCchange(turn) = true;
+        DCchange(totalturn) = true;
         
         % Find all spots travelled long enough for a change in direction
         % and reset counter
@@ -145,14 +195,17 @@ function Tigercreate(nframes,tif,pts,meanI,Lx,Ly,Lz,ini)
         
         % Find spots with change in direction or DC, with both DC
         Allchange = DCchange | Dchangeidx;
-        Changepts1 = Dpts & Allchange;
-        Changepts2 = ~Dpts & Allchange;
+        Changepts1 = (DCpts == 1) & Allchange;
+        Changepts2 = (DCpts == 2) & Allchange;
+        Changepts3 = (DCpts == 3) & Allchange;
         d1pts = sum(Changepts1);
         d2pts = sum(Changepts2);
+        d3pts = sum(Changepts3);
         
         % Get new change in X and Y if neccessary
         XYC(Changepts1,:) = 2*(randi([0,1],d1pts,2)-1/2) .* normrnd(Dac(1),SigmaD(1),d1pts,2);
         XYC(Changepts2,:) = 2*(randi([0,1],d2pts,2)-1/2) .* normrnd(Dac(2),SigmaD(2),d2pts,2);
+        XYC(Changepts3,:) = 2*(randi([0,1],d3pts,2)-1/2) .* normrnd(Dac(3),SigmaD(3),d3pts,2);
         
         % Apply change to positions
         X0 = X0 + XYC(:,1);
@@ -179,26 +232,26 @@ function Tigercreate(nframes,tif,pts,meanI,Lx,Ly,Lz,ini)
         % XYC,Dac,SigmaD T0, Framesec
         
         if ini.tog_merging == 1;
-            [X0,Y0,Z0,XYC,T0,I0,L0,Dpts,pts,npts,NewL] = ...
-                Tig_merging(X0,Y0,Z0,XYC,T0,I0,L0,Dpts,pts,npts,NewL,ini,i_fr);
+            [X0,Y0,Z0,XYC,T0,I0,L0,DCpts,pts,npts,NewL] = ...
+                Tig_merging(X0,Y0,Z0,XYC,T0,I0,L0,DCpts,pts,npts,NewL,ini,i_fr);
         end
 
         %% Splitting
         if ini.tog_split == 1;
-            [X0,Y0,Z0,XYC,T0,I0,L0,Dpts,pts,npts,NewL] = ...
-                Tig_splitting(X0,Y0,Z0,XYC,T0,I0,L0,Dpts,pts,npts,NewL,ini,i_fr);
+            [X0,Y0,Z0,XYC,T0,I0,L0,DCpts,pts,npts,NewL] = ...
+                Tig_splitting(X0,Y0,Z0,XYC,T0,I0,L0,DCpts,pts,npts,NewL,ini,i_fr);
         end
         
         %% Spot Disappearence
         if ini.tog_spotdis == 1;
-            [X0,Y0,Z0,XYC,T0,I0,L0,Dpts,pts] = ...
-                Tig_Dissappearance(X0,Y0,Z0,XYC,T0,I0,L0,Dpts,pts,ini);
+            [X0,Y0,Z0,XYC,T0,I0,L0,DCpts,pts] = ...
+                Tig_Dissappearance(X0,Y0,Z0,XYC,T0,I0,L0,DCpts,pts,ini);
         end
 
         %% Spot Appearence
         if ini.tog_spotapp == 1; 
-            [X0,Y0,Z0,XYC,T0,I0,L0,Dpts,pts,npts,NewL] = ...
-                Tig_Appearance(X0,Y0,Z0,XYC,T0,I0,L0,Dpts,npts,meanI,NewL,ini,TLx,Ly,Lz);
+            [X0,Y0,Z0,XYC,T0,I0,L0,DCpts,pts,npts,NewL] = ...
+                Tig_Appearance(X0,Y0,Z0,XYC,T0,I0,L0,DCpts,npts,meanI,NewL,ini,TLx,Ly,Lz);
         end
 
         %% Blinking
@@ -253,8 +306,8 @@ function Tigercreate(nframes,tif,pts,meanI,Lx,Ly,Lz,ini)
         %%
         
         % Remove low intensity spots      
-        [X0,Y0,Z0,XYC,T0,I0,L0,Dpts,pts] = ...
-            Tig_IntensityBound(X0,Y0,Z0,XYC,T0,I0,L0,Dpts,ini);
+        [X0,Y0,Z0,XYC,T0,I0,L0,DCpts,pts] = ...
+            Tig_IntensityBound(X0,Y0,Z0,XYC,T0,I0,L0,DCpts,ini);
         
         % Compute real intensity (with blinking) (using histc to take into
         % account the appearence and dissapearence of spots
@@ -273,7 +326,7 @@ function Tigercreate(nframes,tif,pts,meanI,Lx,Ly,Lz,ini)
     %create file name
     tmp1=clock;
     fname=['BlurLab_rand_output_' date '_' num2str(tmp1(4)) '-' num2str(tmp1(5)) '-' num2str(tmp1(6))...
-        '_pts-' num2str(pts) '_meanI-' num2str(meanI) '_D-' num2str(D(1)) '_Lx-' num2str(Lx) '_Ly-' ...
+        '_pts-' num2str(pts) '_meanI-' num2str(meanI) '_D-' num2str(DC(1)) '_Lx-' num2str(Lx) '_Ly-' ...
         num2str(Ly) '_Lz-' num2str(Lz) '.txt'];
     
     % write output file

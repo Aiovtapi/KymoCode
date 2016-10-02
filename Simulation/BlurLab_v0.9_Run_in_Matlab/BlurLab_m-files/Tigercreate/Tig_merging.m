@@ -51,8 +51,8 @@ function [X0,Y0,Z0,XYC,T0,I0,L0,D0,pts,npts,NewL] = ...
         T_new(i_mrg) = (T0(cell_a)+T0(cell_b))/2;
         
         % Select the diffusion constant 
-        if xor(D0(cell_a),D0(cell_b))
-            D_new(i_mrg) = logical(randi([0,1]));
+        if ~(D0(cell_a) == D0(cell_b))
+            D_new(i_mrg) = randi([1,ini.numDC]);
         else
             D_new(i_mrg) = D0(cell_a);
         end
