@@ -32,7 +32,7 @@ function varargout = BlurLab_Tig(varargin)
 % folder 'M-File_Models'.
 %
 
-% Last Modified by GUIDE v2.5 01-Oct-2016 21:16:38
+% Last Modified by GUIDE v2.5 03-Oct-2016 14:35:29
 
 % Skip frame option?
 % only frap certain Z thickness
@@ -613,7 +613,7 @@ for i=startim:loopstep:endim
             inthigh=str2num(get(handles.edit_highfix,'String'));
             imagesc(xpos/1000,ypos/1000,Iout,[intlow,inthigh])
         end
-        axis equal
+        axis([0 xpos(end)/1000, 0, ypos(end)/1000]);
         set(gca,'color', [0.1 0.1 0.1])
         xlabel('x (um)')
         ylabel('y (um)')
@@ -635,8 +635,16 @@ for i=startim:loopstep:endim
         memupdate_Callback(hObject, eventdata, handles)
         guidata(hObject,handles)
         pause(0.01)
+        
     end
+    
+    IOUT{i} = Iout;
 end
+
+handles.IOUT = IOUT;
+handles.OUTX = outX*imcalb/1000;
+handles.OUTY = outY*imcalb/1000;
+handles.STEP = 1000/imcalb;
 
 set(handles.text_boxcar,'Visible','off')
 
@@ -681,6 +689,7 @@ if str2num(get(handles.edit_sfc,'String'))~=1
             set(handles.panel_TDDC,'Visible','on')
     end
 end
+guidata(hObject,handles)
 
 % --- Executes on button press in pushbutton_load.
 function pushbutton_load_Callback(hObject, eventdata, handles)
@@ -2910,10 +2919,8 @@ frames = str2double(get(hObject,'String'));
 handles.Y1 = TDDC_createvec(handles.plotx1,handles.ploty1,frames);
 handles.Y2 = TDDC_createvec(handles.plotx2,handles.ploty2,frames);
 
-guidata(hObject, data)
-
-% Hints: get(hObject,'String') returns contents of Tedit_frames as text
-%        str2double(get(hObject,'String')) returns contents of Tedit_frames as a double
+% Update handles structure
+guidata(hObject, handles);
 
 
 % --- Executes during object creation, after setting all properties.
@@ -3927,3 +3934,112 @@ end
 
 % Update handles structure
 guidata(hObject, handles);
+
+
+% --- Executes on button press in pushbutton_pixelate.
+function pushbutton_pixelate_Callback(hObject, eventdata, handles)
+if ~isfield(handles,'IOUT')
+    warndlg('Variables not defined. First run simulation','Warning')
+    return
+end
+
+
+outx = floor(handles.OUTX);
+outy = floor(handles.OUTY);
+Iout = handles.IOUT;
+step = handles.STEP;
+fstep = floor(step);
+
+frames = size(Iout,2);
+
+IMG = zeros(outy,outx,frames);
+
+for frami = 1:frames
+    for yi = 1:outy
+        lowy = (yi - 1)*step + 1;
+        higy = yi*step;
+        
+        % Check if lower bound well defined
+        if logical(mod(lowy,1))
+            lowys = ceil(lowy) - lowy;
+            lowy = ceil(lowy);
+            north = true;
+        else
+            north = false;
+        end
+        
+        % Check if higher bound well defined
+        if logical(mod(higy,1))
+            higys = higy - floor(higy);
+            higy = floor(higy);
+            south = true;
+        else
+            south = false;
+        end
+            
+        for xi = 1:outx
+            lowx = (xi - 1)*step + 1;
+            higx = xi*step;
+
+            % Check if left bound well defined
+            if logical(mod(lowx,1))
+                lowxs = ceil(lowx) - lowx;
+                lowx = ceil(lowx);
+                west = true;
+            else
+                west = false;
+            end
+
+            % Check if higher bound well defined
+            if logical(mod(higx,1))
+                higxs = higx - floor(higx);
+                higx = floor(higx);
+                east = true;
+            else
+                east = false;
+            end
+            
+            % Get all values for pixel
+            thispix = Iout{frami}(lowy:higy,lowx:higx);
+            Pixsum = sum(thispix(:));
+            Pixnum = fstep^2;
+
+            if north
+                thisstrip = Iout{frami}(lowy-1,lowx:higx);
+                Pixsum = Pixsum + sum(thisstrip(:)*lowys);
+                Pixnum = Pixnum + fstep;
+            end
+            if south
+                thisstrip = Iout{frami}(higy+1,lowx:higx);
+                Pixsum = Pixsum + sum(thisstrip(:)*higys);
+                Pixnum = Pixnum + fstep;
+            end
+            if west
+                thisstrip = Iout{frami}(lowy:higy,lowx-1);
+                Pixsum = Pixsum + sum(thisstrip(:)*lowxs);
+                Pixnum = Pixnum + fstep;
+            end
+            if east
+                thisstrip = Iout{frami}(lowy:higy,higx+1);
+                Pixsum = Pixsum + sum(thisstrip(:)*higxs);
+                Pixnum = Pixnum + fstep;
+            end
+            
+            Pixval = Pixsum/Pixnum;
+            IMG(yi,xi,frami) = Pixval;
+        end
+    end
+end
+maxval = 0.5;
+
+maximage = max(IMG(:));
+IMG = uint16(IMG*65536/maximage*maxval);
+
+foldername = uigetdir(cd,'Select path to save image');
+IMGpath = strcat(foldername,'\Pixelated.tif');
+
+for frami = 1:frames
+    imwrite(IMG(:,:,frami),IMGpath,'WriteMode','append','Compression','none');
+end
+
+disp('Done')
