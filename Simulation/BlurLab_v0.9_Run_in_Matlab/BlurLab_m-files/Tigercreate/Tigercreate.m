@@ -138,6 +138,9 @@ function Tigercreate(nframes,tif,pts,meanI,Lx,Ly,Lz,ini)
                 Changeops = find(DCpts == 2 | DCpts == 3);
             end
             Changenum = round(DCY(i_fr,1)*pts - sum(DCpts == 1));
+            if Changenum >= numel(Changeops)
+                Changenum = numel(Changeops);
+            end
             turnidx = datasample(Changeops,Changenum);
             DCpts(turnidx) = 1;
             
@@ -156,6 +159,9 @@ function Tigercreate(nframes,tif,pts,meanI,Lx,Ly,Lz,ini)
                 Changeops = find(DCpts == 1 | DCpts == 3);
             end
             Changenum = round(DCY(i_fr,2)*pts - sum(DCpts == 2));
+            if Changenum >= numel(Changeops)
+                Changenum = numel(Changeops);
+            end
             turnidx = datasample(Changeops,Changenum);
             DCpts(turnidx) = 2;
             
@@ -174,6 +180,9 @@ function Tigercreate(nframes,tif,pts,meanI,Lx,Ly,Lz,ini)
                 Changeops = find(DCpts == 1 | DCpts == 2);
             end
             Changenum = round(DCY(i_fr,3)*pts - sum(DCpts == 3));
+            if Changenum >= numel(Changeops)
+                Changenum = numel(Changeops);
+            end 
             turnidx = datasample(Changeops,Changenum);
             DCpts(turnidx) = 3;
             

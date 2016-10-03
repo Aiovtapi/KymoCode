@@ -2906,9 +2906,11 @@ end
 
 
 function Tedit_frames_Callback(hObject, eventdata, handles)
-% hObject    handle to Tedit_frames (see GCBO)
-% eventdata  reserved - to be defined in a future version of MATLAB
-% handles    structure with handles and user data (see GUIDATA)
+frames = str2double(get(hObject,'String'));
+handles.Y1 = TDDC_createvec(handles.plotx1,handles.ploty1,frames);
+handles.Y2 = TDDC_createvec(handles.plotx2,handles.ploty2,frames);
+
+guidata(hObject, data)
 
 % Hints: get(hObject,'String') returns contents of Tedit_frames as text
 %        str2double(get(hObject,'String')) returns contents of Tedit_frames as a double
@@ -3302,7 +3304,7 @@ Ly = str2double(get(handles.Tedit_Ly,'String'));
 Lz = str2double(get(handles.Tedit_Lz,'String'));
 
 ini.DC = zeros(1,3);
-ini.DCY = zeros(pts,3);
+ini.DCY = zeros(nframes,3);
 
 if handles.TDDC_radioDC1.Value == 1;
     ini.numDC = 1;
