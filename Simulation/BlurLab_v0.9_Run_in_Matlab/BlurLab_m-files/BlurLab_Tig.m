@@ -143,8 +143,8 @@ axes(handles.axes4);
 axis([0, 1, 0, 100]);
 hold on
 set(gca,'Color',handles.DCcolor{1})
-area(handles.plotx1,handles.ploty1,'FaceColor',handles.DCcolor{2},'EdgeColor','none')
-area(handles.plotx2,handles.ploty2,'FaceColor',handles.DCcolor{3},'EdgeColor','none')
+area(handles.plotx1,handles.ploty1,'FaceColor',handles.DCcolor{2},'EdgeColor','none','HitTest','off')
+area(handles.plotx2,handles.ploty2,'FaceColor',handles.DCcolor{3},'EdgeColor','none','HitTest','off')
 plot(handles.plotx1,handles.ploty1,'k--')
 plot(handles.plotx2,handles.ploty2,'k--')
 hold off
@@ -3520,8 +3520,8 @@ if handles.TDDC_radioDC3.Value == 1
         cla(handles.axes4);
 
         hold on
-        area(handles.plotx1,handles.ploty1,'FaceColor',handles.DCcolor{2},'EdgeColor','none')
-        area(handles.plotx2,handles.ploty2,'FaceColor',handles.DCcolor{3},'EdgeColor','none')
+        area(handles.plotx1,handles.ploty1,'FaceColor',handles.DCcolor{2},'EdgeColor','none','HitTest','off')
+        area(handles.plotx2,handles.ploty2,'FaceColor',handles.DCcolor{3},'EdgeColor','none','HitTest','off')
         plot(handles.plotx1,handles.ploty1,'k--')
         plot(handles.plotx2,handles.ploty2,'k--')
         hold off
@@ -3538,7 +3538,7 @@ else
     cla(handles.axes4);
     
     hold on
-    area(handles.plotx1,handles.ploty1,'FaceColor',handles.DCcolor{2},'EdgeColor','none')
+    area(handles.plotx1,handles.ploty1,'FaceColor',handles.DCcolor{2},'EdgeColor','none','HitTest','off')
     plot(handles.plotx1,handles.ploty1,'k--')
     hold off
 end
@@ -3578,8 +3578,8 @@ nocrossing = ~any(Y1 < handles.Y2);
         cla(handles.axes4);
 
         hold on
-        area(handles.plotx1,handles.ploty1,'FaceColor',handles.DCcolor{2},'EdgeColor','none')
-        area(handles.plotx2,handles.ploty2,'FaceColor',handles.DCcolor{3},'EdgeColor','none')
+        area(handles.plotx1,handles.ploty1,'FaceColor',handles.DCcolor{2},'EdgeColor','none','HitTest','off')
+        area(handles.plotx2,handles.ploty2,'FaceColor',handles.DCcolor{3},'EdgeColor','none','HitTest','off')
         plot(handles.plotx1,handles.ploty1,'k--')
         plot(handles.plotx2,handles.ploty2,'k--')
         hold off
@@ -3596,7 +3596,7 @@ else
     cla(handles.axes4);
     
     hold on
-    area(handles.plotx1,handles.ploty1,'FaceColor',handles.DCcolor{2},'EdgeColor','none')
+    area(handles.plotx1,handles.ploty1,'FaceColor',handles.DCcolor{2},'EdgeColor','none','HitTest','off')
     plot(handles.plotx1,handles.ploty1,'k--')
     hold off
 end
@@ -3639,8 +3639,8 @@ if nocrossing
     cla(handles.axes4);
 
     hold on
-    area(handles.plotx1,handles.ploty1,'FaceColor',handles.DCcolor{2},'EdgeColor','none')
-    area(handles.plotx2,handles.ploty2,'FaceColor',handles.DCcolor{3},'EdgeColor','none')
+    area(handles.plotx1,handles.ploty1,'FaceColor',handles.DCcolor{2},'EdgeColor','none','HitTest','off')
+    area(handles.plotx2,handles.ploty2,'FaceColor',handles.DCcolor{3},'EdgeColor','none','HitTest','off')
     plot(handles.plotx1,handles.ploty1,'k--')
     plot(handles.plotx2,handles.ploty2,'k--')
     hold off
@@ -3687,8 +3687,8 @@ if nocrossing
     cla(handles.axes4);
 
     hold on
-    area(handles.plotx1,handles.ploty1,'FaceColor',handles.DCcolor{2},'EdgeColor','none')
-    area(handles.plotx2,handles.ploty2,'FaceColor',handles.DCcolor{3},'EdgeColor','none')
+    area(handles.plotx1,handles.ploty1,'FaceColor',handles.DCcolor{2},'EdgeColor','none','HitTest','off')
+    area(handles.plotx2,handles.ploty2,'FaceColor',handles.DCcolor{3},'EdgeColor','none','HitTest','off')
     plot(handles.plotx1,handles.ploty1,'k--')
     plot(handles.plotx2,handles.ploty2,'k--')
     hold off
@@ -3774,7 +3774,7 @@ switch NDC
         cla(handles.axes4);
         axes(handles.axes4);
         hold on
-        area(handles.plotx1,handles.ploty1,'FaceColor',handles.DCcolor{2},'EdgeColor','none')
+        area(handles.plotx1,handles.ploty1,'FaceColor',handles.DCcolor{2},'EdgeColor','none','HitTest','off')
         plot(handles.plotx1,handles.ploty1,'k--')
         hold off
     case 3
@@ -3822,8 +3822,8 @@ switch NDC
         axes(handles.axes4);
         cla(handles.axes4);
         hold on
-        area(handles.plotx1,handles.ploty1,'FaceColor',handles.DCcolor{2},'EdgeColor','none')
-        area(handles.plotx2,handles.ploty2,'FaceColor',handles.DCcolor{3},'EdgeColor','none')
+        area(handles.plotx1,handles.ploty1,'FaceColor',handles.DCcolor{2},'EdgeColor','none','HitTest','off')
+        area(handles.plotx2,handles.ploty2,'FaceColor',handles.DCcolor{3},'EdgeColor','none','HitTest','off')
         plot(handles.plotx1,handles.ploty1,'k--')
         plot(handles.plotx2,handles.ploty2,'k--')
         hold off
@@ -3837,6 +3837,7 @@ guidata(hObject, handles);
 % --- Executes on mouse press over axes background.
 function axes4_ButtonDownFcn(hObject, eventdata, handles)
 axes(handles.axes4);
+
 [x,y] = ginput(1);
 frames = str2double(handles.Tedit_frames.String);
 
@@ -3859,8 +3860,8 @@ switch pressed
 
                 cla(handles.axes4);
                 hold on
-                area(handles.plotx1,handles.ploty1,'FaceColor',handles.DCcolor{2},'EdgeColor','none')
-                area(handles.plotx2,handles.ploty2,'FaceColor',handles.DCcolor{3},'EdgeColor','none')
+                area(handles.plotx1,handles.ploty1,'FaceColor',handles.DCcolor{2},'EdgeColor','none','HitTest','off')
+                area(handles.plotx2,handles.ploty2,'FaceColor',handles.DCcolor{3},'EdgeColor','none','HitTest','off')
                 plot(handles.plotx1,handles.ploty1,'k--')
                 plot(handles.plotx2,handles.ploty2,'k--')
                 hold off
@@ -3872,7 +3873,7 @@ switch pressed
             
             cla(handles.axes4);
             hold on
-            area(handles.plotx1,handles.ploty1,'FaceColor',handles.DCcolor{2},'EdgeColor','none')
+            area(handles.plotx1,handles.ploty1,'FaceColor',handles.DCcolor{2},'EdgeColor','none','HitTest','off')
             plot(handles.plotx1,handles.ploty1,'k--')
             hold off
         end
@@ -3891,8 +3892,8 @@ switch pressed
 
             cla(handles.axes4);
             hold on
-            area(handles.plotx1,handles.ploty1,'FaceColor',handles.DCcolor{2},'EdgeColor','none')
-            area(handles.plotx2,handles.ploty2,'FaceColor',handles.DCcolor{3},'EdgeColor','none')
+            area(handles.plotx1,handles.ploty1,'FaceColor',handles.DCcolor{2},'EdgeColor','none','HitTest','off')
+            area(handles.plotx2,handles.ploty2,'FaceColor',handles.DCcolor{3},'EdgeColor','none','HitTest','off')
             plot(handles.plotx1,handles.ploty1,'k--')
             plot(handles.plotx2,handles.ploty2,'k--')
             hold off
@@ -3915,8 +3916,8 @@ if handles.TDDC_radioDC3.Value == 1
     axes(handles.axes4);
     cla(handles.axes4);
     hold on
-    area(handles.plotx1,handles.ploty1,'FaceColor',handles.DCcolor{2},'EdgeColor','none')
-    area(handles.plotx2,handles.ploty2,'FaceColor',handles.DCcolor{3},'EdgeColor','none')
+    area(handles.plotx1,handles.ploty1,'FaceColor',handles.DCcolor{2},'EdgeColor','none','HitTest','off')
+    area(handles.plotx2,handles.ploty2,'FaceColor',handles.DCcolor{3},'EdgeColor','none','HitTest','off')
     plot(handles.plotx1,handles.ploty1,'k--')
     plot(handles.plotx2,handles.ploty2,'k--')
     hold off
@@ -3927,7 +3928,7 @@ else
     cla(handles.axes4);
     axes(handles.axes4);
     hold on
-    area(handles.plotx1,handles.ploty1,'FaceColor',handles.DCcolor{2},'EdgeColor','none')
+    area(handles.plotx1,handles.ploty1,'FaceColor',handles.DCcolor{2},'EdgeColor','none','HitTest','off')
     plot(handles.plotx1,handles.ploty1,'k--')
     hold off
 end
@@ -3944,8 +3945,8 @@ if ~isfield(handles,'IOUT')
 end
 
 
-outx = floor(handles.OUTX);
-outy = floor(handles.OUTY);
+outx = ceil(handles.OUTX);
+outy = ceil(handles.OUTY);
 Iout = handles.IOUT;
 step = handles.STEP;
 fstep = floor(step);
@@ -3957,7 +3958,11 @@ IMG = zeros(outy,outx,frames);
 for frami = 1:frames
     for yi = 1:outy
         lowy = (yi - 1)*step + 1;
-        higy = yi*step;
+        if yi < outy
+            higy = yi*step;
+        else
+            higy = handles.OUTY*step;
+        end
         
         % Check if lower bound well defined
         if logical(mod(lowy,1))
@@ -3979,7 +3984,11 @@ for frami = 1:frames
             
         for xi = 1:outx
             lowx = (xi - 1)*step + 1;
-            higx = xi*step;
+            if xi < outx
+                higx = xi*step;
+            else
+                higx = handles.OUTX*step;
+            end
 
             % Check if left bound well defined
             if logical(mod(lowx,1))
