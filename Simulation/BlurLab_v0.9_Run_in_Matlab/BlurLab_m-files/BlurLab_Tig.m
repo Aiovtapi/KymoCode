@@ -32,7 +32,7 @@ function varargout = BlurLab_Tig(varargin)
 % folder 'M-File_Models'.
 %
 
-% Last Modified by GUIDE v2.5 03-Oct-2016 14:35:29
+% Last Modified by GUIDE v2.5 05-Oct-2016 13:11:05
 
 % Skip frame option?
 % only frap certain Z thickness
@@ -4052,3 +4052,32 @@ for frami = 1:frames
 end
 
 disp('Done')
+
+
+% --- Executes on button press in TDDC_getgraph.
+function TDDC_getgraph_Callback(hObject, eventdata, handles)
+
+DC1 = ['DC1 = ',handles.TDDC_edit_DC1.String];
+DC2 = ['DC2 = ',handles.TDDC_edit_DC2.String];
+DC3 = ['DC3 = ',handles.TDDC_edit_DC3.String];
+
+figure
+axis([0, 1, 0, 100]);
+hold on
+xlabel('Cell lifetime')
+ylabel('Percentage of spots with specific diffusion constant')
+title('Change in diffusion')
+if handles.TDDC_radioDC3.Value == 1
+    area([0,1],[100,100],'FaceColor',handles.DCcolor{1},'EdgeColor','none','HitTest','off')
+    area(handles.plotx1,handles.ploty1,'FaceColor',handles.DCcolor{2},'EdgeColor','none','HitTest','off')
+    area(handles.plotx2,handles.ploty2,'FaceColor',handles.DCcolor{3},'EdgeColor','none','HitTest','off')
+    plot(handles.plotx1,handles.ploty1,'k--')
+    plot(handles.plotx2,handles.ploty2,'k--')
+    legend(DC1,DC2,DC3)
+elseif handles.TDDC_radioDC2.Value == 1
+    area([0,1],[100,100],'FaceColor',handles.DCcolor{1},'EdgeColor','none','HitTest','off')
+    area(handles.plotx1,handles.ploty1,'FaceColor',handles.DCcolor{2},'EdgeColor','none','HitTest','off')
+    plot(handles.plotx1,handles.ploty1,'k--')
+    legend(DC1,DC2)
+end
+hold off

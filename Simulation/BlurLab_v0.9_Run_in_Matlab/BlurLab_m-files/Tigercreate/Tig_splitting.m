@@ -17,9 +17,9 @@ function [X0,Y0,Z0,XYC,T0,I0,L0,D0,pts,npts,NewL] = ...
         % Get new intensity values
         I_old = I0(spot_old);            
         if ini.tog_dimer == 0
-            I_a = poissrnd(I_old/2);
+            I_a = poissrnd(sqrt(I_old^2/2));
         else
-            I_a = I_old/2;
+            I_a = sqrt(I_old^2/2);
         end
         I_b = I_old - I_a;
         
