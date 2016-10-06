@@ -38,7 +38,7 @@ for cellnumber=1:3;
         clear XNorm x NSpots SNR ydatacrpd pixels
 
         ClipFactor=1;
-        GaussFactor=1;
+        GaussFactor=2;
 
         bacsize = size(Bacpics{Cell,1});
         data = uint16(zeros(bacsize(1),bacsize(2),1));

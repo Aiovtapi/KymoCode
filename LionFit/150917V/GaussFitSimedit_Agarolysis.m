@@ -46,7 +46,7 @@ for Cell=lionval.viewbac;
         clear XNorm x NSpots SNR ydatacrpd pixels
 
         ClipFactor=1;
-        GaussFactor=1;
+        GaussFactor=2;
 
         thisbacfolder=strcat('Cell_',num2str(Cell,'%03.0f')); % Tif stack 
         bacseriepth=strcat(lionval.Mainfolder,lionval.OSslash,thisbacfolder,lionval.OSslash);
