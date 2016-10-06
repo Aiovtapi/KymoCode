@@ -1,24 +1,24 @@
-clear all
-close
+clear 
+close all
 clc
 
 folder='C:\Users\water\Documents\GitHub\Data\Target Data\Kymo Data\Results';
 slash = '\';
-channels = 2;
-Intensityval = [500,250,100];
+channels = [1,2];
+Intensityval = [350,60,200];
 
 Acfp=[];    Ayfp=[];    Arfp=[];
 Bcfp=[];    Byfp=[];    Brfp=[];
 Ccfp=[];    Cyfp=[];    Crfp=[];
 
-for i=1:channels;
+for i=channels;
     E{i}=load(strcat(folder,slash,'Results_Ch',num2str(i),'.mat')); 
 end
 
 allCFP_L = [];
 
 
-for i=1:channels
+for i=channels
     
     Ncells{i}=size(E{i}.DataStruct,2);
     
@@ -90,9 +90,13 @@ Cremove = Ccfp == 0;
 Ccfp(Cremove) = [];
 Acfp(Cremove) = [];
 Bcfp(Cremove) = [];
-%% CFP
 
-figure(1)
+%% Position vs. cell length
+% CFP
+
+fig1 = figure(1);
+set(fig1,'Position',[20,300,1800,500])
+subplot(1,3,1)
 hold on
 scatter(single(Acfp),Bcfp,Ccfp,'b','filled');
 % myfit=polyfit(Acfp,Bcfp,4);
@@ -100,12 +104,14 @@ scatter(single(Acfp),Bcfp,Ccfp,'b','filled');
 % y=polyval(myfit,x);
 % plot(x,y,'r','LineWidth',5)
 hold off
+xlabel('Cell Length'); ylabel('Normalized position of spot in cell'); 
+title('Agar data: CFP')
 axis([0 1 0 1])
 
+% YFP
 
-%% YFP
-
-figure(2)
+figure(1)
+subplot(1,3,2)
 hold on
 scatter(single(Ayfp),Byfp,Cyfp,'m','filled');
 % myfit=polyfit(Ayfp,Byfp,4);
@@ -113,11 +119,14 @@ scatter(single(Ayfp),Byfp,Cyfp,'m','filled');
 % y=polyval(myfit,x);
 % plot(x,y,'k','LineWidth',5)
 hold off
+xlabel('Cell Length'); ylabel('Normalized position of spot in cell'); 
+title('Agar data: YFP')
 axis([0 1 0 1])
 
-%% RFP
+% RFP
 
-figure(3)
+figure(1)
+subplot(1,3,3)
 hold on
 scatter(single(Arfp),Brfp,Crfp,'r','filled');
 % myfit=polyfit(Arfp,Brfp,4);
@@ -125,6 +134,105 @@ scatter(single(Arfp),Brfp,Crfp,'r','filled');
 % y=polyval(myfit,x);
 % plot(x,y,'k','LineWidth',5)
 hold off
+xlabel('Cell Length'); ylabel('Normalized position of spot in cell'); 
+title('Agar data: RFP')
 axis([0 1 0 1])
         
-        
+
+%% Intensity vs. position
+
+% CFP
+
+fig1 = figure(2);
+set(fig1,'Position',[20,300,1800,500])
+subplot(1,3,1)
+hold on
+scatter(Bcfp,Ccfp,'b','x');
+myfit=polyfit(Bcfp,Ccfp,4);
+x=0:00.1:1;
+y=polyval(myfit,x);
+plot(x,y,'k','LineWidth',3)
+xlabel('Position in cell'); ylabel('Spot Intensity'); 
+title('Agar data: CFP')
+hold off
+axis([0 1 -0.1 35])
+
+% YFP
+
+figure(2)
+subplot(1,3,2)
+hold on
+scatter(Byfp,Cyfp,'m','x');
+myfit=polyfit(Byfp,Cyfp,4);
+x=0:00.1:1;
+y=polyval(myfit,x);
+plot(x,y,'k','LineWidth',3)
+xlabel('Position in cell'); ylabel('Spot Intensity'); 
+title('Agar data: YFP')
+hold off
+axis([0 1 -0.1 35])
+
+% RFP
+
+figure(2)
+subplot(1,3,3)
+hold on
+scatter(Brfp,Crfp,'r','x');
+myfit=polyfit(Brfp,Crfp,4);
+x=0:00.1:1;
+y=polyval(myfit,x);
+plot(x,y,'k','LineWidth',3)
+xlabel('Position in cell'); ylabel('Spot Intensity'); 
+title('Agar data: RFP')
+hold off
+axis([0 1 -0.1 35])
+
+%% Numspots vs. position
+% CFP
+fig1 = figure(3);
+set(fig1,'Position',[20,300,1800,500])
+subplot(1,3,1)
+
+[numbin,edges] = histcounts(Bcfp,20);
+norm = max(numbin)/35;
+X = diff(edges);
+X = cumsum(X) - X(1)/2;
+hold on
+scatter(Bcfp,Ccfp,'b','x');
+plot(X,numbin/norm,'k','LineWidth',3)
+hold off
+xlabel('Position in cell'); ylabel('Amount of spots (normalized)');
+title('Agar data: CFP')
+axis([0 1 -0.1 40])
+
+% YFP
+figure(3);
+subplot(1,3,2)
+
+[numbin,edges] = histcounts(Byfp,20);
+norm = max(numbin)/35;
+X = diff(edges);
+X = cumsum(X) - X(1)/2;
+hold on
+scatter(Byfp,Cyfp,'m','x');
+plot(X,numbin/norm,'k','LineWidth',3)
+hold off
+xlabel('Position in cell'); ylabel('Amount of spots (normalized)');
+title('Agar data: YFP')
+axis([0 1 -0.1 40])
+
+% RFP
+figure(3);
+subplot(1,3,3)
+
+[numbin,edges] = histcounts(Brfp,20);
+norm = max(numbin)/35;
+X = diff(edges);
+X = cumsum(X) - X(1)/2;
+hold on
+scatter(Brfp,Crfp,'r','x');
+plot(X,numbin/norm,'k','LineWidth',3)
+hold off
+xlabel('Position in cell'); ylabel('Amount of spots (normalized)'); 
+title('Agar data: RFP')
+axis([0 1 -0.1 40])

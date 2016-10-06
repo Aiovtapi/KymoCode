@@ -40,7 +40,7 @@ end
 
 initval.Kymopath = strcat(projectpath,versionpath);
 initval.Supportpath = strcat(projectpath,versionpath,toolspath);
-addpath(strcat(projectpath,versionpath,lionpath,'15917V'))
+addpath(strcat(projectpath,versionpath,lionpath,'150917V'))
 addpath(strcat(projectpath,versionpath,lionpath,'gaussmlev2'))
 addpath(strcat(initval.Kymopath));
 addpath(strcat(initval.Supportpath));
