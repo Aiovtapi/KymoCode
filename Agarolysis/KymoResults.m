@@ -105,7 +105,7 @@ scatter(single(Acfp),Bcfp,Ccfp,'b','filled');
 % plot(x,y,'r','LineWidth',5)
 hold off
 xlabel('Cell Length'); ylabel('Normalized position of spot in cell'); 
-title('Agar data: CFP')
+title('Kymo data: CFP')
 axis([0 1 0 1])
 
 % YFP
@@ -120,7 +120,7 @@ scatter(single(Ayfp),Byfp,Cyfp,'m','filled');
 % plot(x,y,'k','LineWidth',5)
 hold off
 xlabel('Cell Length'); ylabel('Normalized position of spot in cell'); 
-title('Agar data: YFP')
+title('Kymo data: YFP')
 axis([0 1 0 1])
 
 % RFP
@@ -135,7 +135,7 @@ scatter(single(Arfp),Brfp,Crfp,'r','filled');
 % plot(x,y,'k','LineWidth',5)
 hold off
 xlabel('Cell Length'); ylabel('Normalized position of spot in cell'); 
-title('Agar data: RFP')
+title('Kymo data: RFP')
 axis([0 1 0 1])
         
 
@@ -153,7 +153,7 @@ x=0:00.1:1;
 y=polyval(myfit,x);
 plot(x,y,'k','LineWidth',3)
 xlabel('Position in cell'); ylabel('Spot Intensity'); 
-title('Agar data: CFP')
+title('Kymo data: CFP')
 hold off
 axis([0 1 -0.1 35])
 
@@ -168,7 +168,7 @@ x=0:00.1:1;
 y=polyval(myfit,x);
 plot(x,y,'k','LineWidth',3)
 xlabel('Position in cell'); ylabel('Spot Intensity'); 
-title('Agar data: YFP')
+title('Kymo data: YFP')
 hold off
 axis([0 1 -0.1 35])
 
@@ -183,7 +183,7 @@ x=0:00.1:1;
 y=polyval(myfit,x);
 plot(x,y,'k','LineWidth',3)
 xlabel('Position in cell'); ylabel('Spot Intensity'); 
-title('Agar data: RFP')
+title('Kymo data: RFP')
 hold off
 axis([0 1 -0.1 35])
 
@@ -202,7 +202,7 @@ scatter(Bcfp,Ccfp,'b','x');
 plot(X,numbin/norm,'k','LineWidth',3)
 hold off
 xlabel('Position in cell'); ylabel('Amount of spots (normalized)');
-title('Agar data: CFP')
+title('Kymo data: CFP')
 axis([0 1 -0.1 40])
 
 % YFP
@@ -218,7 +218,7 @@ scatter(Byfp,Cyfp,'m','x');
 plot(X,numbin/norm,'k','LineWidth',3)
 hold off
 xlabel('Position in cell'); ylabel('Amount of spots (normalized)');
-title('Agar data: YFP')
+title('Kymo data: YFP')
 axis([0 1 -0.1 40])
 
 % RFP
@@ -234,5 +234,5 @@ scatter(Brfp,Crfp,'r','x');
 plot(X,numbin/norm,'k','LineWidth',3)
 hold off
 xlabel('Position in cell'); ylabel('Amount of spots (normalized)'); 
-title('Agar data: RFP')
+title('Kymo data: RFP')
 axis([0 1 -0.1 40])
