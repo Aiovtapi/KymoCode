@@ -11,7 +11,8 @@ Lcfp=[];    Lyfp=[];    Lrfp=[];
 Pcfp=[];    Pyfp=[];    Prfp=[];
 Icfp=[];    Iyfp=[];    Irfp=[];
 Fcfp=[];    Fyfp=[];    Frfp=[];
-
+ncfp=[];    nyfp=[];    nrfp=[];
+celllength = [];
 
     
 j=1; 
@@ -59,6 +60,8 @@ for i=1:Nexp
                 Fcfp=[Fcfp CFPld{i,j}{k}(1,7)];
             end
         end
+        ncfp = [ncfp NspotsCFP];
+        celllength = [celllength CellLength{i,j}];
         
         if NspotsYFP==0
             YFPld{i,j}{1}=[];
@@ -70,6 +73,7 @@ for i=1:Nexp
                 Fyfp=[Fyfp YFPld{i,j}{k}(1,7)];
             end
         end
+        nyfp = [nyfp NspotsYFP];
         
         if NspotsRFP==0
             RFPld{i,j}{1}=[];
@@ -81,6 +85,7 @@ for i=1:Nexp
                 Frfp=[Frfp RFPld{i,j}{k}(1,7)];
             end
         end
+        nrfp = [nrfp NspotsRFP];
     end
 end
 
@@ -90,14 +95,15 @@ Lyfp(remove) = [];
 Pyfp(remove) = [];
 Fyfp(remove) = [];
 
+
 %% Position vs. cell length
 % CFP
 
 fig1 = figure(1);
 set(fig1,'Position',[20,300,1800,500])
-subplot(1,3,1)
 
-figure(1)
+
+subplot(1,3,1)
 hold on
 scatter(single(Lcfp),Pcfp,Icfp,'b','filled');
 myfit=polyfit(Lcfp,Pcfp,4);
@@ -398,3 +404,29 @@ xlabel('Cell Length'); ylabel('Normalized full cell intensity');
 title('Agar data: RFP')
 hold off
 axis([12 43 -0.1 1.1])
+
+
+%% Numspots/cell vs. cell length
+fig1 = figure(1);
+
+p1 = find(nrfp == 1);
+p2 = find(nrfp == 2);
+p3 = find(nrfp == 3);
+p4 = find(nrfp == 4);
+
+m(1) = mean(celllength(p1));
+m(2) = mean(celllength(p2));
+m(3) = mean(celllength(p3));
+m(4) = mean(celllength(p4));
+
+myfit=polyfit(m,1:4,1);
+x=[12,43];
+y=polyval(myfit,x);
+
+hold on
+scatter(celllength,nrfp,'m')
+plot(x,y,'k--','LineWidth',1)
+axis([12, 43, 0, 5])
+xlabel('Cell length'); ylabel('Number of spots per cell')
+title('Numspots/cell vs. cell length for YFP')
+hold off
