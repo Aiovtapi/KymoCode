@@ -1,0 +1,108 @@
+
+vbSPT, VB3_HMManalysis, Copyright (C) 2012 Martin Lindn and Fredrik Persson 
+v 1.1.2, Martin Lindn 2014.
+
+This program comes with ABSOLUTELY NO WARRANTY. 
+This is free software, and you are welcome to redistribute it 
+under certain conditions. See license.txt for details. 
+
+Additional permission under GNU GPL version 3 section 7 
+
+If you modify this Program, or any covered work, by linking or combining it 
+with Matlab or any Matlab toolbox, the licensors of this Program grant you 
+additional permission to convey the resulting work. 
+
+----------
+19-Oct-2016 16:25:02 : Starting greedy optimization to find best model.
+jobID        : UvrD-mMaple3 5xM9
+runinput file: UvrD5xM9_set
+input  file  : ./Data/Traj.mat
+trj field    : Traj
+output file  : ./VB3_Results/UvrD-mMaple3 5xM9.mat
+log file     : ./VB3_Results/UvrD-mMaple3 5xM9.log
+----------
+Read options structure based on runinput file UvrD5xM9_set
+Parallel pool using the 'local' profile is shutting down.
+Starting parallel pool (parpool) using the 'local' profile ... connected to 4 workers.
+
+theVBpool = 
+
+ <a href="matlab: help parallel.Pool">Pool</a> with properties: 
+
+            Connected: true
+           NumWorkers: 4
+              Cluster: <a href="matlab: parallel.internal.display.Displayer.displayObject('1F8B0800000000000000AD53BD4EC3400C76D2B48281AA0809F5119812400CDD8B10202A1005D12DBD9413045D93E8920A7563EC2330323232F2282CEC3C06E7C669AE21A520B0645D3EC7FEECEF7EC038EA80B2BAF227E535E52BCAD7213563B65AD0699F76116F298F9864427061FB41C265C0847DEDC7916063BB2D46B10A75F890074988BC871AEF1AF15509D7A847D6077133FD7C37B57F9923DFAD95F3AD16F830A765E57C2661D0743E56F27AB3A45E9FA7AA745709E38A7B90F19C557EB65FA8F9C017FC4AB228E2D275A9BEA1D5E7FD529CF5CCE298DF3416EBFE28E49B14C315E5F7953F90BF287FA3FF995D8C230EFB2C61307F7E8B0F1A4A0D7B55CA7FCD995182F598095FF5147374AB6BAB7EDF2C8AEBE7BBA9F13408CF640E52F9F649386022E57B85DFDD970DC2B81E875E370925BBE14898F86190CFD95F32A7539813B1731973193B52703EBA77EC214B04F31C81C3BA34BA7B177AB173BEBBBDB3E74DFB3CC3E27B56DC57CC6F2DD10B05BDFF5D3F81EFDF770FE6EF456F4A98BF6FFDFCFFF2BED13E018FD3DF9920050000')">local</a>
+        AttachedFiles: {}
+          IdleTimeout: 30 minute(s) (30 minutes remaining)
+          SpmdEnabled: true
+
+Iter 5. Adding 342 extra transitions to final model helped : dF/|F| = 5.6459e-09, time : 0.014631 s.
+Iter 5. Finished greedy search in 0.309 s, with 2 states.
+Iter 4. Adding 342 extra transitions to final model helped : dF/|F| = 8.4449e-09, time : 0.009037 s.
+Iter 4. Finished greedy search in 0.082385 s, with 2 states.
+Iter 3. Adding 342 extra transitions to final model helped : dF/|F| = 7.6491e-09, time : 0.0078895 s.
+Iter 17. Adding 342 extra transitions to final model helped : dF/|F| = 5.8118e-09, time : 0.014841 s.
+Iter 17. Finished greedy search in 0.31112 s, with 2 states.
+Iter 16. Adding 342 extra transitions to final model helped : dF/|F| = 5.2429e-09, time : 0.0083697 s.
+Iter 16. Finished greedy search in 0.085544 s, with 2 states.
+Iter 15. Adding 342 extra transitions to final model helped : dF/|F| = 7.5263e-09, time : 0.0090094 s.
+Iter 15. Finished greedy search in 0.069993 s, with 2 states.
+Iter 10. Adding 342 extra transitions to final model helped : dF/|F| = 6.3155e-09, time : 0.015052 s.
+Iter 10. Finished greedy search in 0.29386 s, with 2 states.
+Iter 9. Adding 342 extra transitions to final model helped : dF/|F| = 7.7885e-09, time : 0.0083614 s.
+Iter 9. Finished greedy search in 0.063779 s, with 2 states.
+Iter 8. Adding 342 extra transitions to final model helped : dF/|F| = 8.6717e-09, time : 0.010508 s.
+Iter 14. Adding 342 extra transitions to final model helped : dF/|F| = 6.1406e-09, time : 0.014883 s.
+Iter 14. Finished greedy search in 0.31134 s, with 2 states.
+Iter 13. Adding 342 extra transitions to final model helped : dF/|F| = 5.6801e-09, time : 0.0096335 s.
+Iter 13. Finished greedy search in 0.085781 s, with 2 states.
+Iter 12. Adding 342 extra transitions to final model helped : dF/|F| = 5.8846e-09, time : 0.0082789 s.
+Iter 12. Finished greedy search in 0.089058 s, with 2 states.
+Iter 11. Adding 342 extra transitions to final model helped : dF/|F| = 5.5848e-09, time : 0.014609 s.
+Iter 11. Finished greedy search in 0.176 s, with 2 states.
+Iter 8. Finished greedy search in 0.084208 s, with 2 states.
+Iter 7. Adding 342 extra transitions to final model helped : dF/|F| = 6.8388e-09, time : 0.019572 s.
+Iter 7. Finished greedy search in 0.12221 s, with 2 states.
+Iter 6. Adding 342 extra transitions to final model helped : dF/|F| = 8.2491e-09, time : 0.015313 s.
+Iter 6. Finished greedy search in 0.1272 s, with 2 states.
+Iter 3. Finished greedy search in 0.066567 s, with 2 states.
+Iter 2. Adding 342 extra transitions to final model helped : dF/|F| = 7.0604e-09, time : 0.017701 s.
+Iter 2. Finished greedy search in 0.12157 s, with 2 states.
+Iter 1. Adding 342 extra transitions to final model helped : dF/|F| = 5.908e-09, time : 0.0080647 s.
+Iter 1. Finished greedy search in 0.14962 s, with 2 states.
+Iter 19. Adding 342 extra transitions to final model helped : dF/|F| = 6.5257e-09, time : 0.0079917 s.
+Iter 19. Finished greedy search in 0.090211 s, with 2 states.
+Iter 18. Adding 342 extra transitions to final model helped : dF/|F| = 6.572e-09, time : 0.010852 s.
+Iter 18. Finished greedy search in 0.093983 s, with 2 states.
+Iter 22. Adding 342 extra transitions to final model helped : dF/|F| = 6.4237e-09, time : 0.0086678 s.
+Iter 22. Finished greedy search in 0.10787 s, with 2 states.
+Iter 23. Adding 342 extra transitions to final model helped : dF/|F| = 6.7858e-09, time : 0.0095506 s.
+Iter 23. Finished greedy search in 0.10628 s, with 2 states.
+Iter 24. Adding 342 extra transitions to final model helped : dF/|F| = 7.1831e-09, time : 0.011554 s.
+Iter 24. Finished greedy search in 0.10396 s, with 2 states.
+Iter 21. Adding 342 extra transitions to final model helped : dF/|F| = 5.8951e-09, time : 0.0085548 s.
+Iter 21. Finished greedy search in 0.10652 s, with 2 states.
+Iter 20. Adding 342 extra transitions to final model helped : dF/|F| = 5.7598e-09, time : 0.0089538 s.
+Iter 20. Finished greedy search in 0.10463 s, with 2 states.
+Iter 25. Adding 342 extra transitions to final model helped : dF/|F| = 7.5384e-09, time : 0.0075147 s.
+Iter 25. Finished greedy search in 0.097504 s, with 2 states.
+Sorting and regenerating best model and estimates
+ N     it   dF/|F|   d<p>/p   p 
+01     2  0.00e+00 0.00e+00  M.wPi , F : 3.844e+03 
+Converged normally after 2 iterations, relTolF = 1e-08, tolPar = 0.01, (M.wPi limiting). 
+ N     it   dF/|F|   d<p>/p   p 
+02     2  1.10e-09 7.14e-05  M.c , F : 5.916e+03 
+Converged normally after 2 iterations, relTolF = 1e-08, tolPar = 0.01, (M.c limiting). 
+Best model size: 2, from iteration 16.
+Saving ./VB3_Results/UvrD-mMaple3 5xM9.mat after 0.27039 min.
+Read options structure based on runinput file UvrD5xM9_set
+Read options structure based on runinput file UvrD5xM9_set
+jobID: UvrD-mMaple3 5xM9
+Starting bootstrapping...
+----------
+bootstrap : 100 resampling in 1.2664 s.
+Bootstrapping the 1 state model of 2.
+bootstrap : 100 resampling in 0.38767 s.
+Bootstrapping the 2 state model of 2.
+Finished UvrD5xM9_set bootstrapping in 0.029613 min.
+19-Oct-2016 16:25:20 : Finished UvrD5xM9_set. Total run time 0.30052 min.
