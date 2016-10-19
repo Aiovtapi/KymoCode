@@ -486,32 +486,14 @@ hold off
 %% YFP Spot number vs time
 fig7=figure(7);
 
-YfpSpot=[];
-Frame=[];
-
-for i=channels
-    for j=1:Ncells{i}
-        YfpSpot=[YfpSpot YFPSpotNumber{i,j}];
-        Frame=[Frame (1:frames{i}{j})/frames{i}{j}];
-    end
-end
-
-for i=1:max(YfpSpot);
-p{i} = find(YfpSpot == i);
-m(i) = mean(Frame(p{i}));
-Spotstd(i)=std(Frame(p{i}));
-end
-
-Y=linspace(0,max(YfpSpot),max(YfpSpot));
-
-Xl=m-Spotstd;
-Xr=m+Spotstd;
 
 hold on
-scatter(Frame,YfpSpot,'r','filled')
-plot(m,Y,'b--','LineWidth',3)
-plot(Xl,Y,'b','LineWidth',1)
-plot(Xr,Y,'b','LineWidth',1)
+for i=channels
+    for j=1:Ncells{i}
+        YfpSpot=[YfpSpot YfpSpotNumber{i,j}];
+scatter((1:frames{i}{j})/frames{i}{j},YFPSpotNumber{i,j},'r','filled')
+    end
+end
 hold off
 title('Tus Spot number vs. Normalized Cell cycle')
 xlabel('Normalized Cell Time (-)'); ylabel('Number of Spots (-)')

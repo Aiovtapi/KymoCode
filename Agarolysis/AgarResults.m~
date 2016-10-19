@@ -15,7 +15,6 @@ Fcfp=[];    Fyfp=[];    Frfp=[];
 ncfp=[];    nyfp=[];    nrfp=[];
 celllength = [];
 
-yfp.filterval=8000;
     
 j=1; 
 for i=exps;
@@ -91,11 +90,11 @@ for i=1:Nexp
     end
 end
 
-% tozero = Iyfp<yfp.filterval;
-% Iyfp(tozero) = 0;
-% Lyfp(tozero) = 0;
-% Pyfp(tozero) = 0;
-% Fyfp(tozero) = 0;
+remove = Irfp<0;
+Iyfp(remove) = [];
+Lyfp(remove) = [];
+Pyfp(remove) = [];
+Fyfp(remove) = [];
 
 
 %% Position vs. cell length
@@ -277,18 +276,16 @@ Numcfp(1,:) = Lcfp;
 Numcfp(2,:) = Pcfp;
 
 %Filter on Intensity
-ICFP=Icfp*Intensityval(1);
-[bin_cfp,idx_cfp]=find(ICFP>6000); 
+ICFP=Icfp*Intensityval(2);
+[bin_cfp,idx_cfp]=find(IYFP>8000); 
 
-NumCFP(:,idx_cfp)=Numcfp(:,idx_cfp);
-NumCFPnz(1,:)=nonzeros(NumCFP(1,:));
-NumCFPnz(2,:)=nonzeros(NumCFP(2,:));
-
-FilteredSignalCFP=size(NumCFPnz,2)/size(ICFP,2); % Percentage of total signal
+NumYFP(:,idx_yfp)=Numyfp(:,idx_yfp);
+NumYFPnz(1,:)=nonzeros(NumYFP(1,:));
+NumYFPnz(2,:)=nonzeros(NumYFP(2,:));
 
 figure(4)
 subplot(1,3,1)
-Heatmap = hist3(NumCFPnz','Edges',thisedge2);
+Heatmap = hist3(Numcfp','Edges',thisedge2);
 pcolor(thisedge2{1},(thisedge2{2}),Heatmap');
 colormap(hot) % heat map
 xlabel('Cell Length'); ylabel('Position in Cell');
@@ -299,7 +296,7 @@ set(gca,'FontSize',16)
 figure(5)
 subplot(1,3,1)
 hold on
-hist3(NumCFPnz','Edges',thisedge2)
+hist3(Numcfp','Edges',thisedge2)
 colormap(hot) % heat map
 set(get(gca,'child'),'FaceColor','interp','CDataMode','auto');
 xlabel('Cell Length'); ylabel('Position in Cell');zlabel('Amount of spots')
@@ -316,7 +313,7 @@ Numyfp(2,:) = Pyfp;
 
 %Filter on Intensity
 IYFP=Iyfp*Intensityval(2);
-[bin_yfp,idx_yfp]=find(IYFP>yfp.filterval); 
+[bin_yfp,idx_yfp]=find(IYFP>8000); 
 
 NumYFP(:,idx_yfp)=Numyfp(:,idx_yfp);
 NumYFPnz(1,:)=nonzeros(NumYFP(1,:));
