@@ -232,6 +232,8 @@ function Tigercreate(nframes,tif,pts,meanI,Lx,Ly,Lz,ini)
         X0(Xstay) = X0(Xstay) + 2*XYC(Xstay,1);
         Y0(Ystay) = Y0(Ystay) + 2*XYC(Ystay,2);
         
+        clear Xstay Ystay
+        
         % Change in Intensity
         Ichange = normrnd(1,ini.SigmaI,pts,1);
         I0 = I0.*Ichange;
