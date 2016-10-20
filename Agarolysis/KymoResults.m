@@ -520,4 +520,13 @@ set(gca,'FontSize',18)
 
 
 
+%%
+hold on
 
+for i=channels
+    for j=1:Ncells{i}
+        
+scatter((1:size(IrfpSpotTotal{i,j},1))/size(IrfpSpotTotal{i,j},1),IrfpSpotTotal{i,j},'r','filled')
+         
+    end
+end
