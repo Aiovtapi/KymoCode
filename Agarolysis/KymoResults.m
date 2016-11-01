@@ -452,15 +452,21 @@ plotyfp = unique(plotyfp','rows')';
 subplot(1,3,2)
 hold on
 scatter(plotyfp(1,:),plotyfp(2,:),'b','x');
-scatter(plotyfp(1,:),plotyfp(3,:),'r','x');
+% scatter(plotyfp(1,:),plotyfp(3,:),'r','x');
+for i=channels
+    for j=1:Ncells{i}
+scatter((1:size(IyfpSpotTotal{i,j},1))/size(IyfpSpotTotal{i,j},1),IyfpSpotTotal{i,j}./YFP.filterval,'r')
+    end
+end
 myfit=polyfit(plotyfp(1,:),plotyfp(2,:),1);
 x=0:0.01:1;
 y=polyval(myfit,x);
 plot(x,y,'k','LineWidth',3)
-xlabel('Cell Length'); ylabel('Normalized full cell intensity'); 
-title('Kymo data: YFP')
+xlabel('Normalized Cell Time (-)'); ylabel('Number of Tus (-)'); 
+title('Tus Stoichiometry vs. Time')
 hold off
-% axis([0 1 -0.1 1.1])
+axis([0 1 0.01 30])
+set(gca,'FontSize',18)
 
 
 % RFP
@@ -526,7 +532,7 @@ hold on
 for i=channels
     for j=1:Ncells{i}
         
-scatter((1:size(IrfpSpotTotal{i,j},1))/size(IrfpSpotTotal{i,j},1),IrfpSpotTotal{i,j},'r','filled')
+scatter((1:size(IrfpSpotTotal{i,j},1))/size(IrfpSpotTotal{i,j},1),IrfpSpotTotal{i,j}/RFP.filterval,'r','filled')
          
     end
 end

@@ -428,7 +428,7 @@ plotyfp(3,:) = Iyfp*Intensityval(2);
 
 plotyfp = unique(plotyfp','rows')';
 
-subplot(1,3,2)
+figure(1)
 hold on
 scatter(plotyfp(1,:),plotyfp(2,:),'b','o','filled');
 scatter(plotyfp(1,:),plotyfp(3,:),'r','o','filled');
@@ -438,9 +438,9 @@ x=12:0.1:43;
 y=polyval(myfit,x);
 y2=polyval(myfit2,x);
 plot(x,y,'b','LineWidth',3)
-plot(x,y2,'r','LineWidth',3)
-xlabel('Cell Length'); ylabel('Normalized full cell intensity'); 
-title('Agar data: YFP')
+% plot(x,y2,'r','LineWidth',3)
+xlabel('Cell Length'); ylabel('Intensity'); 
+title('Tus Stoichiometry vs. Length')
 hold off
 axis([12 43 -0.1 2*10^5])
 set(gca,'FontSize',16)
