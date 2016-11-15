@@ -128,7 +128,7 @@ function [Bettermesh,BCellbox,Bacsize,Bacmask,CBacmask,Bacpics,NMBacpics,nflimg]
     
     if TigerCutSR == 1;
         
-        disp('TigerCutSR...')
+        disp(' for SR...')
         fprintf('\nFrame: ')
         
         for frami = 1:frames

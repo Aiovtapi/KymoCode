@@ -4,7 +4,7 @@ clear all
 %%
 fprintf('Select Data Folder');
 init.datapath = uigetdir(pwd,'Select Data Folder');
-init.OSslash = '\';
+init.OSslash = '/';
 init.datapath = strcat(init.datapath,init.OSslash);
 
 fprintf('\nSelect Stack Folder');
@@ -52,10 +52,11 @@ chan = 1;
 %%
 
 frames = size(nflimg,3);
-nimgpath = strcat(init.datapath,init.OSslash,init.cropfolder,init.OSslash);
+nimgpath = strcat(init.datapath,init.cropfolder,init.OSslash);
 fprintf('\nWriting frame ')
 
 for frami = 1:frames;
+    nflimg(:,:,frami)=imnoise(nflimg(:,:,frami),'gaussian',0,1e-6);
     imwrite(nflimg(:,:,frami),strcat(nimgpath,init.cropfolder,sprintf('%04d',frami),'.tif'));
     
     if frami>1
