@@ -10,7 +10,7 @@ end
 titl=strcat('Initialization: Click Start positions, then right-click channel end position');
 scrsz = get(0,'ScreenSize');
 figure('Position',[20 100 scrsz(3)/1.1 scrsz(4)/1.5]);
-P_Color(zoomkymo,initval.kymolength,initval.startzoom,'hot'); hold on; colormap hot ;title(titl); hold on;
+P_Color(zoomkymo,initval.kymolength,initval.startzoom,'hot'); hold on; colormap jet ;title(titl); hold on;
  
 posvector=[];
 tinit=[];
@@ -18,7 +18,7 @@ stop=0;
 while stop==0
     [x,y,but]=ginput(1);
     %set(gca, 'fontsize', 26, 'linewidth', 4, 'fontweight', 'bold');
-    plot(x,y,'wo','MarkerSize', 8,'LineWidth',2); hold on;
+    plot(x,y,'ro','MarkerSize', 10,'LineWidth',4); hold on;
     
 %     
 %     plot(driftvector(:,1),'-bo','LineWidth',4,...

@@ -70,6 +70,9 @@ if 1,
 end
 
 
+
+% This can be faster as only Processing_Clusterlife is needed for the other
+% channels. Gaussian fitting is now done 3 times. 
 for N=Dummy;
     Processing_Collect_DataBases(exp,user,N,DnaNIdx,initval.nms);
     Processing00_TwoDSpot_ImageAnalyzerAuto(exp,user,N,DnaNIdx);

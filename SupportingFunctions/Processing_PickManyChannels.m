@@ -1,10 +1,15 @@
 function manypoints=Processing_PickManyChannels(im1,initval,message)
 
 %pick a row of points point in the brightfield%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%5
-    manypoints=[];
-    imx=max(max(im1)); imn=min(min(im1));
+confirm = 0;    
+manypoints=[];
+imx=max(max(im1)); imn=min(min(im1));
+
+while ~(confirm == 1)
+
     dipshow(im1,[imn imx]);   hold on 
     disp(message); %show first im
+    disp('Right click to restart')
     [r0,c0]=ginput(1);     %pick a ROI
     
     no=initval.channelno;
@@ -29,4 +34,6 @@ function manypoints=Processing_PickManyChannels(im1,initval,message)
     end
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
  dum=1;
- [~]=ginput(1);
+ [~,~,confirm]=ginput(1);
+ close all
+end

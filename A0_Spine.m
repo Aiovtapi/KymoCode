@@ -4,7 +4,7 @@ clc
 %% Define experiment and user
 
 exp ='Exp001_DnaN_TUS_dif_01092016_M';
-user = 'Mark';
+user = 'MarkPC';
 
 %% Prepare raw images (roicotrasca)
 
@@ -45,7 +45,7 @@ end
 %% Save Bacpics to workspace
 
 [Bacpics, MDchans, FLchans, Cells] = Get_Bacpics(user,exp);
-
+fprintf('\n Bacpics saved to Workspace');
 
 %%
 

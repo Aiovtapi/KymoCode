@@ -826,7 +826,7 @@ end
 % --- Executes on button press in select_cfpbeam.
 function select_cfpbeam_Callback(hObject, eventdata, handles)
 beampath = handles.edit_beampath.String;
-if ~isempty(beampath);
+if (~isempty(beampath))&&(~strcmp(beampath,'NaN'));
     cd(beampath)
 end
 [name,beampath] = uigetfile('*.tif','Select CFP beamshape');
@@ -840,7 +840,7 @@ end
 % --- Executes on button press in select_yfpbeam
 function select_yfpbeam_Callback(hObject, eventdata, handles)
 beampath = handles.edit_beampath.String;
-if ~isempty(beampath);
+if (~isempty(beampath))&&(~strcmp(beampath,'NaN'));
     cd(beampath)
 end
 [name,beampath] = uigetfile('*.tif','Select YFP beamshape');
@@ -854,7 +854,7 @@ end
 % --- Executes on button press in select_rfpbeam.
 function select_rfpbeam_Callback(hObject, eventdata, handles)
 beampath = handles.edit_beampath.String;
-if ~isempty(beampath);
+if (~isempty(beampath))&&(~strcmp(beampath,'NaN'));
     cd(beampath)
 end
 [name,beampath] = uigetfile('*.tif','Select RFP beamshape');
