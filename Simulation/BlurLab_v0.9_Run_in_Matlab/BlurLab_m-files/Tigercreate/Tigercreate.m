@@ -334,17 +334,57 @@ function Tigercreate(nframes,tif,pts,meanI,Lx,Ly,Lz,ini)
         clear NewL sortd 
     end
     
-    %create file name
-    tmp1=clock;
-    fname=['BlurLab_Tigercreate_' date '_' num2str(tmp1(4)) '-' num2str(tmp1(5)) '-' num2str(tmp1(6))...
-        '_pts-' num2str(pts) '_meanI-' num2str(meanI) '_D-' num2str(DC(:)') '_Lx-' num2str(Lx) '_Ly-' ...
-        num2str(Ly) '_Lz-' num2str(Lz) '.txt'];
+    % Choose to output file or plot simulated paths
+    if ini.tog_plotpath == 0;
     
-    % write output file
-    oldfolder = pwd;
-    cd(ini.Tigfolder)
-    BlurLab_text(Xout,Yout,Zout,Iout,Fout,Lout,fname)
-    cd(oldfolder);
+        %create file name
+        tmp1=clock;
+        fname=['BlurLab_Tigercreate_' date '_' num2str(tmp1(4)) '-' num2str(tmp1(5)) '-' num2str(tmp1(6))...
+            '_pts-' num2str(pts) '_meanI-' num2str(meanI) '_D-' num2str(DC(:)') '_Lx-' num2str(Lx) '_Ly-' ...
+            num2str(Ly) '_Lz-' num2str(Lz) '.txt'];
+
+        % write output file
+        oldfolder = pwd;
+        ini.Tigfolder = uigetdir(pwd);
+        cd(ini.Tigfolder)
+        BlurLab_text(Xout,Yout,Zout,Iout,Fout,Lout,fname)
+        cd(oldfolder);
+    
+    else
+            
+        scatvar = 0.5;
+        Nspots = max(Lout);
+        Nentry = numel(Lout);
+        Paths = cell(Nspots,3);
+
+        for entry = 1:Nentry
+            thisL = Lout(entry);
+            thisx = Paths{thisL,1};
+            thisy = Paths{thisL,2};
+            thisi = Paths{thisL,3};
+
+            thisx = [thisx, Xout(entry)];
+            thisy = [thisy, Yout(entry)];
+            thisi = [thisi, Iout(entry)];
+
+            Paths{thisL,1} = thisx;
+            Paths{thisL,2} = thisy;
+            Paths{thisL,3} = thisi;
+
+            clear thisx thisy        
+        end
+
+        figure
+        axis([0, max(Xout), 0, max(Yout)])
+        hold on
+        for ploti = 1:Nspots
+            thisc = rand(1,3);
+            plot(Paths{ploti,1},Paths{ploti,2},'Color',thisc)
+            scatter(Paths{ploti,1},Paths{ploti,2},scatvar*Paths{ploti,3},thisc)
+        end
+
+        hold off
+    end
 end
 
 

@@ -32,7 +32,7 @@ function varargout = BlurLab_Tig(varargin)
 % folder 'M-File_Models'.
 %
 
-% Last Modified by GUIDE v2.5 05-Oct-2016 13:11:05
+% Last Modified by GUIDE v2.5 11-Dec-2016 21:31:21
 
 % Skip frame option?
 % only frap certain Z thickness
@@ -3299,7 +3299,7 @@ ini.tog_spotdis = get(handles.Tig_tog_spotdis,'Value');
 ini.tog_spotapp = get(handles.Tig_tog_spotapp,'Value');
 ini.tog_blinking = get(handles.Tig_tog_blinking,'Value');
 ini.tog_dimer = get(handles.Tig_tog_dimer,'Value');
-ini.Tigfolder = uigetdir(pwd);
+ini.tog_plotpath = get(handles.Tig_tog_plotpath,'Value');
 ini.Cellgrowth = get(handles.Tig_tog_Cellgrowth,'Value');
 
 nframes = str2double(get(handles.Tedit_frames,'String'));
@@ -4081,3 +4081,21 @@ elseif handles.TDDC_radioDC2.Value == 1
     legend(DC1,DC2)
 end
 hold off
+
+
+% --- Executes on button press in tog_plotpath.
+function tog_plotpath_Callback(hObject, eventdata, handles)
+% hObject    handle to tog_plotpath (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+
+% Hint: get(hObject,'Value') returns toggle state of tog_plotpath
+
+
+% --- Executes on button press in Tig_tog_plotpath.
+function Tig_tog_plotpath_Callback(hObject, eventdata, handles)
+% hObject    handle to Tig_tog_plotpath (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+
+% Hint: get(hObject,'Value') returns toggle state of Tig_tog_plotpath
