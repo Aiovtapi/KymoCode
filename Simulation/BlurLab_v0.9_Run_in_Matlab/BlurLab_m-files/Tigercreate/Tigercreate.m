@@ -22,7 +22,7 @@ function Tigercreate(nframes,tif,pts,meanI,Lx,Ly,Lz,ini)
     %   colum 3: The time spent the this state
     %   colum 4: The target time the spot will stay in its current state
     
-    D0(:,1) = ceil(pts*rand(Nblink2,1));
+    D0(:,1) = datasample(1:pts,Nblink2,'Replace',false)';
     D0(:,2) = round(rand(Nblink2,1));
     D0(:,3) = round(ini.Tblink*rand(Nblink2,1));
     D0(:,4) = raylrnd(ini.Tblink,Nblink2,1);
@@ -40,6 +40,14 @@ function Tigercreate(nframes,tif,pts,meanI,Lx,Ly,Lz,ini)
     L0 = (1:pts)';
     npts = pts + 1;
     J0 = I0;
+    
+    if ini.tog_blinking == 1;
+        if ~isempty(D0)
+            [~,blinkspots] = histc(D0(:,1),L0);
+            blinkI = I0(blinkspots).*D0(:,2);
+            J0(blinkspots) = blinkI;        
+        end
+    end
     
     % Find Diffusion constant for each dimension
     numDC = ini.numDC;
@@ -192,21 +200,24 @@ function Tigercreate(nframes,tif,pts,meanI,Lx,Ly,Lz,ini)
             totalturn = [totalturn; turnidx];
         end
         
-        totalturn = unique(totalturn);
-        DCchange = false(pts,1);
-        DCchange(totalturn) = true;
-        
-        % Find all spots travelled long enough for a change in direction
-        % and reset counter
-        Dchangeidx = T0 > Framesec;
-        T0 = T0 + 1;
-        T0(Dchangeidx) = T0(Dchangeidx) - Framesec;
-        
-        % Find spots with change in direction or DC, with both DC
-        Allchange = DCchange | Dchangeidx;
-        Changepts1 = (DCpts == 1) & Allchange;
-        Changepts2 = (DCpts == 2) & Allchange;
-        Changepts3 = (DCpts == 3) & Allchange;
+%         totalturn = unique(totalturn);
+%         DCchange = false(pts,1);
+%         DCchange(totalturn) = true;
+%         
+%         % Find all spots travelled long enough for a change in direction
+%         % and reset counter
+%         Dchangeidx = T0 > Framesec;
+%         T0 = T0 + 1;
+%         T0(Dchangeidx) = T0(Dchangeidx) - Framesec;
+%         
+%         % Find spots with change in direction or DC, with both DC
+%         Changepts1 = (DCpts == 1) & Allchange;
+%         Changepts2 = (DCpts == 2) & Allchange;
+%         Changepts3 = (DCpts == 3) & Allchange;
+
+        Changepts1 = (DCpts == 1);
+        Changepts2 = (DCpts == 2);
+        Changepts3 = (DCpts == 3);
         d1pts = sum(Changepts1);
         d2pts = sum(Changepts2);
         d3pts = sum(Changepts3);
@@ -265,6 +276,10 @@ function Tigercreate(nframes,tif,pts,meanI,Lx,Ly,Lz,ini)
                 Tig_Appearance(X0,Y0,Z0,XYC,T0,I0,L0,DCpts,npts,meanI,NewL,ini,TLx,Ly,Lz);
         end
 
+        %% Remove low intensity spots      
+        [X0,Y0,Z0,XYC,T0,I0,L0,DCpts,pts] = ...
+            Tig_IntensityBound(X0,Y0,Z0,XYC,T0,I0,L0,DCpts,ini);
+        
         %% Blinking
         if ini.tog_blinking == 1;
 
@@ -288,13 +303,13 @@ function Tigercreate(nframes,tif,pts,meanI,Lx,Ly,Lz,ini)
             end
 
             % Add frame to blinkcounter
-            D0(:,3) = D0(:,3) + 1;
+            D0(:,3) = D0(:,3) + tif;
 
             blinkaction = find(D0(:,3)>D0(:,4));
             ini.Nblink = numel(blinkaction);
 
             % Blinkaction
-            for i_blink = blinkaction;
+            for i_blink = blinkaction';
                 if D0(i_blink,2) == 1;
                     D0(i_blink,2) = 0;
                 elseif D0(i_blink,2) == 0;
@@ -315,17 +330,18 @@ function Tigercreate(nframes,tif,pts,meanI,Lx,Ly,Lz,ini)
         end
         
         %%
-        
-        % Remove low intensity spots      
-        [X0,Y0,Z0,XYC,T0,I0,L0,DCpts,pts] = ...
-            Tig_IntensityBound(X0,Y0,Z0,XYC,T0,I0,L0,DCpts,ini);
-        
         % Compute real intensity (with blinking) (using histc to take into
         % account the appearence and dissapearence of spots
         J0 = I0;
         if ini.tog_blinking == 1;
             if ~isempty(D0)
-                [~,blinkspots] = histc(D0(:,1),L0);
+
+                blinks = D0(:,1);
+                blinkspots = zeros(numel(blinks),1);
+                for ti = 1:numel(blinks)
+                    blinkspots(ti) = find(L0==blinks(ti));
+                end
+
                 blinkI = I0(blinkspots).*D0(:,2);
                 J0(blinkspots) = blinkI;        
             end
@@ -366,6 +382,8 @@ function Tigercreate(nframes,tif,pts,meanI,Lx,Ly,Lz,ini)
             thisx = [thisx, Xout(entry)];
             thisy = [thisy, Yout(entry)];
             thisi = [thisi, Iout(entry)];
+            
+            thisi(thisi==0) = 0.001;
 
             Paths{thisL,1} = thisx;
             Paths{thisL,2} = thisy;
