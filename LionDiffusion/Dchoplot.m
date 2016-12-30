@@ -1,4 +1,4 @@
-function [D] = Dchoplot(runinputfile,Title)
+function [D,TrajC] = Dchoplot(runinputfile,Title)
 %DCHOPLOT Summary of this function goes here
 %   Detailed explanation goes here
 
@@ -24,7 +24,7 @@ filename=opt.outputfile;
 load(filename);
 
 Traj=importdata(opt.inputfile);
-dt=opt.timestep*10;
+dt=opt.timestep;
 TrajC=cell(1,size(Traj,2));
 
 for i=1:size(Traj,2)
@@ -54,6 +54,8 @@ for i=1:size(TrajC,2);
     end
     MSD(i)=MSD(i)/(Nc-1);
     D(i)=MSD(i)/(4*Nc*dt);
+    else
+        TrajC{i}=[];
     end
 end
 MSD=nonzeros(MSD);
