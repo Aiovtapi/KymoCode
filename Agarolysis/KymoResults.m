@@ -333,7 +333,7 @@ figure(4)
 subplot(1,3,1)
 Heatmap = hist3(Numcfp','Edges',thisedge2);
 pcolor(thisedge2{1},(thisedge2{2}),Heatmap');
-colormap(hot) % heat map
+colormap(fig4,jet) % heat map
 xlabel('Cell Length'); ylabel('Position in Cell');
 title('Kymo data: CFP');
 grid on
@@ -342,7 +342,7 @@ figure(5)
 subplot(1,3,1)
 hold on
 hist3(Numcfp','Edges',thisedge2)
-colormap(hot) % heat map
+colormap(fig5,jet) % heat map
 set(get(gca,'child'),'FaceColor','interp','CDataMode','auto');
 xlabel('Cell Length'); ylabel('Position in Cell');zlabel('Amount of spots')
 title('Kymo data: CFP');
@@ -369,7 +369,6 @@ figure(4)
 subplot(1,3,2)
 Heatmap = hist3(NumYFPnz','Edges',thisedge2);
 pcolor(thisedge2{1},(thisedge2{2}),Heatmap');
-colormap(hot) % heat map
 xlabel('Cell Length'); ylabel('Position in Cell');
 title('Kymo data: YFP');
 grid on
@@ -378,7 +377,6 @@ figure(5)
 subplot(1,3,2)
 hold on
 hist3(Numyfp','Edges',thisedge2)
-colormap(hot) % heat map
 set(get(gca,'child'),'FaceColor','interp','CDataMode','auto');
 xlabel('Cell Length'); ylabel('Position in Cell');zlabel('Amount of spots')
 title('Kymo data: YFP');
@@ -395,7 +393,6 @@ figure(4)
 subplot(1,3,3)
 Heatmap = hist3(Numrfp','Edges',thisedge2);
 h = pcolor(thisedge2{1},(thisedge2{2}),Heatmap');
-colormap(hot) % heat map
 xlabel('Cell Length'); ylabel('Position in Cell');
 title('Kymo data: RFP');
 grid on
@@ -404,7 +401,6 @@ figure(5)
 subplot(1,3,3)
 hold on
 hist3(Numrfp','Edges',thisedge2)
-colormap(hot) % heat map
 set(get(gca,'child'),'FaceColor','interp','CDataMode','auto');
 xlabel('Cell Length'); ylabel('Position in Cell');zlabel('Amount of spots')
 title('Kymo data: RFP');
@@ -422,7 +418,7 @@ set(fig6,'Position',[20,300,1800,500])
 YFPcal=953;
 RFPcal=990;
 
-% YFP
+% CFP
 
 plotcfp(1,:) = Lcfp;
 plotcfp(2,:) = Fcfp;
@@ -437,7 +433,7 @@ myfit=polyfit(plotcfp(1,:),plotcfp(2,:),1);
 x=0:0.01:1;
 y=polyval(myfit,x);
 plot(x,y,'k','LineWidth',3)
-xlabel('Cell Length'); ylabel('Normalized full cell intensity'); 
+xlabel('Cell Time'); ylabel('Normalized full cell intensity'); 
 title('Kymo data: CFP')
 hold off
 % axis([0 1 -0.1 1.1])
@@ -472,22 +468,27 @@ set(gca,'FontSize',18)
 % RFP
 
 plotrfp(1,:) = Lrfp;
-plotrfp(2,:) = Frfp/RFPcal;
-plotrfp(3,:) = Irfp*Intensityval(3)/RFPcal;
+plotrfp(2,:) = Frfp;
+plotrfp(3,:) = Irfp*Intensityval(3);
 plotrfp = unique(plotrfp','rows')';
 
 subplot(1,3,3)
 hold on
-% scatter(plotrfp(1,:),plotrfp(2,:),'b','x');
-scatter(plotrfp(1,:),plotrfp(3,:),'r','x');
+scatter(plotrfp(1,:),plotrfp(2,:),'b','x');
+% scatter(plotrfp(1,:),plotrfp(3,:),'r','x');
+for i=channels
+    for j=1:Ncells{i}
+scatter((1:size(IrfpSpotTotal{i,j},1))/size(IrfpSpotTotal{i,j},1),IrfpSpotTotal{i,j},'r')
+    end
+end
 myfit=polyfit(plotrfp(1,:),plotrfp(2,:),1);
 x=0:0.01:1;
 y=polyval(myfit,x);
-% plot(x,y,'k','LineWidth',3)
-xlabel('Cell Length'); ylabel('Normalized full cell intensity'); 
+plot(x,y,'k','LineWidth',3)
+xlabel('Cell Time'); ylabel('Normalized full cell intensity'); 
 title('Kymo data: RFP')
 hold off
-% axis([0 1 -0.1 1.1])
+axis([0 1 10 70000])
 
 %% YFP Spot number vs time
 fig7=figure(7);

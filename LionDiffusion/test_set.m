@@ -18,8 +18,8 @@ parallel_start = 'theVBpool=gcp';  % executed before the parallelizable loop.
 parallel_end = 'delete(theVBpool)'; % executed after the parallelizable loop.
 
 % Saving options
-outputfile = './VB3_Results/UvrD-mMaple3 5xM9.mat';
-jobID = 'UvrD-mMaple3 5xM9';
+outputfile = './VB3_Results/test.mat';
+jobID = 'test';
 
 % Data properties
 timestep = 0.02;     % in [s]
@@ -30,6 +30,7 @@ umperpx=0.1589;
 % Convergence and computation alternatives
 runs = 25;
 maxHidden = 2; % Maximum number of states to consider!
+timestep=timestep*10; %somewhere factor 10 error, so compensate here
 
 % Evaluate extra estimates including Viterbi paths
 stateEstimate = 0;

@@ -5,7 +5,7 @@ clc
 folder='/Users/rleeuw/Work/Data/160205_Agar_Data';
 slash = '/';
 exps=[1 2  3 4 5 7 8 9];
-Intensityval = [700, 300, 700];
+Intensityval = [700, 300, 700]; %[CFP YFP RFP]
 umperpx=0.159;
 
 Lcfp=[];    Lyfp=[];    Lrfp=[];
@@ -15,7 +15,9 @@ Fcfp=[];    Fyfp=[];    Frfp=[];
 ncfp=[];    nyfp=[];    nrfp=[];
 celllength = [];
 
-yfp.filterval=8000;
+yfp.filterval=Intensityval(2)*2;
+cfp.filterval=Intensityval(1)*2;
+rfp.filterval=Intensityval(3)*2;
     
 j=1; 
 for i=exps;
@@ -278,7 +280,7 @@ Numcfp(2,:) = Pcfp;
 
 %Filter on Intensity
 ICFP=Icfp*Intensityval(1);
-[bin_cfp,idx_cfp]=find(ICFP>6000); 
+[bin_cfp,idx_cfp]=find(ICFP>cfp.filterval); 
 
 NumCFP(:,idx_cfp)=Numcfp(:,idx_cfp);
 NumCFPnz(1,:)=nonzeros(NumCFP(1,:));
@@ -290,7 +292,7 @@ figure(4)
 subplot(1,3,1)
 Heatmap = hist3(NumCFPnz','Edges',thisedge2);
 pcolor(thisedge2{1},(thisedge2{2}),Heatmap');
-colormap(hot) % heat map
+colormap(fig4,jet) % heat map
 xlabel('Cell Length'); ylabel('Position in Cell');
 title('Agar data: CFP');
 grid on
@@ -300,7 +302,7 @@ figure(5)
 subplot(1,3,1)
 hold on
 hist3(NumCFPnz','Edges',thisedge2)
-colormap(hot) % heat map
+colormap(fig5,jet) % heat map
 set(get(gca,'child'),'FaceColor','interp','CDataMode','auto');
 xlabel('Cell Length'); ylabel('Position in Cell');zlabel('Amount of spots')
 title('Agar data: CFP');
@@ -328,7 +330,6 @@ figure(4)
 subplot(1,3,2)
 Heatmap = hist3(NumYFPnz','Edges',thisedge2);
 pcolor(thisedge2{1},(thisedge2{2}),Heatmap');
-colormap(hot) % heat map
 xlabel('Cell Length'); ylabel('Position in Cell');
 title('Agar data: YFP');
 grid on
@@ -338,7 +339,6 @@ figure(5)
 subplot(1,3,2)
 hold on
 hist3(NumYFPnz','Edges',thisedge2)
-colormap(hot) % heat map
 set(get(gca,'child'),'FaceColor','interp','CDataMode','auto');
 xlabel('Cell Length'); ylabel('Position in Cell');zlabel('Amount of spots')
 title('Agar data: YFP');
@@ -354,7 +354,7 @@ Numrfp(2,:) = Prfp;
 
 %Filter on Intensity
 IRFP=Irfp*Intensityval(3);
-[bin_rfp,idx_rfp]=find(IRFP>10000); 
+[bin_rfp,idx_rfp]=find(IRFP>rfp.filterval); 
 
 NumRFP(:,idx_rfp)=Numrfp(:,idx_rfp);
 
@@ -367,7 +367,6 @@ figure(4)
 subplot(1,3,3)
 Heatmap = hist3(NumRFPnz','Edges',thisedge2);
 h = pcolor(thisedge2{1},(thisedge2{2}),Heatmap');
-colormap(hot) % heat map
 xlabel('Cell Length'); ylabel('Position in Cell');
 title('Agar data: RFP');
 grid on
@@ -377,7 +376,7 @@ figure(5)
 subplot(1,3,3)
 hold on
 hist3(NumRFPnz','Edges',thisedge2)
-colormap(hot) % heat map
+colormap(jet) % heat map
 set(get(gca,'child'),'FaceColor','interp','CDataMode','auto');
 xlabel('Cell Length'); ylabel('Position in Cell');zlabel('Amount of spots')
 title('Agar data: RFP');
@@ -394,12 +393,34 @@ fig6 = figure(6);
 set(fig6,'Position',[20,300,1800,500])
 
 % CFP
+bins1 = 7;
+bins2 = 50;
+thisedge3{1} = linspace(min(Lcfp),max(Lcfp),bins1+1);
+thisedge3{2} = linspace(min(Fcfp),max(Fcfp),bins2+1);
 
-plotcfp(1,:) = Lcfp;
-plotcfp(2,:) = Fcfp;
-plotcfp(3,:) = Icfp*Intensityval(1);
+plotcfp(1,:) = Lcfp; %length
+plotcfp(2,:) = Fcfp; %full cell intensity
+plotcfp(3,:) = Icfp*Intensityval(1); %spot intensity
 
 plotcfp = unique(plotcfp','rows')';
+% 
+% [N_full,Edges_full,mid_full,loc_full]=histcn([plotcfp(1,:)' plotcfp(2,:)'],thisedge3{1},thisedge3{2});
+% [N_spot,Edges_spot,mid_spot,loc_spot]=histcn([plotcfp(1,:)' plotcfp(3,:)'],thisedge3{1},thisedge3{2});
+% 
+% for i=1:size(N_full,1);
+% CFP_binned(i,:)=N_full(i,:).*Edges_full{2};
+% Y=CFP_binned(i,:)';
+% Y=double(Y);
+% X=1:length(CFP_binned(i,:));
+% display(strcat({'Gaussian fit of CFP column '},num2str(i),{' of '},num2str(size(N_full,1))));
+% f{i}=fit(X',Y,'gauss1');
+% peak(i)=f{i}.b1;
+% sigma(i)=f{i}.c1;
+% peakfloored(i)=floor(peak(i));
+% peakceiled(i)=ceil(peak(i));
+% IntVal(i)=((Edges_full{2}(peakceiled(i))-Edges_full{2}(peakfloored(i))))*(peakceiled(i)-peak(i))+Edges_full{2}(peakfloored(i)); %slope * peakposition, because linear.
+% end
+
 
 subplot(1,3,1)
 hold on
@@ -413,14 +434,15 @@ y2=polyval(myfit2,x);
 plot(x,y,'b','LineWidth',3)
 plot(x,y2,'r','LineWidth',3)
 xlabel('Cell Length (px)'); ylabel('Intensity (-)'); 
-title('Agar data: CFP')
+title('TetR stoichiometry vs. Length')
 hold off
 axis([12 43 -0.1 2*10^5])
 set(gca,'FontSize',16)
 legend('Full cell intensity','Spot intensity')
 
-
+clear N_full
 % YFP
+
 
 plotyfp(1,:) = Lyfp;
 plotyfp(2,:) = Fyfp;
@@ -428,7 +450,25 @@ plotyfp(3,:) = Iyfp*Intensityval(2);
 
 plotyfp = unique(plotyfp','rows')';
 
-figure(1)
+[N_full,Edges_full,mid_full,loc_full]=histcn([plotyfp(1,:)' plotyfp(2,:)'],thisedge3{1},thisedge3{2});
+[N_spot,Edges_spot,mid_spot,loc_spot]=histcn([plotyfp(1,:)' plotyfp(3,:)'],thisedge3{1},thisedge3{2});
+
+for i=1:size(N_full,1);
+YFP_binned(i,:)=N_full(i,:).*Edges_full{2};
+Y=YFP_binned(i,:)';
+Y=double(Y);
+X=1:length(YFP_binned(i,:));
+display(strcat({'Gaussian fit of CFP column '},num2str(i),{' of '},num2str(size(N_full,1))));
+f{i}=fit(X',Y,'gauss1');
+peak(i)=f{i}.b1;
+sigma(i)=f{i}.c1;
+peakfloored(i)=floor(peak(i));
+peakceiled(i)=ceil(peak(i));
+IntVal(i)=((Edges_full{2}(peakceiled(i))-Edges_full{2}(peakfloored(i))))*(peakceiled(i)-peak(i))+Edges_full{2}(peakfloored(i)); %slope * peakposition, because linear.
+end
+plot(Edges_full{1},IntVal);
+
+subplot(1,3,2)
 hold on
 scatter(plotyfp(1,:),plotyfp(2,:),'b','o','filled');
 scatter(plotyfp(1,:),plotyfp(3,:),'r','o','filled');
@@ -465,7 +505,7 @@ y2=polyval(myfit2,x);
 plot(x,y,'b','LineWidth',3)
 plot(x,y2,'r','LineWidth',3)
 xlabel('Cell Length'); ylabel('Normalized full cell intensity'); 
-title('Agar data: RFP')
+title('DnaN Stoichiometry vs. Length')
 hold off
 axis([12 43 -0.1 4*10^5])
 set(gca,'FontSize',16)
