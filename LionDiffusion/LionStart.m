@@ -8,7 +8,7 @@ function [Traj] = LionStart(N)
 
 %Lower upperbound for trajectories
 LB=3;
-UB=300;
+UB=200;
 
 %Traj: all trajectories from experiments N, from utrack to VB3 format
 Traj=LionPrepare(N,LB,UB);
