@@ -79,10 +79,10 @@ for k = 1:2
     Nv = 20;
     Font = 'Raleway Medium';
     screensize = get( groot, 'Screensize' );
-    screensize(4) = screensize(4)/2;
+%     screensize(4) = screensize(4)/2;
     AW = 1.5;
     FS = 14;
-    screensize(3) = screensize(3)/3*2;
+    screensize(3) = screensize(3)/8*3;
     blue = [0, 0.5, 1];
 
     CLbound = [14 38];
@@ -95,7 +95,7 @@ for k = 1:2
 
     %%
     figure(1)
-    subplot(1,2,k)
+    subplot(2,1,k)
     hold on
     scatter(single(L),single(P),single(I)/Nv,'m','filled');
     hold off
@@ -108,7 +108,7 @@ for k = 1:2
 
     %%
     figure(2)
-    subplot(1,2,k)
+    subplot(2,1,k)
     hold on
     scatter(P,I,'x','MarkerEdgeColor','m');
     myfit=polyfit(P,I,4);
@@ -126,7 +126,7 @@ for k = 1:2
     %%
 
     figure(3)
-    subplot(1,2,k)
+    subplot(2,1,k)
     [numbin,edges] = histcounts(P,20);
     norm = max(numbin)/350;
     X = diff(edges);
@@ -145,9 +145,9 @@ for k = 1:2
     %%
     clear kNum
     figure(4)
-    subplot(1,2,k)
+    subplot(2,1,k)
     bins = 15;
-    thisedge2{1} = linspace(min(L),max(L),bins+1);
+    thisedge2{1} = linspace(min(L),max(L),bins+10);
     thisedge2{2} = (0:bins)/bins;
 
     % CFP

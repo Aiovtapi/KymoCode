@@ -45,7 +45,7 @@ for i=1:le
     pos=ReplicationCluster(i).PosKyTracCom.trackpos; 
     ti=ReplicationCluster(i).PosKyTracCom.frames;
     %plot(pos+1,ti, 'b-'); hold on
-    plot(pos+0.5,ti+0.5, 'wo-');
+    plot(pos+0.5,ti+0.5, 'wo-','LineWidth',1.5,'MarkerSize',10);
     title(strcat('Edges Analysis ',WorkspaceOutName));    
 end
  pause(5);

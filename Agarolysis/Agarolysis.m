@@ -176,7 +176,7 @@ while celli <= cells;
     
     if skip == 0;
         [skip,fault,previous,Rspot,Nspot] = ...
-            ViewbacUI2(init,chans,f,Bacpics,Bacmesh,CBacmask,DataStruct,cells,celli,init.flimgname);
+            ViewbacUI2(init,chans,f,Bacpics,Bacmesh,CBacmask,DataStruct,cells,celli);
     end
     
     % Remove clicked spots, new bx and ld are saved as rbx and rld

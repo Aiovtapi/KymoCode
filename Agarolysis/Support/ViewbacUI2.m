@@ -1,4 +1,4 @@
-function [skip,fault,previous,Rspot,Nspot] = ViewbacUI2(init,chans,f,Bacpics,Bacmesh,CBacmask,DataStruct,cells,celli,Title)
+function [skip,fault,previous,Rspot,Nspot] = ViewbacUI2(init,chans,f,Bacpics,Bacmesh,CBacmask,DataStruct,cells,celli)
 
 frames = size(Bacmesh{1},2);
 skip = 0;
@@ -7,6 +7,9 @@ previous = 0;
 Rspot = [];
 Nspot = [];
 Nchans = numel(chans);
+
+Xsize = 10;
+Lwidth = 3;
 
 currentbac = ['Bacpic ',num2str(celli),'/',num2str(cells)];
 
@@ -44,7 +47,7 @@ for chan = chans;
     ax(Nchans) = subplot(1,Nchans,chan);
     set(gca,'tag',num2str(chan))
 
-    title(Title{chan})
+    title(init.channels{chan})
     
     x = DataStruct(chan,celli).x;
     bx = DataStruct(chan,celli).bx;
@@ -52,12 +55,12 @@ for chan = chans;
     hold on
     imagesc(Bacpics{chan}{celli,1});
     plot(Bacmesh{chan}{celli,1}(:,1),Bacmesh{chan}{celli,1}(:,2),'w',...
-        Bacmesh{chan}{celli,1}(:,3),Bacmesh{chan}{celli,1}(:,4),'w','LineWidth',2)
+        Bacmesh{chan}{celli,1}(:,3),Bacmesh{chan}{celli,1}(:,4),'w','LineWidth',Lwidth)
 %     for spoti = 1:length(x)
 %         plot(x{spoti}(1,2),x{spoti}(1,4),'rx','LineWidth',2)
 %     end
     for spoti = 1:length(bx)
-        plot(bx{spoti}(1,2),bx{spoti}(1,4),'kx','LineWidth',2)
+        plot(bx{spoti}(1,2),bx{spoti}(1,4),'kx','LineWidth',Lwidth,'MarkerSize',Xsize)
     end
     axis off
     hold off
@@ -99,7 +102,7 @@ uiwait(f)                                       % Wait for button click
 
         for chan = chans;
             ax(Nchans)=subplot(1,Nchans,chan);
-            title(Title{chan})
+            title(init.channels{chan})
             
             x = DataStruct(chan,celli).x;
             bx = DataStruct(chan,celli).bx;
@@ -109,12 +112,12 @@ uiwait(f)                                       % Wait for button click
             plot(Bacmesh{chan}{celli,frami}(:,1),...
                 Bacmesh{chan}{celli,frami}(:,2),'w',...
                 Bacmesh{chan}{celli,frami}(:,3),...
-                Bacmesh{chan}{celli,frami}(:,4),'w','LineWidth',2)
+                Bacmesh{chan}{celli,frami}(:,4),'w','LineWidth',Lwidth)
 %             for spoti = 1:length(x)
 %                 plot(x{spoti}(frami,2),x{spoti}(frami,4),'rx','LineWidth',2)
 %             end
             for spoti = 1:length(bx)
-                plot(bx{spoti}(frami,2),bx{spoti}(frami,4),'kx','LineWidth',2)
+                plot(bx{spoti}(frami,2),bx{spoti}(frami,4),'kx','LineWidth',Lwidth,'MarkerSize',Xsize)
             end
             axis off
             hold off
@@ -126,7 +129,7 @@ uiwait(f)                                       % Wait for button click
             thisx = DataStruct(Rspot(respot,1),celli).bx{Rspot(respot,2)}(frami,:);
             subplot(1,Nchans,Rspot(respot,1))
             hold on
-            plot(thisx(2),thisx(4),'rx','LineWidth',2)
+            plot(thisx(2),thisx(4),'rx','LineWidth',Lwidth,'MarkerSize',Xsize)
             hold off
         end
             
@@ -222,9 +225,9 @@ uiwait(f)                                       % Wait for button click
             
             hold on
             if oldspot
-                plot(spotx(minidx,1),spotx(minidx,2),'kx','LineWidth',2);
+                plot(spotx(minidx,1),spotx(minidx,2),'kx','LineWidth',Lwidth,'MarkerSize',Xsize);
             else
-                plot(spotx(minidx,1),spotx(minidx,2),'rx','LineWidth',2);
+                plot(spotx(minidx,1),spotx(minidx,2),'rx','LineWidth',Lwidth,'MarkerSize',Xsize);
             end
             hold off
             
@@ -262,7 +265,7 @@ uiwait(f)                                       % Wait for button click
                     newx(7) = sum(thisbac(logical(CBacmask{celli,frami})));
                 end
                 hold on
-                plot(newx(2),newx(4),'kx','LineWidth',2)
+                plot(newx(2),newx(4),'kx','LineWidth',Lwidth,'MarkerSize',Xsize)
                 hold off
                 newx(9) = clickchan;
                 newx(10) = frami;
@@ -297,7 +300,7 @@ uiwait(f)                                       % Wait for button click
         
         for chan = chans;
             ax(Nchans)=subplot(1,Nchans,chan);
-            title(Title{chan})
+            title(init.channels{chan})
             
             x = DataStruct(chan,celli).x;
             bx = DataStruct(chan,celli).bx;
@@ -307,12 +310,12 @@ uiwait(f)                                       % Wait for button click
             plot(Bacmesh{chan}{celli,frami}(:,1),...
                 Bacmesh{chan}{celli,frami}(:,2),'w',...
                 Bacmesh{chan}{celli,frami}(:,3),...
-                Bacmesh{chan}{celli,frami}(:,4),'w','LineWidth',2)
+                Bacmesh{chan}{celli,frami}(:,4),'w','LineWidth',Lwidth)
             for spoti = 1:length(x)
-                plot(x{spoti}(frami,2),x{spoti}(frami,4),'rx','LineWidth',2)
+                plot(x{spoti}(frami,2),x{spoti}(frami,4),'rx','LineWidth',Lwidth,'MarkerSize',Xsize)
             end
             for spoti = 1:length(bx)
-                plot(bx{spoti}(frami,2),bx{spoti}(frami,4),'kx','LineWidth',2)
+                plot(bx{spoti}(frami,2),bx{spoti}(frami,4),'kx','LineWidth',Lwidth,'MarkerSize',Xsize)
             end
             axis off
             hold off
