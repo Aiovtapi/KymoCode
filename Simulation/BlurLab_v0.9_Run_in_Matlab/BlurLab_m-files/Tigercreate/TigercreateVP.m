@@ -1,7 +1,7 @@
 %Mark Shui Hu
 %Random 3D Diffusion of particles
 
-function Tigercreate(nframes,tif,pts,meanI,Lx,Ly,Lz,ini)
+function [Paths, Nspots] = TigercreateVP(nframes,tif,pts,meanI,Lx,Ly,Lz,ini)
    
     %% Set initial values
     SigmaDperc = 0.5;
@@ -394,16 +394,6 @@ function Tigercreate(nframes,tif,pts,meanI,Lx,Ly,Lz,ini)
 
             clear thisx thisy thisi thisf  
         end
-
-        figure
-        axis([0, max(Xout), 0, max(Yout)])
-        hold on
-        for ploti = 1:Nspots
-            thisc = rand(1,3);
-            plot(Paths{ploti,1},Paths{ploti,2},'Color',thisc)
-            scatter(Paths{ploti,1},Paths{ploti,2},scatvar*Paths{ploti,3},thisc)
-        end
-        hold off
     end
 end
 
