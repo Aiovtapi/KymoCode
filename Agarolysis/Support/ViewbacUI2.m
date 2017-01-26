@@ -44,7 +44,8 @@ clr = uicontrol('Style', 'pushbutton', 'String', 'Clear clicks (C)',...
 
 %% Plot first frame of bacpic, mesh and spots
 for chan = chans;
-    ax(Nchans) = subplot(1,Nchans,chan);
+    ax(Nchans) = subplot(1,Nchans,chan);   
+    
     set(gca,'tag',num2str(chan))
 
     title(init.channels{chan})
@@ -65,6 +66,31 @@ for chan = chans;
     axis off
     hold off
     clear x bx
+    
+    pbound = 10;
+    fsize = get(gcf,'Position');
+    FXsize = fsize(3);
+    FYsize = fsize(4);
+    Fratio = FXsize/Nchans/FYsize;
+    
+    XALim = get(gca,'XLim');
+    YALim = get(gca,'YLim');
+    XAsize = abs(XALim(2)-XALim(1));
+    YAsize = abs(YALim(2)-YALim(1));
+    
+    if XAsize>YAsize*Fratio
+        pxpos = FXsize/Nchans*(chan-1) + pbound;
+        xlength = round((FXsize-(Nchans*pbound))/Nchans);
+        ylength = round(YAsize*Fratio/XAsize*xlength);
+        pypos = round((FYsize-ylength+50)/2);       
+    else
+        ylength = round(0.75*FYsize);
+        pypos = 50;
+        xlength = round(XAsize/(YAsize*Fratio)*ylength);
+        pxpos = FXsize/Nchans*(chan-1) + round((FXsize/Nchans-xlength)/2);
+    end
+    POS = [pxpos/FXsize, pypos/FYsize, xlength/FXsize, ylength/FYsize];
+    set(gca,'Position',POS)
 end
 
 %% Add slider if theres more than 1 frame        

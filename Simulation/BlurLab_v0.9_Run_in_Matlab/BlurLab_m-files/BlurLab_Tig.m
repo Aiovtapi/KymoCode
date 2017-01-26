@@ -32,7 +32,7 @@ function varargout = BlurLab_Tig(varargin)
 % folder 'M-File_Models'.
 %
 
-% Last Modified by GUIDE v2.5 11-Dec-2016 21:31:21
+% Last Modified by GUIDE v2.5 20-Jan-2017 21:41:56
 
 % Skip frame option?
 % only frap certain Z thickness
@@ -3280,6 +3280,7 @@ function Tigercreate_Generate_Callback(hObject, eventdata, handles)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
 
+ini.MeanI = str2double(get(handles.Tig_meanI,'String'));     % Mean for normal dis. used for change in I (Intensity)
 ini.SigmaI = str2double(get(handles.Tig_SigmaI,'String'));   % Variance for normal dis. used for change in I (Intensity)
 ini.MergeD = str2double(get(handles.Tig_MergeD,'String'));   % Distance between two spots needed for merging
 ini.CMerge = str2double(get(handles.Tig_CMerge,'String'));   % Chance for a merging event (if within distance)
@@ -4099,3 +4100,26 @@ function Tig_tog_plotpath_Callback(hObject, eventdata, handles)
 % handles    structure with handles and user data (see GUIDATA)
 
 % Hint: get(hObject,'Value') returns toggle state of Tig_tog_plotpath
+
+
+
+function Tig_meanI_Callback(hObject, eventdata, handles)
+% hObject    handle to Tig_meanI (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+
+% Hints: get(hObject,'String') returns contents of Tig_meanI as text
+%        str2double(get(hObject,'String')) returns contents of Tig_meanI as a double
+
+
+% --- Executes during object creation, after setting all properties.
+function Tig_meanI_CreateFcn(hObject, eventdata, handles)
+% hObject    handle to Tig_meanI (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    empty - handles not created until after all CreateFcns called
+
+% Hint: edit controls usually have a white background on Windows.
+%       See ISPC and COMPUTER.
+if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
+    set(hObject,'BackgroundColor','white');
+end

@@ -246,7 +246,7 @@ function [Paths, Nspots] = TigercreateVP(nframes,tif,pts,meanI,Lx,Ly,Lz,ini)
         clear Xstay Ystay
         
         % Change in Intensity
-        Ichange = normrnd(1,ini.SigmaI,pts,1);
+        Ichange = normrnd(ini.MeanI,ini.SigmaI,pts,1);
         I0 = I0.*Ichange;
 
         %% Merging

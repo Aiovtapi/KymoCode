@@ -1,17 +1,18 @@
 clear all
 close all
 
-ini.SigmaI = 0.7;   % Variance for normal dis. used for change in I (Intensity)
+ini.MeanI = 1;
+ini.SigmaI = 0.05;   % Variance for normal dis. used for change in I (Intensity)
 ini.MergeD = 0.1;   % Distance between two spots needed for merging
 ini.CMerge = 0.1;   % Chance for a merging event (if within distance)
 ini.CSplit = 0.01;   % Chance for a splitting event
-ini.CDis = 0.1;       % Chance for a disappearence event
-ini.Apois = 0.85;     % Number of spots appearences (poisson distribution)
+ini.CDis = 0.01;       % Chance for a disappearence event
+ini.Apois = 0.05;     % Number of spots appearences (poisson distribution)
 ini.Nblink = 0;   % Percentage of blinking spots
 ini.Tblink = 5;   % Average blinking duration (in frames)
 ini.Cblink1 = 0; % Chance of becoming a blinking spot (new spots)
 ini.Cblink2 = 0; % Chance of becoming a stable spot (blinking spots)
-ini.MinI = 20;       % Minimal value of intensity
+ini.MinI = 50;       % Minimal value of intensity
 ini.MaxI = 400;       % Maximal value of intensity
 
 ini.tog_merging = 1;
@@ -25,7 +26,7 @@ ini.Tplot = 1;
 ini.Cellgrowth = 1;
 
 nframes = 50;
-pts = 5;
+pts = 4;
 meanI = 200;
 tif = 1;
 Lx = 40;
@@ -49,13 +50,22 @@ Nruns = 20;
 ranval = 15;
 frval = 5;
 gval = 0.4;
-Title = {'Simuated data 1','Simulated data 2'};
+
+Title = {'A.','B.'};
+TitleFont = 'RalewaySemiBold';
+TitleFS = 20;
+Tx = -0.1; Ty = 0.05;
 
 for k = 1:2
     ranx = round(rand(1,Nruns)*ranval-ranval/2);
     ranf = round(rand(1,Nruns)*frval-frval/2);
     rang = (rand(1,Nruns)*gval-gval/2);
     P = []; I = []; F = []; L = [];
+    
+    if k==2
+        ini.MeanI = 0.95;
+        ini.SigmaI = 0.05;
+    end
 
     for j = 1:Nruns
         lx = Lx+ranx(j);
@@ -85,10 +95,9 @@ for k = 1:2
     screensize(3) = screensize(3)/8*3;
     blue = [0, 0.5, 1];
 
-    CLbound = [14 38];
 
-    CL = 'Cell Length';
-    p = 'Normalized Cell Position';
+    CL = 'Cell Length (pixels)';
+    p = 'Normalized Position Within Cell';
     SI = 'Spot Intensity';
     SIN = 'Spot Intensity / Number of Spots';
     NS = 'Number of Spots';
@@ -100,11 +109,12 @@ for k = 1:2
     scatter(single(L),single(P),single(I)/Nv,'m','filled');
     hold off
     xlabel(CL); ylabel(p)
-    t=title(Title{k});
     axis([10 50 0 1])
+    TitlePos = GetTitPos(Tx,Ty);
+    t=title(Title{k},'Position',TitlePos);
     set(gca,'Fontname',Font,'LineWidth',AW,'FontSize',FS)
-    set(t,'Fontname',Font,'FontSize',FS)
     set(gcf, 'position', screensize)
+    set(t,'FontName',TitleFont,'FontSize',TitleFS)
 
     %%
     figure(2)
@@ -116,31 +126,38 @@ for k = 1:2
     y=polyval(myfit,x);
     plot(x,y,'k','LineWidth',3)
     ylabel(SI); xlabel(p)
-    t=title(Title{k});
+    TitlePos = GetTitPos(Tx,Ty);
+    t=title(Title{k},'Position',TitlePos);
     hold off
     % axis([0 1 -0.1 35])
     set(gca,'Fontname',Font,'LineWidth',AW,'FontSize',FS)
-    set(t,'Fontname',Font,'FontSize',FS)
     set(gcf, 'position', screensize)
-
+    set(t,'FontName',TitleFont,'FontSize',TitleFS)
+    
     %%
 
     figure(3)
     subplot(2,1,k)
     [numbin,edges] = histcounts(P,20);
-    norm = max(numbin)/350;
     X = diff(edges);
     X = cumsum(X) - X(1)/2;
     hold on
     scatter(P,I,'x','MarkerEdgeColor','m');
-    plot(X,numbin/norm,'k','LineWidth',3)
+    vline(edges,':','LineWidth',0.5)
+    
+    yyaxis right
+    plot(X,numbin,'Color',blue,'LineWidth',3)
+    set(gca,'YColor',blue)
+    ylabel(NS)
+    yyaxis left
+    ylabel(SI); xlabel(p)
     hold off
-    ylabel(SIN); xlabel(p);
-    t=title(Title{k});
-    axis([0 1 0 420])
+    
+    TitlePos = GetTitPos(Tx,Ty);
+    t=title(Title{k},'Position',TitlePos);
     set(gca,'Fontname',Font,'LineWidth',AW,'FontSize',FS)
-    set(t,'Fontname',Font,'FontSize',FS)
     set(gcf, 'position', screensize)
+    set(t,'FontName',TitleFont,'FontSize',TitleFS)
 
     %%
     clear kNum
@@ -158,9 +175,10 @@ for k = 1:2
     pcolor(thisedge2{1},(thisedge2{2}),Heatmap');
     colormap(hot) % heat map
     ylabel(p); xlabel(CL)
-    t=title(Title{k});
+    TitlePos = GetTitPos(Tx,Ty);
+    t=title(Title{k},'Position',TitlePos);
     grid on
     set(gca,'Fontname',Font,'LineWidth',AW,'FontSize',FS)
-    set(t,'Fontname',Font,'FontSize',FS)
     set(gcf, 'position', screensize)
+    set(t,'FontName',TitleFont,'FontSize',TitleFS)
 end
