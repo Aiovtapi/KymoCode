@@ -3,7 +3,7 @@ clear all
 
 %%
 
-TraceNumber=11;
+TraceNumber=1;
 
 init.OSslash = '/';
 
@@ -11,14 +11,14 @@ fprintf('Select Data Folder');
 init.datapath = uigetdir(pwd,'Select Data Folder');
     
 if init.datapath == 0;
-    init.datapath = '/Users/rleeuw/Work/Data/170111_Tus-SMcal/gain100/11';
+    init.datapath = '/Users/rleeuw/Work/Data/170111_Tus-SMcal/gain100';
 end
 
 fprintf('\nSelect Utrack Results Folder');
 init.utrackpath = uigetdir(init.datapath,'Select utrack Folder');
 
 if init.utrackpath == 0;
-    init.utrackpath = '/Users/rleeuw/Work/Data/170111_Tus-SMcal/gain100/11/utrackResults';
+    init.utrackpath = strcat('/Users/rleeuw/Work/Data/170111_Tus-SMcal/gain100/',num2str(TraceNumber),'/utrackResults');
 end
 
     init.datapath = strcat(init.datapath,init.OSslash);
@@ -58,10 +58,11 @@ clear Background
 Ntracks=size(TrackCell,1);
 Trace=cell(Ntracks,1);
 Frames=cell(Ntracks,1);
+Nframes=1000;
 
 
 for i=1:Ntracks
-    Frames{i}=linspace(1,1000,1000);
+    Frames{i}=linspace(1,Nframes,Nframes);
     Trace{i}(FrameArray{i}(1):FrameArray{i}(end),1)=zeros(size(TrackCell{i},1),1);
     Trace{i}(FrameArray{i}(1):FrameArray{i}(end),1)=TrackCell{i}(:,11);
     Trace{i}(isnan(Trace{i}))=0;
@@ -83,7 +84,7 @@ end
     ylabel('Integrated Intensity (-)');
     xlabel('Frame (-)');
     set(gca,'FontSize',16);
-    axis([0 200 0.01 80]);
+    axis([0 Nframes 0.01 max(TraceVal)*1.1]);
     
 %% plot of single trace
 % ExTrace=nonzeros(Trace{1});

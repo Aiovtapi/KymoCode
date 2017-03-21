@@ -8,15 +8,11 @@ function [TrackCell,FrameArray,Bkg] = LionLoadTrackData(utrack,Bkg)
 % create a cell containing matrices [X Y Z AMP Xstd Ystd Zstd Ampstd BkgMean Bkgstd]
 
 lengthlowerbound=4;
+umperpx=0.1589;
 
 Ntracks=size(utrack.tracks.tracksFinal,1);
 TrackCell=cell(Ntracks,1);
 FrameArray=cell(Ntracks,1);
-
-% get mean spot widths in X and Y and calculate the mean integrated
-% background
-SpotWidthsX=[];
-SpotWidthsY=[];
 
 for i=1:Ntracks
     Noricolumns=size(utrack.tracks.tracksFinal(i).tracksCoordAmpCG,2);
@@ -37,7 +33,7 @@ for i=1:Ntracks
         TrackCell{i}(:,10)=Bkg.std(FrameArray{i});
         
         % integrated intensity (normalized).
-        TrackCell{i}(:,11)=(TrackCell{i}(:,4))*TrackCell{i}(j,5)*TrackCell{i}(j,6)*2*pi;
+        TrackCell{i}(:,11)=(TrackCell{i}(:,4))*TrackCell{i}(j,5)*TrackCell{i}(j,6)*2*pi/umperpx^2;
         
     if size(TrackCell{i},1)<lengthlowerbound
         TrackCell{i}=[];

@@ -4,8 +4,8 @@ clc
 
 folder='/Users/rleeuw/Work/Data/160205_Agar_Data';
 slash = '/';
-exps=[1 2  3 4 5 7 8 9];
-Intensityval = [700, 300, 700]; %[CFP YFP RFP]
+exps=[1 2 3 4 5 7 8 9];
+Intensityval = [2000, 1500, 3300].*2; %[CFP YFP RFP]
 umperpx=0.159;
 
 Lcfp=[];    Lyfp=[];    Lrfp=[];
@@ -60,7 +60,7 @@ for i=1:Nexp
             for k=1:NspotsCFP
                 Lcfp=[Lcfp CellLength{i,j}];
                 Pcfp=[Pcfp CFPld{i,j}{k}(1,2)/CellLength{i,j}];
-                Icfp=[Icfp CFPld{i,j}{k}(1,1)/Intensityval(1)];
+                Icfp=[Icfp 2*pi*CFPld{i,j}{k}(1,1)*CFPld{i,j}{k}(1,3)*CFPld{i,j}{k}(1,5)/Intensityval(1)];
                 Fcfp=[Fcfp CFPld{i,j}{k}(1,7)];
             end
         end
@@ -73,7 +73,7 @@ for i=1:Nexp
             for k=1:NspotsYFP
                 Lyfp=[Lyfp CellLength{i,j}];
                 Pyfp=[Pyfp YFPld{i,j}{k}(1,2)/CellLength{i,j}];
-                Iyfp=[Iyfp YFPld{i,j}{k}(1,1)/Intensityval(2)];
+                Iyfp=[Iyfp 2*pi*YFPld{i,j}{k}(1,1)*YFPld{i,j}{k}(1,3)*YFPld{i,j}{k}(1,5)/Intensityval(2)];
                 Fyfp=[Fyfp YFPld{i,j}{k}(1,7)];
             end
         end
@@ -85,7 +85,7 @@ for i=1:Nexp
             for k=1:NspotsRFP            
                 Lrfp=[Lrfp CellLength{i,j}];
                 Prfp=[Prfp RFPld{i,j}{k}(1,2)/CellLength{i,j}];
-                Irfp=[Irfp RFPld{i,j}{k}(1,1)/Intensityval(3)];
+                Irfp=[Irfp 2*pi*RFPld{i,j}{k}(1,1)*RFPld{i,j}{k}(1,3)*RFPld{i,j}{k}(1,5)/Intensityval(3)];
                 Frfp=[Frfp RFPld{i,j}{k}(1,7)];
             end
         end
@@ -446,34 +446,34 @@ clear N_full
 
 plotyfp(1,:) = Lyfp;
 plotyfp(2,:) = Fyfp;
-plotyfp(3,:) = Iyfp*Intensityval(2);
+plotyfp(3,:) = Iyfp;
 
 plotyfp = unique(plotyfp','rows')';
 
 [N_full,Edges_full,mid_full,loc_full]=histcn([plotyfp(1,:)' plotyfp(2,:)'],thisedge3{1},thisedge3{2});
 [N_spot,Edges_spot,mid_spot,loc_spot]=histcn([plotyfp(1,:)' plotyfp(3,:)'],thisedge3{1},thisedge3{2});
 
-for i=1:size(N_full,1);
-YFP_binned(i,:)=N_full(i,:).*Edges_full{2};
-Y=YFP_binned(i,:)';
-Y=double(Y);
-X=1:length(YFP_binned(i,:));
-display(strcat({'Gaussian fit of CFP column '},num2str(i),{' of '},num2str(size(N_full,1))));
-f{i}=fit(X',Y,'gauss1');
-peak(i)=f{i}.b1;
-sigma(i)=f{i}.c1;
-peakfloored(i)=floor(peak(i));
-peakceiled(i)=ceil(peak(i));
-IntVal(i)=((Edges_full{2}(peakceiled(i))-Edges_full{2}(peakfloored(i))))*(peakceiled(i)-peak(i))+Edges_full{2}(peakfloored(i)); %slope * peakposition, because linear.
-end
-plot(Edges_full{1},IntVal);
+% for i=1:size(N_full,1);
+% YFP_binned(i,:)=N_full(i,:);
+% Y=YFP_binned(i,:)';
+% Y=double(Y);
+% X=1:length(YFP_binned(i,:));
+% display(strcat({'Gaussian fit of CFP column '},num2str(i),{' of '},num2str(size(N_full,1))));
+% f{i}=fit(X',Y,'gauss1');
+% peak(i)=f{i}.b1;
+% sigma(i)=f{i}.c1;
+% peakfloored(i)=floor(peak(i));
+% peakceiled(i)=ceil(peak(i));
+% IntVal(i)=((Edges_full{2}(peakceiled(i))-Edges_full{2}(peakfloored(i))))*(peakceiled(i)-peak(i))+Edges_full{2}(peakfloored(i)); %slope * peakposition, because linear.
+% end
+% plot(Edges_full{1},IntVal);
 
 subplot(1,3,2)
 hold on
-scatter(plotyfp(1,:),plotyfp(2,:),'b','o','filled');
-scatter(plotyfp(1,:),plotyfp(3,:),'r','o','filled');
-myfit=polyfit(plotyfp(1,:),plotyfp(2,:),1);
-myfit2=polyfit(plotyfp(1,:),plotyfp(3,:),1);
+scatter(plotyfp(1,:),plotyfp(2,:)/Intensityval(2),'b','o','filled');
+scatter(plotyfp(1,:),plotyfp(3,:)/Intensityval(2),'r','o','filled');
+myfit=polyfit(plotyfp(1,:),plotyfp(2,:)/Intensityval(2),1);
+myfit2=polyfit(plotyfp(1,:),plotyfp(3,:)/Intensityval(2),1);
 x=12:0.1:43;
 y=polyval(myfit,x);
 y2=polyval(myfit2,x);
@@ -482,7 +482,7 @@ plot(x,y,'b','LineWidth',3)
 xlabel('Cell Length'); ylabel('Intensity'); 
 title('Tus Stoichiometry vs. Length')
 hold off
-axis([12 43 -0.1 2*10^5])
+% axis([12 43 -0.1 1])
 set(gca,'FontSize',16)
 
 

@@ -3,7 +3,7 @@ clear all
 
 %% Load Results
 
-TraceNumbers=[9 11];
+TraceNumbers=[1 3];
 
 init.OSslash = '/';
 
@@ -11,7 +11,7 @@ fprintf('Select Final Results Folder');
 init.resultspath = uigetdir(pwd,'Select Results Folder');
     
 if init.resultspath == 0;
-    init.resultspath = '/Users/rleeuw/Work/Data/170111_Tus-SMcal/gain100/FinalResults';
+    init.resultspath = '/Users/rleeuw/Work/Data/170111_Tus-SMcal/gain300/FinalResults';
 end
 
 init.resultspath = strcat(init.resultspath,init.OSslash);
@@ -32,6 +32,14 @@ for i=1:size(Results,1)
 end
 
 %% plot histogram
+Nbins=10;
+bins=linspace(0, 5000, Nbins);
+IItotc=histc(IItot,bins);
 
-hist(IItot,50)
+fig1=figure(1);
+bar(bins,IItotc/(sum(IItotc)))
+set(gca,'fontsize',18)
+axis([0 3000 0 0.6])
+xlabel('Integrated Intensity (counts)')
+ylabel('Probability density (1/counts)')
 
